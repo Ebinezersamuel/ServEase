@@ -1171,7 +1171,6 @@
           <a
             class="nav-item"
             href="#"
-            id="nav-bookings"
             onclick="
               showBookings(this);
               return false;
@@ -1852,8 +1851,9 @@
       }
 
       function contactProvider(providerContact) {
-        if (providerContact) {
-          window.location.href = `tel:${providerContact}`;
+        const trimmedContact = String(providerContact || "").trim();
+        if (/^[+0-9()\-\s]{6,20}$/.test(trimmedContact)) {
+          window.location.href = `tel:${encodeURIComponent(trimmedContact)}`;
           return;
         }
         showToast("Provider contact is not available yet.", "info");
@@ -1957,10 +1957,12 @@
       }
 
       // ═══════════════ TOAST ═══════════════
-      function showToast(message) {
+      function showToast(message, type = "info") {
         const container = document.getElementById("toast-container");
         const toast = document.createElement("div");
         toast.className = "toast";
+        if (type === "error") toast.style.borderLeftColor = "var(--accent2)";
+        if (type === "success") toast.style.borderLeftColor = "var(--accent3)";
         toast.textContent = message;
         container.appendChild(toast);
 

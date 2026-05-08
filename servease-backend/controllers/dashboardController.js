@@ -126,8 +126,11 @@ exports.rescheduleBooking = async (req, res) => {
       return res.status(400).json({ message: "Invalid booking id" });
     }
     const { scheduledAt } = req.body;
+    if (!scheduledAt) {
+      return res.status(400).json({ message: "scheduledAt is required" });
+    }
     const parsedDate = new Date(scheduledAt);
-    if (!scheduledAt || Number.isNaN(parsedDate.getTime())) {
+    if (Number.isNaN(parsedDate.getTime())) {
       return res.status(400).json({ message: "Valid scheduledAt date is required" });
     }
 

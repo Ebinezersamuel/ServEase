@@ -1,5 +1,6 @@
 const express = require("express");
 const auth = require("../middleware/auth");
+const createRateLimiter = require("../middleware/rateLimit");
 const {
   getProfile,
   getActiveBookings,
@@ -13,6 +14,7 @@ const {
 const router = express.Router();
 
 router.use(auth);
+router.use(createRateLimiter({ windowMs: 60_000, max: 120 }));
 
 router.get("/profile", getProfile);
 router.get("/bookings/active", getActiveBookings);
