@@ -549,6 +549,197 @@
         color: var(--accent2);
       }
 
+      .dashboard-sections {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .dashboard-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+      }
+
+      .dashboard-panel.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+
+      .panel-title {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .panel-muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .panel-tools {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .panel-input,
+      .panel-select {
+        height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface2);
+        color: var(--text);
+        font-size: 12px;
+      }
+
+      .state-box {
+        border: 1px dashed var(--border);
+        background: rgba(255, 255, 255, 0.01);
+        border-radius: 10px;
+        padding: 14px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .state-box.error {
+        border-color: rgba(255, 107, 107, 0.5);
+        color: #ff9494;
+      }
+
+      .state-actions {
+        margin-top: 8px;
+      }
+
+      .state-actions button {
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        color: var(--text);
+        border-radius: 8px;
+        padding: 7px 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .profile-item {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      .profile-item-label {
+        color: var(--muted);
+        font-size: 11px;
+        margin-bottom: 4px;
+      }
+
+      .profile-item-value {
+        font-size: 13px;
+        word-break: break-word;
+      }
+
+      .booking-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .booking-item {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface2);
+        padding: 12px;
+      }
+
+      .booking-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .booking-name {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .booking-meta {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .booking-status {
+        font-size: 11px;
+        border-radius: 999px;
+        padding: 4px 10px;
+        border: 1px solid transparent;
+        text-transform: capitalize;
+      }
+
+      .status-pending {
+        background: rgba(255, 184, 107, 0.15);
+        border-color: rgba(255, 184, 107, 0.4);
+        color: #ffc27a;
+      }
+
+      .status-in-progress {
+        background: rgba(92, 107, 255, 0.15);
+        border-color: rgba(92, 107, 255, 0.4);
+        color: #a0aaff;
+      }
+
+      .status-completed {
+        background: rgba(67, 232, 160, 0.15);
+        border-color: rgba(67, 232, 160, 0.4);
+        color: #6bffb7;
+      }
+
+      .status-cancelled {
+        background: rgba(255, 107, 107, 0.15);
+        border-color: rgba(255, 107, 107, 0.4);
+        color: #ff9494;
+      }
+
+      .booking-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .booking-action-btn {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .booking-action-btn.danger {
+        border-color: rgba(255, 107, 107, 0.5);
+        color: #ff9494;
+      }
+
       /* ─ Services Section ─ */
       .services-section {
         background: var(--surface);
@@ -840,6 +1031,10 @@
           grid-template-columns: 1fr;
         }
 
+        .dashboard-sections {
+          grid-template-columns: 1fr;
+        }
+
         .hero-section {
           flex-direction: column;
           text-align: center;
@@ -892,6 +1087,10 @@
 
         .hero-content h2 {
           font-size: 22px;
+        }
+
+        .profile-grid {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -1115,17 +1314,17 @@
                   <div class="stat-label">Completed</div>
                   <div class="stat-icon">✅</div>
                 </div>
-                <div class="stat-value" id="stat-completed">12</div>
-                <div class="stat-change up">↑ This month</div>
+                <div class="stat-value" id="stat-completed">0</div>
+                <div class="stat-change up">From your total history</div>
               </div>
 
               <div class="stat-card">
                 <div class="stat-header">
-                  <div class="stat-label">Wallet Balance</div>
+                  <div class="stat-label">Total Spent</div>
                   <div class="stat-icon">💳</div>
                 </div>
-                <div class="stat-value" id="stat-wallet">$125</div>
-                <div class="stat-change down">↓ $15 spent</div>
+                <div class="stat-value" id="stat-wallet">₹0</div>
+                <div class="stat-change down">Completed bookings only</div>
               </div>
 
               <div class="stat-card">
@@ -1133,9 +1332,70 @@
                   <div class="stat-label">Rating</div>
                   <div class="stat-icon">⭐</div>
                 </div>
-                <div class="stat-value" id="stat-rating">4.8</div>
-                <div class="stat-change up">↑ 12 reviews</div>
+                <div class="stat-value" id="stat-rating">0.0</div>
+                <div class="stat-change up">Average from completed jobs</div>
               </div>
+            </div>
+
+            <div class="dashboard-sections">
+              <section class="dashboard-panel">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">Profile</div>
+                    <div class="panel-muted">Live from your account</div>
+                  </div>
+                </div>
+                <div id="profile-content" class="state-box">Loading profile...</div>
+              </section>
+
+              <section class="dashboard-panel">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">Active Bookings & Chores</div>
+                    <div class="panel-muted">Pending and in-progress services</div>
+                  </div>
+                  <div class="panel-tools">
+                    <input
+                      type="text"
+                      id="booking-search"
+                      class="panel-input"
+                      placeholder="Search bookings..."
+                      oninput="renderActiveBookings()"
+                    />
+                    <select
+                      id="booking-filter"
+                      class="panel-select"
+                      onchange="renderActiveBookings()"
+                    >
+                      <option value="all">All status</option>
+                      <option value="pending">Pending</option>
+                      <option value="in-progress">In Progress</option>
+                    </select>
+                  </div>
+                </div>
+                <div id="active-bookings-content" class="state-box">
+                  Loading active bookings...
+                </div>
+              </section>
+
+              <section class="dashboard-panel full-width">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">Order History</div>
+                    <div class="panel-muted">Your completed services</div>
+                  </div>
+                  <div class="panel-tools">
+                    <input
+                      type="text"
+                      id="history-search"
+                      class="panel-input"
+                      placeholder="Search history..."
+                      oninput="renderHistoryBookings()"
+                    />
+                  </div>
+                </div>
+                <div id="history-content" class="state-box">Loading order history...</div>
+              </section>
             </div>
           </div>
 
@@ -1255,6 +1515,14 @@
         },
       ];
 
+      const API_BASE = localStorage.getItem("apiBaseUrl") || "http://localhost:5000";
+      const state = {
+        profile: null,
+        activeBookings: [],
+        historyBookings: [],
+        stats: null,
+      };
+
       // ═══════════════ UI FUNCTIONS ═══════════════
       function toggleSidebar() {
         document.getElementById("sidebar").classList.toggle("open");
@@ -1288,12 +1556,10 @@
       }
 
       function showBookings(el) {
-        clearNav();
-        el.classList.add("active");
-        switchView("services"); // Placeholder
-        document.getElementById("page-title").textContent = "My Bookings";
-        closeSidebar();
-        showToast("Bookings feature coming soon!", "info");
+        showDashboard(el);
+        document
+          .getElementById("active-bookings-content")
+          .scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
       function switchView(view) {
@@ -1309,6 +1575,288 @@
         document.getElementById("page-title").textContent = title;
         closeSidebar();
         showToast(`Loading ${title}...`, "info");
+      }
+
+      // ═══════════════ API ═══════════════
+      function getAuthToken() {
+        return localStorage.getItem("token");
+      }
+
+      async function apiFetch(path, options = {}, retries = 1) {
+        const token = getAuthToken();
+        if (!token) {
+          throw new Error("Please login again to load dashboard data.");
+        }
+
+        const res = await fetch(`${API_BASE}${path}`, {
+          ...options,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            ...(options.headers || {}),
+          },
+        });
+
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          if (retries > 0 && res.status >= 500 && res.status < 600) {
+            return apiFetch(path, options, retries - 1);
+          }
+          throw new Error(body.message || "Request failed");
+        }
+
+        return res.json();
+      }
+
+      async function fetchDashboardData() {
+        setLoadingState();
+        try {
+          const [profileRes, activeRes, historyRes, statsRes] = await Promise.all([
+            apiFetch("/api/dashboard/profile"),
+            apiFetch("/api/dashboard/bookings/active"),
+            apiFetch("/api/dashboard/bookings/history"),
+            apiFetch("/api/dashboard/stats"),
+          ]);
+
+          state.profile = profileRes.profile || null;
+          state.activeBookings = activeRes.bookings || [];
+          state.historyBookings = historyRes.bookings || [];
+          state.stats = statsRes.stats || null;
+
+          updateUserInfo(state.profile || getCurrentUser());
+          renderProfile();
+          renderStats();
+          renderActiveBookings();
+          renderHistoryBookings();
+        } catch (error) {
+          renderDashboardError(error.message);
+          showToast(error.message, "error");
+        }
+      }
+
+      function setLoadingState() {
+        document.getElementById("profile-content").textContent = "Loading profile...";
+        document.getElementById("active-bookings-content").textContent =
+          "Loading active bookings...";
+        document.getElementById("history-content").textContent =
+          "Loading order history...";
+      }
+
+      function renderDashboardError(message) {
+        const html = `
+          <div class="state-box error">
+            ${escapeText(message)}
+            <div class="state-actions">
+              <button onclick="fetchDashboardData()">Retry</button>
+            </div>
+          </div>
+        `;
+        document.getElementById("profile-content").innerHTML = html;
+        document.getElementById("active-bookings-content").innerHTML = html;
+        document.getElementById("history-content").innerHTML = html;
+      }
+
+      // ═══════════════ DASHBOARD RENDERING ═══════════════
+      function formatDate(dateValue) {
+        if (!dateValue) return "Not scheduled";
+        const date = new Date(dateValue);
+        if (Number.isNaN(date.getTime())) return "Not scheduled";
+        return date.toLocaleString();
+      }
+
+      function formatCurrency(value) {
+        return `₹${Number(value || 0).toFixed(2)}`;
+      }
+
+      function escapeText(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function escapeJsString(value) {
+        return String(value || "")
+          .replace(/\\/g, "\\\\")
+          .replace(/'/g, "\\'");
+      }
+
+      function renderProfile() {
+        const profile = state.profile;
+        const container = document.getElementById("profile-content");
+        if (!profile) {
+          container.innerHTML = '<div class="state-box">Profile not found.</div>';
+          return;
+        }
+
+        const address = profile.address || {};
+        const fullAddress = [
+          address.line1,
+          address.line2,
+          address.city,
+          address.state,
+          address.zipCode,
+          address.country,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
+        container.innerHTML = `
+          <div class="profile-grid">
+            <div class="profile-item">
+              <div class="profile-item-label">Name</div>
+              <div class="profile-item-value">${escapeText(profile.firstName || "")} ${escapeText(profile.lastName || "")}</div>
+            </div>
+            <div class="profile-item">
+              <div class="profile-item-label">Email</div>
+              <div class="profile-item-value">${escapeText(profile.email || "-")}</div>
+            </div>
+            <div class="profile-item">
+              <div class="profile-item-label">Phone</div>
+              <div class="profile-item-value">${escapeText(profile.phone || "Not added")}</div>
+            </div>
+            <div class="profile-item">
+              <div class="profile-item-label">Address</div>
+              <div class="profile-item-value">${escapeText(fullAddress || "Not added")}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderStats() {
+        const stats = state.stats || {};
+        document.getElementById("stat-active").textContent = stats.activeBookings || 0;
+        document.getElementById("stat-completed").textContent = stats.completedBookings || 0;
+        document.getElementById("stat-wallet").textContent = formatCurrency(stats.totalSpent || 0);
+        document.getElementById("stat-rating").textContent = Number(
+          stats.rating || 0,
+        ).toFixed(1);
+      }
+
+      function filteredActiveBookings() {
+        const query = document.getElementById("booking-search").value.toLowerCase();
+        const filter = document.getElementById("booking-filter").value;
+        return state.activeBookings.filter((booking) => {
+          const matchesStatus = filter === "all" ? true : booking.status === filter;
+          const searchable = `${booking.serviceName || ""} ${booking.category || ""} ${booking.providerName || ""}`.toLowerCase();
+          return matchesStatus && searchable.includes(query);
+        });
+      }
+
+      function filteredHistoryBookings() {
+        const query = document.getElementById("history-search").value.toLowerCase();
+        return state.historyBookings.filter((booking) => {
+          const searchable = `${booking.serviceName || ""} ${booking.category || ""} ${booking.providerName || ""}`.toLowerCase();
+          return searchable.includes(query);
+        });
+      }
+
+      function bookingCardTemplate(booking, showActions = false) {
+        const safeId = escapeJsString(booking._id);
+        const safeContact = escapeJsString(booking.providerContact);
+        return `
+          <article class="booking-item">
+            <div class="booking-top">
+              <div>
+                <div class="booking-name">${escapeText(booking.serviceName)}</div>
+                <div class="booking-meta">
+                  ${escapeText(booking.category || "General")} · ${formatDate(booking.scheduledAt)} · ${formatCurrency(booking.price)}
+                </div>
+                <div class="booking-meta">Provider: ${escapeText(booking.providerName || "Not assigned")}</div>
+              </div>
+              <span class="booking-status status-${escapeText(booking.status)}">${escapeText(booking.status)}</span>
+            </div>
+            ${showActions ? `<div class="booking-actions">
+              <button class="booking-action-btn" onclick="viewBookingDetails('${safeId}')">View Details</button>
+              <button class="booking-action-btn" onclick="contactProvider('${safeContact}')">Contact Provider</button>
+              <button class="booking-action-btn" onclick="rescheduleBooking('${safeId}')">Reschedule</button>
+              <button class="booking-action-btn danger" onclick="cancelBooking('${safeId}')">Cancel</button>
+            </div>` : ""}
+          </article>
+        `;
+      }
+
+      function renderActiveBookings() {
+        const container = document.getElementById("active-bookings-content");
+        const bookings = filteredActiveBookings();
+
+        if (!bookings.length) {
+          container.innerHTML = '<div class="state-box">No active bookings found.</div>';
+          return;
+        }
+
+        container.innerHTML = `<div class="booking-list">${bookings
+          .map((booking) => bookingCardTemplate(booking, true))
+          .join("")}</div>`;
+      }
+
+      function renderHistoryBookings() {
+        const container = document.getElementById("history-content");
+        const bookings = filteredHistoryBookings();
+
+        if (!bookings.length) {
+          container.innerHTML = '<div class="state-box">No completed bookings in your history.</div>';
+          return;
+        }
+
+        container.innerHTML = `<div class="booking-list">${bookings
+          .map((booking) => bookingCardTemplate(booking, false))
+          .join("")}</div>`;
+      }
+
+      async function cancelBooking(bookingId) {
+        if (!confirm("Cancel this booking?")) return;
+        try {
+          await apiFetch(`/api/dashboard/bookings/${bookingId}/cancel`, { method: "PATCH" });
+          showToast("Booking cancelled successfully.", "info");
+          fetchDashboardData();
+        } catch (error) {
+          showToast(error.message, "error");
+        }
+      }
+
+      async function rescheduleBooking(bookingId) {
+        const dateInput = prompt("Enter new schedule (YYYY-MM-DD HH:mm):");
+        if (!dateInput) return;
+        const parsed = new Date(dateInput);
+        if (Number.isNaN(parsed.getTime())) {
+          showToast("Invalid date format.", "error");
+          return;
+        }
+
+        try {
+          await apiFetch(`/api/dashboard/bookings/${bookingId}/reschedule`, {
+            method: "PATCH",
+            body: JSON.stringify({ scheduledAt: parsed.toISOString() }),
+          });
+          showToast("Booking rescheduled.", "info");
+          fetchDashboardData();
+        } catch (error) {
+          showToast(error.message, "error");
+        }
+      }
+
+      async function viewBookingDetails(bookingId) {
+        try {
+          const res = await apiFetch(`/api/dashboard/bookings/${bookingId}`);
+          const booking = res.booking || {};
+          showToast(
+            `${booking.serviceName || "Booking"} · ${formatDate(booking.scheduledAt)} · ${booking.status || "unknown"}`,
+            "info",
+          );
+        } catch (error) {
+          showToast(error.message, "error");
+        }
+      }
+
+      function contactProvider(providerContact) {
+        const trimmedContact = String(providerContact || "").trim();
+        if (/^[+0-9()\-\s]{6,20}$/.test(trimmedContact)) {
+          window.location.href = `tel:${encodeURIComponent(trimmedContact)}`;
+          return;
+        }
+        showToast("Provider contact is not available yet.", "info");
       }
 
       // ═══════════════ SERVICES ═══════════════
@@ -1380,15 +1928,15 @@
         }
       }
 
-      function updateUserInfo() {
-        const user = getCurrentUser();
+      function updateUserInfo(user) {
+        const safeUser = user || getCurrentUser();
         const initials =
-          (user.firstName?.[0] || "U") + (user.lastName?.[0] || "");
+          (safeUser.firstName?.[0] || "U") + (safeUser.lastName?.[0] || "");
         document.getElementById("user-avatar").textContent =
           initials.toUpperCase();
         document.getElementById("user-name").textContent =
-          user.firstName + " " + (user.lastName || "");
-        document.getElementById("hero-name").textContent = user.firstName;
+          `${safeUser.firstName || "User"} ${safeUser.lastName || ""}`.trim();
+        document.getElementById("hero-name").textContent = safeUser.firstName || "User";
       }
 
       function logout() {
@@ -1413,6 +1961,8 @@
         const container = document.getElementById("toast-container");
         const toast = document.createElement("div");
         toast.className = "toast";
+        if (type === "error") toast.style.borderLeftColor = "var(--accent2)";
+        if (type === "success") toast.style.borderLeftColor = "var(--accent3)";
         toast.textContent = message;
         container.appendChild(toast);
 
@@ -1426,6 +1976,7 @@
       window.addEventListener("DOMContentLoaded", () => {
         updateUserInfo();
         renderServices(SERVICES);
+        fetchDashboardData();
 
         // Close sidebar on link click (mobile)
         document.querySelectorAll(".nav-item").forEach((item) => {

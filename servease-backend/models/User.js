@@ -7,7 +7,17 @@ const userSchema = new mongoose.Schema(
     lastName: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6 },
-    role: { type: String, enum: ["customer", "provider"], default: "customer" }
+    role: { type: String, enum: ["customer", "provider"], default: "customer" },
+    phone: { type: String, trim: true, default: "" },
+    profileImage: { type: String, trim: true, default: "" },
+    address: {
+      line1: { type: String, trim: true, default: "" },
+      line2: { type: String, trim: true, default: "" },
+      city: { type: String, trim: true, default: "" },
+      state: { type: String, trim: true, default: "" },
+      zipCode: { type: String, trim: true, default: "" },
+      country: { type: String, trim: true, default: "" },
+    },
   },
   { timestamps: true }
 );
