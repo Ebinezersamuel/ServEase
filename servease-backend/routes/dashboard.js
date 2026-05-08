@@ -1,6 +1,6 @@
 const express = require("express");
+const { rateLimit } = require("express-rate-limit");
 const auth = require("../middleware/auth");
-const createRateLimiter = require("../middleware/rateLimit");
 const {
   getProfile,
   getActiveBookings,
@@ -13,8 +13,16 @@ const {
 
 const router = express.Router();
 
+const dashboardRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 120,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { message: "Too many requests, please try again later." },
+});
+
+router.use(dashboardRateLimiter);
 router.use(auth);
-router.use(createRateLimiter({ windowMs: 60_000, max: 120 }));
 
 router.get("/profile", getProfile);
 router.get("/bookings/active", getActiveBookings);

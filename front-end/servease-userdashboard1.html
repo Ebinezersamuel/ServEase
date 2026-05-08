@@ -1582,6 +1582,10 @@
         return localStorage.getItem("token");
       }
 
+      function wait(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
       async function apiFetch(path, options = {}, retries = 1) {
         const token = getAuthToken();
         if (!token) {
@@ -1600,6 +1604,7 @@
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
           if (retries > 0 && res.status >= 500 && res.status < 600) {
+            await wait(300 * (2 - retries + 1));
             return apiFetch(path, options, retries - 1);
           }
           throw new Error(body.message || "Request failed");

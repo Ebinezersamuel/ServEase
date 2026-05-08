@@ -133,6 +133,9 @@ exports.rescheduleBooking = async (req, res) => {
     if (Number.isNaN(parsedDate.getTime())) {
       return res.status(400).json({ message: "Valid scheduledAt date is required" });
     }
+    if (parsedDate.getTime() < Date.now()) {
+      return res.status(400).json({ message: "scheduledAt cannot be in the past" });
+    }
 
     const booking = await Booking.findOneAndUpdate(
       { _id: req.params.bookingId, user: req.user.id, status: { $in: ACTIVE_STATUSES } },
