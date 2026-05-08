@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Filters — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      /* SEARCH BAR */
+      .search-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 18px;
+        align-items: center;
+      }
+      .search-input {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-size: 15px;
+        font-family: "DM Sans", sans-serif;
+      }
+      .search-input::placeholder {
+        color: var(--muted);
+      }
+      .search-icon {
+        color: var(--muted);
+        font-size: 18px;
+      }
+      .search-filters-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(92, 107, 255, 0.14);
+        color: #8b9aff;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .search-filters-badge:hover {
+        background: rgba(92, 107, 255, 0.24);
+      }
+      .badge-count {
+        background: var(--accent2);
+        color: #fff;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      /* MAIN LAYOUT */
+      .filters-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 20px;
+      }
+      /* SIDEBAR FILTERS */
+      .filters-sidebar {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+      }
+      .filter-section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .filter-section:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .filter-title {
+        font-family: "Syne", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      /* CHECKBOX FILTER */
+      .filter-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .checkbox {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        background: var(--surface2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: 0.15s;
+      }
+      .filter-option input[type="checkbox"] {
+        display: none;
+      }
+      .filter-option input:checked ~ .checkbox {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .checkbox::after {
+        content: "✓";
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .filter-label {
+        font-size: 13px;
+        color: var(--muted);
+        flex: 1;
+      }
+      .filter-count {
+        font-size: 11px;
+        color: #6b7385;
+      }
+      /* RANGE SLIDER */
+      .range-slider {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .range-input {
+        width: 100%;
+        height: 6px;
+        background: var(--surface2);
+        border-radius: 3px;
+        outline: none;
+        -webkit-appearance: none;
+      }
+      .range-input::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        background: var(--accent);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(92, 107, 255, 0.5);
+      }
+      .range-input::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: var(--accent);
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 10px rgba(92, 107, 255, 0.5);
+      }
+      .range-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      /* BUTTONS */
+      .filter-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .btn-apply,
+      .btn-clear {
+        flex: 1;
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: 0.18s;
+        font-family: "DM Sans", sans-serif;
+      }
+      .btn-clear {
+        background: var(--surface2);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn-clear:hover {
+        color: var(--text);
+        border-color: var(--accent);
+      }
+      .btn-apply {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(92, 107, 255, 0.3);
+      }
+      .btn-apply:hover {
+        background: #4d5cf0;
+        transform: translateY(-1px);
+      }
+      /* RESULTS GRID */
+      .results-section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+      .results-header h3 {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .sort-dropdown {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        padding: 8px 12px;
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .providers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      .provider-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+      .provider-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(92, 107, 255, 0.15);
+      }
+      .provider-image {
+        width: 100%;
+        height: 160px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        position: relative;
+      }
+      .provider-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--accent3);
+        color: #0d0f14;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .provider-info {
+        padding: 14px;
+      }
+      .provider-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .provider-category {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .provider-meta {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .rating {
+        display: flex;
+        gap: 2px;
+      }
+      .star {
+        color: #ffc27a;
+        font-size: 12px;
+      }
+      .provider-price {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .btn-book {
+        width: 100%;
+        padding: 10px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .btn-book:hover {
+        background: #4d5cf0;
+      }
+      /* EMPTY STATE */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--surface);
+        border-radius: 14px;
+        border: 1px dashed var(--border);
+      }
+      .empty-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+      }
+      .empty-state h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .empty-state p {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        .filters-layout {
+          grid-template-columns: 1fr;
+        }
+        .filters-sidebar {
+          position: static;
+        }
+        .providers-grid {
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+      }
+      @media (max-width: 600px) {
+        .search-bar {
+          flex-direction: column;
+        }
+        .providers-grid {
+          grid-template-columns: 1fr;
+        }
+        .filters-sidebar {
+          display: none;
+        } /* Hide in mobile, show in filter modal instead */
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 99px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- SEARCH BAR -->
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input
+          class="search-input"
+          id="searchInput"
+          type="text"
+          placeholder="Search services, providers..."
+        />
+        <button
+          class="search-filters-badge"
+          id="filterToggle"
+          onclick="toggleFiltersModal()"
+        >
+          ⚙️ Filters
+          <span class="badge-count" id="filterCount" style="display: none"
+            >0</span
+          >
+        </button>
+      </div>
+
+      <div class="filters-layout">
+        <!-- SIDEBAR FILTERS -->
+        <div class="filters-sidebar" id="filtersSidebar">
+          <!-- Category -->
+          <div class="filter-section">
+            <div class="filter-title">Category</div>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="category"
+                value="ac"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">AC Technician</span>
+              <span class="filter-count">(324)</span>
+            </label>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="category"
+                value="plumber"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">Plumber</span>
+              <span class="filter-count">(218)</span>
+            </label>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="category"
+                value="electrician"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">Electrician</span>
+              <span class="filter-count">(456)</span>
+            </label>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="category"
+                value="carpenter"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">Carpenter</span>
+              <span class="filter-count">(189)</span>
+            </label>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="category"
+                value="cleaner"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">Cleaner</span>
+              <span class="filter-count">(572)</span>
+            </label>
+          </div>
+
+          <!-- Price Range -->
+          <div class="filter-section">
+            <div class="filter-title">Price Range</div>
+            <div class="range-slider">
+              <input
+                type="range"
+                class="range-input"
+                id="priceMin"
+                min="0"
+                max="5000"
+                value="0"
+                onchange="updateFilters()"
+              />
+              <input
+                type="range"
+                class="range-input"
+                id="priceMax"
+                min="0"
+                max="5000"
+                value="5000"
+                onchange="updateFilters()"
+              />
+              <div class="range-labels">
+                <span id="priceMinLabel">₹0</span>
+                <span id="priceMaxLabel">₹5000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rating -->
+          <div class="filter-section">
+            <div class="filter-title">Rating</div>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="rating"
+                value="5"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">★★★★★ 5.0</span>
+              <span class="filter-count">(124)</span>
+            </label>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="rating"
+                value="4"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">★★★★☆ 4.0+</span>
+              <span class="filter-count">(856)</span>
+            </label>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="rating"
+                value="3"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">★★★☆☆ 3.0+</span>
+              <span class="filter-count">(1204)</span>
+            </label>
+          </div>
+
+          <!-- Availability -->
+          <div class="filter-section">
+            <div class="filter-title">Availability</div>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="availability"
+                value="today"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">Available Today</span>
+            </label>
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                name="availability"
+                value="emergency"
+                onchange="updateFilters()"
+              />
+              <span class="checkbox"></span>
+              <span class="filter-label">Emergency Available</span>
+            </label>
+          </div>
+
+          <!-- Sort -->
+          <div class="filter-section">
+            <div class="filter-title">Sort By</div>
+            <select
+              id="sortBy"
+              onchange="updateFilters()"
+              style="
+                width: 100%;
+                padding: 8px;
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                color: var(--text);
+                font-size: 13px;
+                cursor: pointer;
+              "
+            >
+              <option value="recommended">Recommended</option>
+              <option value="nearest">Nearest</option>
+              <option value="rating">Highest Rated</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
+
+          <!-- Actions -->
+          <div class="filter-actions">
+            <button class="btn-clear" onclick="clearFilters()">
+              Clear All
+            </button>
+            <button class="btn-apply" onclick="applyFilters()">Apply</button>
+          </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-section">
+          <div class="results-header">
+            <h3 id="resultsTitle">Showing 45 Results</h3>
+            <select
+              class="sort-dropdown"
+              id="quickSort"
+              onchange="updateFilters()"
+            >
+              <option value="recommended">Recommended</option>
+              <option value="nearest">Nearest</option>
+              <option value="rating">Highest Rated</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
+
+          <div class="providers-grid" id="providersGrid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const sampleProviders = [
+        {
+          id: 1,
+          name: "John Doe",
+          category: "AC Technician",
+          emoji: "❄️",
+          price: 500,
+          rating: 4.8,
+          reviews: 245,
+          distance: 2.5,
+          available: true,
+        },
+        {
+          id: 2,
+          name: "Raj Kumar",
+          category: "Plumber",
+          emoji: "🔧",
+          price: 400,
+          rating: 4.6,
+          reviews: 189,
+          distance: 1.2,
+          available: true,
+        },
+        {
+          id: 3,
+          name: "Priya Singh",
+          category: "Electrician",
+          emoji: "⚡",
+          price: 550,
+          rating: 4.9,
+          reviews: 312,
+          distance: 3.1,
+          available: false,
+        },
+        {
+          id: 4,
+          name: "Amit Verma",
+          category: "Carpenter",
+          emoji: "🪵",
+          price: 600,
+          rating: 4.5,
+          reviews: 156,
+          distance: 2.8,
+          available: true,
+        },
+        {
+          id: 5,
+          name: "Zainab Khan",
+          category: "Cleaner",
+          emoji: "🧹",
+          price: 300,
+          rating: 4.7,
+          reviews: 421,
+          distance: 1.5,
+          available: true,
+        },
+        {
+          id: 6,
+          name: "Vikram Patel",
+          category: "AC Technician",
+          emoji: "❄️",
+          price: 480,
+          rating: 4.4,
+          reviews: 198,
+          distance: 2.1,
+          available: true,
+        },
+        {
+          id: 7,
+          name: "Ananya Gupta",
+          category: "Plumber",
+          emoji: "🔧",
+          price: 420,
+          rating: 4.8,
+          reviews: 267,
+          distance: 3.5,
+          available: false,
+        },
+        {
+          id: 8,
+          name: "Suresh Reddy",
+          category: "Electrician",
+          emoji: "⚡",
+          price: 500,
+          rating: 4.6,
+          reviews: 289,
+          distance: 2.2,
+          available: true,
+        },
+      ];
+
+      let filteredProviders = [...sampleProviders];
+
+      function renderProviders() {
+        const grid = document.getElementById("providersGrid");
+        grid.innerHTML = "";
+
+        if (filteredProviders.length === 0) {
+          grid.innerHTML = `
+        <div style="grid-column: 1/-1;">
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>No providers found</h3>
+            <p>Try adjusting your filters or search criteria</p>
+          </div>
+        </div>`;
+          return;
+        }
+
+        filteredProviders.forEach((provider) => {
+          const card = document.createElement("div");
+          card.className = "provider-card";
+          const stars =
+            "★".repeat(Math.floor(provider.rating)) +
+            "☆".repeat(5 - Math.floor(provider.rating));
+          card.innerHTML = `
+        <div class="provider-image">
+          ${provider.emoji}
+          ${provider.available ? "" : '<div class="provider-badge">Unavailable</div>'}
+          ${provider.rating >= 4.8 ? '<div class="provider-badge" style="background: #ffc27a; color: #0d0f14;">Popular</div>' : ""}
+        </div>
+        <div class="provider-info">
+          <div class="provider-name">${provider.name}</div>
+          <div class="provider-category">${provider.category}</div>
+          <div class="provider-meta">
+            <div class="rating">
+              <span class="star">${stars}</span>
+              <span>(${provider.rating})</span>
+            </div>
+            <span>•</span>
+            <span>${provider.distance} km</span>
+          </div>
+          <div class="provider-price">₹${provider.price}/hr</div>
+          <button class="btn-book" onclick="bookNow(${provider.id})" ${provider.available ? "" : "disabled"}>
+            ${provider.available ? "Book Now" : "Unavailable"}
+          </button>
+        </div>`;
+          grid.appendChild(card);
+        });
+
+        document.getElementById("resultsTitle").textContent =
+          `Showing ${filteredProviders.length} Results`;
+      }
+
+      function updateFilters() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const categories = Array.from(
+          document.querySelectorAll('input[name="category"]:checked'),
+        ).map((el) => el.value);
+        const priceMin = parseInt(document.getElementById("priceMin").value);
+        const priceMax = parseInt(document.getElementById("priceMax").value);
+        const ratings = Array.from(
+          document.querySelectorAll('input[name="rating"]:checked'),
+        ).map((el) => parseInt(el.value));
+        const availability = document.querySelector(
+          'input[name="availability"]:checked',
+        );
+        const sort = document.getElementById("sortBy").value;
+
+        document.getElementById("priceMinLabel").textContent = `₹${priceMin}`;
+        document.getElementById("priceMaxLabel").textContent = `₹${priceMax}`;
+
+        filteredProviders = sampleProviders.filter((p) => {
+          if (
+            searchTerm &&
+            !p.name.toLowerCase().includes(searchTerm) &&
+            !p.category.toLowerCase().includes(searchTerm)
+          )
+            return false;
+          if (
+            categories.length > 0 &&
+            !categories.includes(p.category.split(" ")[0].toLowerCase())
+          )
+            return false;
+          if (p.price < priceMin || p.price > priceMax) return false;
+          if (ratings.length > 0 && !ratings.some((r) => p.rating >= r))
+            return false;
+          if (availability && !p.available) return false;
+          return true;
+        });
+
+        // Sort
+        if (sort === "nearest")
+          filteredProviders.sort((a, b) => a.distance - b.distance);
+        else if (sort === "rating")
+          filteredProviders.sort((a, b) => b.rating - a.rating);
+        else if (sort === "price-low")
+          filteredProviders.sort((a, b) => a.price - b.price);
+        else if (sort === "price-high")
+          filteredProviders.sort((a, b) => b.price - a.price);
+
+        updateFilterCount();
+        renderProviders();
+      }
+
+      function updateFilterCount() {
+        const count = document.querySelectorAll("input:checked").length;
+        const badge = document.getElementById("filterCount");
+        if (count > 0) {
+          badge.textContent = count;
+          badge.style.display = "flex";
+        } else {
+          badge.style.display = "none";
+        }
+      }
+
+      function clearFilters() {
+        document
+          .querySelectorAll('input[type="checkbox"]')
+          .forEach((el) => (el.checked = false));
+        document.getElementById("priceMin").value = 0;
+        document.getElementById("priceMax").value = 5000;
+        document.getElementById("searchInput").value = "";
+        updateFilters();
+      }
+
+      function applyFilters() {
+        updateFilters();
+      }
+
+      function bookNow(providerId) {
+        console.log("Booking provider:", providerId);
+        // Open booking modal
+        if (window.parent !== window) {
+          window.parent.postMessage(
+            { type: "openBookingModal", providerId },
+            "*",
+          );
+        }
+      }
+
+      function toggleFiltersModal() {
+        // In mobile, show filters in modal
+        if (window.innerWidth <= 600) {
+          alert("Show filter modal");
+        }
+      }
+
+      // Search live
+      document
+        .getElementById("searchInput")
+        .addEventListener("keyup", updateFilters);
+
+      // Initialize
+      renderProviders();
+    </script>
+  </body>
+</html>

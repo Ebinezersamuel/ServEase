@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ServEase Login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script
+      async
+      defer
+      crossorigin="anonymous"
+      src="https://connect.facebook.net/en_US/sdk.js"
+    ></script>
+    <style>
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        font-family: "DM Sans", sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        overflow: hidden;
+      }
+
+      .left-contain {
+        flex: 2;
+        min-width: 320px;
+        min-height: 100dvh;
+        border-right: 1px solid var(--border);
+        padding: clamp(20px, 3vw, 32px) clamp(16px, 2.4vw, 28px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(
+            900px 520px at -10% -20%,
+            rgba(92, 107, 255, 0.3),
+            transparent 60%
+          ),
+          radial-gradient(
+            700px 420px at 110% 8%,
+            rgba(255, 107, 107, 0.18),
+            transparent 60%
+          ),
+          radial-gradient(
+            600px 360px at 15% 95%,
+            rgba(67, 232, 160, 0.1),
+            transparent 60%
+          ),
+          linear-gradient(180deg, #13182a 0%, #0f121a 50%, #0d1016 100%);
+      }
+
+      .left-contain::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.045) 1px,
+            transparent 1px
+          );
+        background-size: 28px 28px;
+        opacity: 0.55;
+        mask-image: radial-gradient(
+          circle at 30% 20%,
+          #000 20%,
+          transparent 78%
+        );
+        pointer-events: none;
+      }
+
+      .left-contain::after {
+        content: "";
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        right: -140px;
+        bottom: -150px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(92, 107, 255, 0.35),
+          rgba(92, 107, 255, 0.1) 45%,
+          transparent 70%
+        );
+        filter: blur(4px);
+        pointer-events: none;
+      }
+
+      .left-contain h2 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        font-size: clamp(28px, 3.2vw, 36px);
+        color: #fff;
+        line-height: 1;
+        position: relative;
+        z-index: 1;
+      }
+
+      .tagline {
+        margin: 0;
+        font-size: clamp(24px, 2.8vw, 34px);
+        font-weight: 700;
+        line-height: 1.22;
+        color: #fff;
+        position: relative;
+        z-index: 1;
+      }
+
+      .tagline span {
+        color: #8f9bff;
+        font-style: italic;
+      }
+
+      .description {
+        margin: 0;
+        color: #96a0b5;
+        font-size: clamp(12px, 1.2vw, 14px);
+        line-height: 1.7;
+        position: relative;
+        z-index: 1;
+      }
+
+      .right-contain {
+        flex: 3;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background:
+          radial-gradient(
+            1000px 500px at 80% -10%,
+            rgba(92, 107, 255, 0.06),
+            transparent 55%
+          ),
+          var(--bg);
+      }
+
+      .form-card {
+        width: min(100%, 520px);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+        padding: 24px;
+      }
+
+      .tabs {
+        display: flex;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 14px;
+      }
+
+      .tab {
+        flex: 1;
+        min-height: 40px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font: inherit;
+        transition: 0.2s;
+      }
+
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .tab.active {
+        background: rgba(92, 107, 255, 0.14);
+        color: #fff;
+        border: 1px solid rgba(92, 107, 255, 0.3);
+      }
+
+      h1 {
+        margin: 8px 0 6px;
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        color: #fff;
+      }
+
+      p {
+        color: var(--muted);
+      }
+
+      a {
+        color: #8c98ff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .social-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .social-btn {
+        flex: 1;
+        min-height: 42px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface2);
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font: inherit;
+        transition: 0.2s;
+      }
+
+      .social-btn:hover {
+        border-color: var(--accent);
+        background: rgba(92, 107, 255, 0.08);
+      }
+
+      .social-btn .fa-google {
+        color: #ea4335;
+      }
+
+      .social-btn .fa-facebook-f {
+        color: #1877f2;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 10px 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .inputs label {
+        display: block;
+        margin: 10px 0 6px;
+        font-size: 13px;
+        color: #aab2c5;
+        font-weight: 600;
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface2);
+        color: var(--text);
+        padding: 0 12px;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: var(--accent);
+      }
+
+      .bottom-row {
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .submit-btn {
+        width: 100%;
+        min-height: 44px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 4px;
+        transition: 0.2s;
+      }
+
+      .submit-btn:hover {
+        background: #4d5cf0;
+      }
+
+      .terms-text {
+        margin-top: 10px;
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        line-height: 1.6;
+      }
+
+      #reset-msg {
+        display: none;
+        color: #ffb3b3;
+        font-size: 12px;
+      }
+
+      @media (max-width: 980px) {
+        body {
+          flex-direction: column;
+          overflow-y: auto;
+        }
+
+        .left-contain,
+        .right-contain {
+          width: 100%;
+          min-height: auto;
+        }
+
+        .left-contain {
+          border-right: 0;
+          border-bottom: 1px solid var(--border);
+          padding: 20px 16px;
+          gap: 14px;
+        }
+
+        .right-contain {
+          padding: 12px;
+        }
+
+        .social-row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="left-contain">
+      <h2>ServEase</h2>
+
+      <div>
+        <p class="tagline">Work Smarter,<br />hire <span>better.</span></p>
+        <p class="description">
+          Connecting you to trusted service providers, one click at a time.
+        </p>
+      </div>
+
+      <p class="description">48K+ Providers · 120+ Categories</p>
+    </div>
+
+    <div class="right-contain">
+      <div class="form-card">
+        <div class="tabs">
+          <button
+            type="button"
+            class="tab active"
+            onclick="switchTab(this, 'customer')"
+          >
+            I'm a Client
+          </button>
+          <button
+            type="button"
+            class="tab"
+            onclick="switchTab(this, 'provider')"
+          >
+            I'm a Provider
+          </button>
+        </div>
+
+        <h1 id="form-title">Welcome back</h1>
+        <p>
+          New to ServEase? <a href="ServRegister.html">Create an account</a>
+        </p>
+
+        <div class="social-row">
+          <button type="button" class="social-btn" onclick="googleLoginDemo()">
+            <i class="fa-brands fa-google"></i> Google
+          </button>
+
+          <button
+            type="button"
+            class="social-btn"
+            onclick="facebookLoginDemo()"
+          >
+            <i class="fa-brands fa-facebook-f"></i> Facebook
+          </button>
+        </div>
+
+        <div class="divider">
+          <span>or continue with email</span>
+        </div>
+
+        <form class="inputs" id="loginForm">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="text" placeholder="Email" required />
+
+          <label for="loginPassword">Password</label>
+          <input
+            id="loginPassword"
+            type="password"
+            placeholder="password"
+            required
+          />
+
+          <p id="reset-msg">Check your email for reset instructions.</p>
+
+          <div class="bottom-row">
+            <div>
+              <input type="checkbox" id="remember" />
+              <label for="remember">Remember me</label>
+            </div>
+            <a
+              href="#"
+              onclick="
+                forgotPassword();
+                return false;
+              "
+              >Forgot password?</a
+            >
+          </div>
+
+          <button type="submit" class="submit-btn">Sign in</button>
+
+          <p class="terms-text">
+            By signing in you agree to our
+            <a href="#">Terms of Service</a>
+            and
+            <a href="#">Privacy Policy</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      let selectedRole = "customer";
+
+      function switchTab(clickbutton, role) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((tab) => tab.classList.remove("active"));
+        clickbutton.classList.add("active");
+        selectedRole = role === "provider" ? "provider" : "customer";
+      }
+
+      function socialComingSoon(provider) {
+        alert(
+          provider + " sign-in is disabled for now. Please use email/password.",
+        );
+      }
+
+      function forgotPassword() {
+        document.getElementById("reset-msg").style.display = "block";
+      }
+
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("loginEmail").value.trim();
+          const password = document
+            .getElementById("loginPassword")
+            .value.trim();
+
+          try {
+            const response = await fetch(
+              "http://localhost:5000/api/auth/login",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+              },
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              alert(data.message || "Login failed");
+              return;
+            }
+
+            // Save JWT and user info
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            // Redirect based on role
+            if (data.user.role === "provider") {
+              window.location.href = "servease-dashboard.html";
+            } else {
+              window.location.href = "servease-userdashboard.html";
+            }
+          } catch (error) {
+            alert("Server not reachable. Make sure backend is running.");
+            console.error(error);
+          }
+        });
+    </script>
+  </body>
+</html>

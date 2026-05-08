@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Checkout — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .checkout-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 20px;
+      }
+      /* HEADER */
+      .checkout-header {
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .checkout-header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+      }
+      .checkout-header p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      /* STEPS */
+      .checkout-steps {
+        display: flex;
+        gap: 0;
+        margin-bottom: 28px;
+        position: relative;
+      }
+      .checkout-steps::before {
+        content: "";
+        position: absolute;
+        top: 20px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border);
+        z-index: 0;
+      }
+      .step {
+        flex: 1;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--surface2);
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .step.active .step-number {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .step.completed .step-number {
+        background: var(--accent3);
+        border-color: var(--accent3);
+        color: #0d0f14;
+      }
+      .step-label {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+      }
+      .step.active .step-label {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      /* CARD */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .card-title {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      /* FORM FIELDS */
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+      .field label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+      }
+      .field input,
+      .field select {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        padding: 12px 14px;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .field input::placeholder {
+        color: var(--muted);
+      }
+      .field input:focus,
+      .field select:focus {
+        border-color: var(--accent);
+      }
+      .row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+      }
+      /* PAYMENT METHODS */
+      .payment-methods {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .payment-option {
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        background: var(--surface2);
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .payment-option input[type="radio"] {
+        display: none;
+      }
+      .payment-option input:checked ~ .payment-method {
+        border-color: var(--accent);
+        background: rgba(92, 107, 255, 0.06);
+      }
+      .payment-radio {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border);
+        border-radius: 50%;
+      }
+      .payment-option input:checked ~ .payment-radio {
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+      .payment-method {
+        flex: 1;
+        padding-left: 10px;
+        border: 2px solid transparent;
+        border-radius: 10px;
+        transition: all 0.15s;
+      }
+      .payment-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .payment-desc {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      /* SIDEBAR */
+      .order-summary {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        position: sticky;
+        top: 20px;
+      }
+      .summary-title {
+        font-family: "Syne", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 14px;
+      }
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        padding: 8px 0;
+        color: var(--muted);
+        border-bottom: 1px solid var(--border);
+      }
+      .summary-item .val {
+        color: var(--text);
+        font-weight: 500;
+      }
+      .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        margin-top: 8px;
+        border-top: 2px solid var(--border);
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--accent3);
+      }
+      .service-details {
+        background: var(--surface2);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 14px;
+      }
+      .service-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .service-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      /* BUTTONS */
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .btn {
+        flex: 1;
+        padding: 14px 20px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-family: "DM Sans", sans-serif;
+      }
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        color: var(--text);
+        border-color: var(--accent);
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(92, 107, 255, 0.3);
+      }
+      .btn-primary:hover {
+        background: #4d5cf0;
+        transform: translateY(-1px);
+      }
+      .btn-primary:disabled {
+        background: var(--border);
+        cursor: not-allowed;
+      }
+      /* SUCCESS STATE */
+      .success-screen {
+        display: none;
+        text-align: center;
+        padding: 60px 20px;
+      }
+      .success-screen.show {
+        display: block;
+      }
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(67, 232, 160, 0.1);
+        border: 2px solid var(--accent3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 20px;
+      }
+      .success-screen h2 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      .success-screen p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .success-order {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        margin: 20px 0;
+        text-align: left;
+      }
+      .success-order-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        padding: 6px 0;
+        color: var(--muted);
+      }
+      .success-order-row .val {
+        color: var(--text);
+        font-weight: 500;
+      }
+      /* SECURITY */
+      .security-info {
+        background: rgba(67, 232, 160, 0.06);
+        border: 1px solid rgba(67, 232, 160, 0.2);
+        border-radius: 12px;
+        padding: 12px 14px;
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .security-info p {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .checkout-grid {
+          grid-template-columns: 1fr;
+        }
+        .order-summary {
+          position: static;
+        }
+        .row-2,
+        .row-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 99px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="checkout-header">
+        <h1>Secure Checkout</h1>
+        <p>Complete your booking securely</p>
+      </div>
+
+      <!-- CHECKOUT STEPS -->
+      <div class="checkout-steps">
+        <div class="step completed">
+          <div class="step-number">✓</div>
+          <div class="step-label">Service Details</div>
+        </div>
+        <div class="step active">
+          <div class="step-number">2</div>
+          <div class="step-label">Payment</div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-label">Confirmation</div>
+        </div>
+      </div>
+
+      <div class="checkout-grid">
+        <!-- MAIN CONTENT -->
+        <div>
+          <!-- PAYMENT METHODS -->
+          <div class="card">
+            <div class="card-title">Payment Method</div>
+            <div class="payment-methods">
+              <!-- Credit/Debit Card -->
+              <label class="payment-option" id="cardOption">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="card"
+                  checked
+                  onchange="updatePaymentMethod('card')"
+                />
+                <div class="payment-radio"></div>
+                <div class="payment-method">
+                  <div class="payment-name">💳 Credit / Debit Card</div>
+                  <div class="payment-desc">
+                    Visa, Mastercard, American Express
+                  </div>
+                </div>
+              </label>
+
+              <!-- UPI -->
+              <label class="payment-option">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="upi"
+                  onchange="updatePaymentMethod('upi')"
+                />
+                <div class="payment-radio"></div>
+                <div class="payment-method">
+                  <div class="payment-name">📱 UPI</div>
+                  <div class="payment-desc">Google Pay, PhonePe, Paytm</div>
+                </div>
+              </label>
+
+              <!-- Net Banking -->
+              <label class="payment-option">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="netbanking"
+                  onchange="updatePaymentMethod('netbanking')"
+                />
+                <div class="payment-radio"></div>
+                <div class="payment-method">
+                  <div class="payment-name">🏦 Net Banking</div>
+                  <div class="payment-desc">All major banks supported</div>
+                </div>
+              </label>
+
+              <!-- Wallet -->
+              <label class="payment-option">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="wallet"
+                  onchange="updatePaymentMethod('wallet')"
+                />
+                <div class="payment-radio"></div>
+                <div class="payment-method">
+                  <div class="payment-name">💰 ServEase Wallet</div>
+                  <div class="payment-desc">Use saved balance</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- CARD DETAILS -->
+          <div class="card" id="cardDetails">
+            <div class="card-title">Card Information</div>
+            <div class="field">
+              <label>Cardholder Name</label>
+              <input type="text" placeholder="John Doe" required />
+            </div>
+            <div class="field">
+              <label>Card Number</label>
+              <input
+                type="text"
+                placeholder="1234 5678 9012 3456"
+                maxlength="19"
+                required
+              />
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label>Expiry Date</label>
+                <input type="text" placeholder="MM/YY" maxlength="5" required />
+              </div>
+              <div class="field">
+                <label>CVV</label>
+                <input type="text" placeholder="123" maxlength="4" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- BILLING ADDRESS -->
+          <div class="card">
+            <div class="card-title">Billing Address</div>
+            <div class="field">
+              <label>Full Address</label>
+              <input type="text" placeholder="123 Main Street..." required />
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label>City</label>
+                <input type="text" placeholder="Mumbai" required />
+              </div>
+              <div class="field">
+                <label>ZIP Code</label>
+                <input type="text" placeholder="400001" required />
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label>State</label>
+                <input type="text" placeholder="Maharashtra" required />
+              </div>
+              <div class="field">
+                <label>Country</label>
+                <input type="text" placeholder="India" value="India" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- SECURITY & TERMS -->
+          <div class="security-info">
+            <span style="font-size: 20px">🔒</span>
+            <p>
+              Your payment information is encrypted and secure. We use
+              industry-leading security standards.
+              <a href="#" style="color: var(--accent); text-decoration: none"
+                >Learn more</a
+              >
+            </p>
+          </div>
+
+          <label
+            class="field"
+            style="margin-top: 20px; flex-direction: row; align-items: center"
+          >
+            <input
+              type="checkbox"
+              id="termsCheck"
+              style="width: 18px; height: 18px; cursor: pointer"
+              required
+            />
+            <span
+              style="margin-left: 10px; font-size: 13px; color: var(--muted)"
+              >I agree to the
+              <a href="#" style="color: var(--accent); text-decoration: none"
+                >Terms & Conditions</a
+              >
+              and
+              <a href="#" style="color: var(--accent); text-decoration: none"
+                >Refund Policy</a
+              ></span
+            >
+          </label>
+
+          <!-- BUTTONS -->
+          <div class="button-group">
+            <button class="btn btn-secondary" onclick="goBack()">Back</button>
+            <button
+              class="btn btn-primary"
+              onclick="processPayment()"
+              id="payBtn"
+            >
+              Pay ₹619.50
+            </button>
+          </div>
+
+          <!-- SUCCESS SCREEN -->
+          <div class="success-screen" id="successScreen">
+            <div class="success-icon">✓</div>
+            <h2>Payment Successful! 🎉</h2>
+            <p>
+              Your booking has been confirmed. Check your email for details.
+            </p>
+            <div class="success-order">
+              <div class="success-order-row">
+                <span>Booking ID</span>
+                <span class="val" id="bookingId">#SRV-2024-001234</span>
+              </div>
+              <div class="success-order-row">
+                <span>Service</span>
+                <span class="val">AC Maintenance</span>
+              </div>
+              <div class="success-order-row">
+                <span>Provider</span>
+                <span class="val">John Doe</span>
+              </div>
+              <div class="success-order-row">
+                <span>Scheduled</span>
+                <span class="val" id="scheduledDate"
+                  >May 15, 2024 • 10:00 AM</span
+                >
+              </div>
+              <div
+                class="success-order-row"
+                style="
+                  border-top: 1px solid var(--border);
+                  padding-top: 10px;
+                  margin-top: 10px;
+                "
+              >
+                <span>Amount Paid</span>
+                <span
+                  class="val"
+                  style="color: var(--accent3); font-weight: 700"
+                  >₹619.50</span
+                >
+              </div>
+            </div>
+            <button
+              class="btn btn-primary"
+              onclick="goToDashboard()"
+              style="margin-top: 0"
+            >
+              View Order
+            </button>
+          </div>
+        </div>
+
+        <!-- SIDEBAR: ORDER SUMMARY -->
+        <div>
+          <div class="order-summary">
+            <div class="summary-title">Order Summary</div>
+
+            <div class="service-details">
+              <div class="service-name">❄️ AC Maintenance</div>
+              <div class="service-meta">By John Doe</div>
+              <div class="service-meta">📅 May 15, 2024</div>
+              <div class="service-meta">⏰ 10:00 AM - 11:00 AM</div>
+            </div>
+
+            <div class="summary-item">
+              <span>Service Price</span>
+              <span class="val">₹500</span>
+            </div>
+            <div class="summary-item">
+              <span>Platform Fee</span>
+              <span class="val">₹25</span>
+            </div>
+            <div class="summary-item">
+              <span>GST (18%)</span>
+              <span class="val">₹94.50</span>
+            </div>
+
+            <div class="summary-total">
+              <span>Total</span>
+              <span>₹619.50</span>
+            </div>
+
+            <div
+              style="
+                background: rgba(92, 107, 255, 0.06);
+                border-radius: 10px;
+                padding: 10px;
+                margin-top: 14px;
+              "
+            >
+              <p style="font-size: 12px; color: var(--muted); line-height: 1.6">
+                ✓ Free cancellation up to 2 hours before booking<br />
+                ✓ Instant confirmation<br />
+                ✓ 24/7 customer support
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function updatePaymentMethod(method) {
+        const cardDetails = document.getElementById("cardDetails");
+        if (method === "card") {
+          cardDetails.style.display = "block";
+        } else {
+          cardDetails.style.display = "none";
+        }
+      }
+
+      function processPayment() {
+        const terms = document.getElementById("termsCheck").checked;
+        if (!terms) {
+          alert("Please accept the terms and conditions");
+          return;
+        }
+
+        document.getElementById("payBtn").disabled = true;
+        document.getElementById("payBtn").textContent = "Processing...";
+
+        setTimeout(() => {
+          document.querySelector(".checkout-grid").style.display = "none";
+          document.getElementById("successScreen").classList.add("show");
+          document.getElementById("bookingId").textContent =
+            "#SRV-2024-" + Math.floor(Math.random() * 1000000);
+        }, 2000);
+      }
+
+      function goBack() {
+        history.back();
+      }
+
+      function goToDashboard() {
+        window.location.href = "servease-userdashboard.html";
+      }
+    </script>
+  </body>
+</html>

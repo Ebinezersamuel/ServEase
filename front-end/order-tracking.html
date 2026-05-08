@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Tracking — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        padding-bottom: 20px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid var(--border);
+      }
+      .header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+      }
+      .header p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 20px;
+      }
+      /* CARD */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .card-title {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      /* STATUS OVERVIEW */
+      .status-overview {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px;
+        background: linear-gradient(
+          120deg,
+          rgba(92, 107, 255, 0.1),
+          rgba(67, 232, 160, 0.08)
+        );
+        border: 1px solid rgba(92, 107, 255, 0.2);
+        border-radius: 14px;
+      }
+      .status-badge {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(92, 107, 255, 0.2);
+        border: 2px solid var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+      }
+      .status-text h3 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .status-text p {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      /* TIMELINE */
+      .timeline {
+        position: relative;
+        padding-left: 30px;
+      }
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--border);
+      }
+      .timeline-item {
+        position: relative;
+        margin-bottom: 24px;
+        animation: slideIn 0.4s ease-out;
+        animation-fill-mode: both;
+      }
+      .timeline-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .timeline-item:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .timeline-item:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .timeline-item:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .timeline-dot {
+        position: absolute;
+        left: -32px;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--surface2);
+        border: 3px solid var(--border);
+        transition: all 0.3s;
+      }
+      .timeline-item.completed .timeline-dot {
+        background: var(--accent3);
+        border-color: var(--accent3);
+      }
+      .timeline-item.active .timeline-dot {
+        background: var(--accent);
+        border-color: var(--accent);
+        width: 24px;
+        height: 24px;
+        left: -35px;
+        box-shadow: 0 0 12px rgba(92, 107, 255, 0.5);
+      }
+      .timeline-content {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+      }
+      .timeline-time {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+      .timeline-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .timeline-desc {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      /* PROVIDER INFO */
+      .provider-card {
+        display: flex;
+        gap: 14px;
+        padding: 14px;
+        background: var(--surface2);
+        border-radius: 12px;
+        margin-bottom: 14px;
+      }
+      .provider-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+      .provider-info {
+        flex: 1;
+      }
+      .provider-name {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .provider-rating {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .provider-rating .star {
+        color: #ffc27a;
+      }
+      .provider-btn {
+        padding: 8px 16px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .provider-btn:hover {
+        background: #4d5cf0;
+      }
+      /* ACTIONS */
+      .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .btn {
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-family: "DM Sans", sans-serif;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(92, 107, 255, 0.3);
+      }
+      .btn-primary:hover {
+        background: #4d5cf0;
+        transform: translateY(-1px);
+      }
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        border-color: var(--accent);
+      }
+      .btn-danger {
+        background: rgba(255, 107, 107, 0.12);
+        color: var(--accent2);
+      }
+      .btn-danger:hover {
+        background: rgba(255, 107, 107, 0.2);
+      }
+      /* SUMMARY */
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .summary-row:last-child {
+        border-bottom: none;
+      }
+      .summary-row .val {
+        color: var(--text);
+        font-weight: 500;
+      }
+      .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-top: 2px solid var(--border);
+        margin-top: 10px;
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--accent3);
+      }
+      /* MAP PLACEHOLDER */
+      .map-placeholder {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(
+          135deg,
+          rgba(92, 107, 255, 0.1),
+          rgba(67, 232, 160, 0.08)
+        );
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 14px;
+      }
+      /* NOTES */
+      .notes-section {
+        background: var(--surface2);
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 14px;
+      }
+      .notes-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .notes-text {
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.6;
+      }
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 99px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Order Tracking</h1>
+        <p id="bookingSubtitle">Booking ID: #SRV-2024-001234</p>
+      </div>
+
+      <div class="grid">
+        <!-- MAIN CONTENT -->
+        <div>
+          <!-- STATUS OVERVIEW -->
+          <div class="card">
+            <div class="status-overview">
+              <div class="status-badge">⏳</div>
+              <div class="status-text">
+                <h3 id="statusTitle">Provider Assigned</h3>
+                <p id="statusDesc">Your service provider is on the way</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- TIMELINE -->
+          <div class="card">
+            <div class="card-title">Service Timeline</div>
+            <div class="timeline">
+              <div class="timeline-item completed">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-time">May 15, 2024 • 09:30 AM</div>
+                  <div class="timeline-title">Booking Confirmed</div>
+                  <div class="timeline-desc">
+                    Payment received and booking confirmed
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-item completed">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-time">May 15, 2024 • 09:35 AM</div>
+                  <div class="timeline-title">Provider Assigned</div>
+                  <div class="timeline-desc">
+                    John Doe has accepted your booking
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-item active">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-time">Estimated 10:00 AM - 11:00 AM</div>
+                  <div class="timeline-title">Service in Progress</div>
+                  <div class="timeline-desc">
+                    Provider is on the way (2 km away)
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-time">Pending</div>
+                  <div class="timeline-title">Service Completed</div>
+                  <div class="timeline-desc">Service will be completed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LOCATION MAP -->
+          <div class="card">
+            <div class="card-title">Live Location</div>
+            <div class="map-placeholder">
+              🗺️ Live tracking map would load here
+            </div>
+            <div
+              style="
+                background: var(--surface2);
+                padding: 10px;
+                border-radius: 10px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 13px;
+                  margin-bottom: 6px;
+                "
+              >
+                <span style="color: var(--muted)">Distance</span>
+                <span style="color: var(--text); font-weight: 600"
+                  >2.0 km away</span
+                >
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 13px;
+                "
+              >
+                <span style="color: var(--muted)">Estimated Arrival</span>
+                <span style="color: var(--text); font-weight: 600"
+                  >10 minutes</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- SERVICE DETAILS -->
+          <div class="card">
+            <div class="card-title">Service Details</div>
+            <div class="summary-row">
+              <span>Service</span>
+              <span class="val">AC Maintenance</span>
+            </div>
+            <div class="summary-row">
+              <span>Scheduled Time</span>
+              <span class="val">May 15, 2024 • 10:00 AM</span>
+            </div>
+            <div class="summary-row">
+              <span>Location</span>
+              <span class="val">Mumbai, MH</span>
+            </div>
+            <div class="summary-row">
+              <span>Special Notes</span>
+              <span class="val">Please bring tools for filter change</span>
+            </div>
+            <div class="summary-total">
+              <span>Total Amount</span>
+              <span>₹619.50</span>
+            </div>
+          </div>
+
+          <!-- PROVIDER DETAILS -->
+          <div class="card">
+            <div class="card-title">Service Provider</div>
+            <div class="provider-card">
+              <div class="provider-avatar">👨‍🔧</div>
+              <div class="provider-info">
+                <div class="provider-name">John Doe</div>
+                <div class="provider-rating">
+                  <span class="star">★★★★★</span>
+                  <span style="margin-left: 4px">(4.8) 245 reviews</span>
+                </div>
+                <div style="margin-top: 6px; display: flex; gap: 6px">
+                  <button class="provider-btn" onclick="contactProvider()">
+                    📞 Call
+                  </button>
+                  <button class="provider-btn" onclick="messageProvider()">
+                    💬 Chat
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="notes-section">
+              <div class="notes-title">📝 PROVIDER MESSAGE</div>
+              <div class="notes-text">
+                "On my way! See you in 10 minutes. I'll do a quick inspection
+                before starting work."
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div>
+          <!-- QUICK INFO -->
+          <div class="card">
+            <div class="card-title">Order Status</div>
+            <div
+              style="
+                padding: 12px;
+                background: rgba(92, 107, 255, 0.06);
+                border-radius: 10px;
+                border-left: 4px solid var(--accent);
+                margin-bottom: 14px;
+              "
+            >
+              <p
+                style="
+                  font-size: 12px;
+                  color: var(--text);
+                  font-weight: 600;
+                  margin-bottom: 4px;
+                "
+              >
+                IN PROGRESS
+              </p>
+              <p style="font-size: 12px; color: var(--muted); line-height: 1.5">
+                Your provider is 2 km away and will arrive in ~10 minutes.
+              </p>
+            </div>
+
+            <div class="summary-row">
+              <span>Booking ID</span>
+              <span class="val" style="font-size: 12px">SRV-2024-001234</span>
+            </div>
+            <div class="summary-row">
+              <span>Payment Status</span>
+              <span class="val" style="color: var(--accent3)">✓ Paid</span>
+            </div>
+            <div class="summary-row">
+              <span>Service Type</span>
+              <span class="val">AC Maintenance</span>
+            </div>
+            <div class="summary-row">
+              <span>Scheduled For</span>
+              <span class="val">May 15, 10:00 AM</span>
+            </div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="card">
+            <div class="card-title">Quick Actions</div>
+            <div class="action-buttons">
+              <button class="btn btn-primary" onclick="contactProvider()">
+                Contact Provider
+              </button>
+              <button class="btn btn-secondary" onclick="viewDetails()">
+                View Details
+              </button>
+              <button class="btn btn-secondary" onclick="trackLive()">
+                Live Tracking
+              </button>
+              <button class="btn btn-danger" onclick="cancelOrder()">
+                Cancel Booking
+              </button>
+            </div>
+          </div>
+
+          <!-- HELP & SUPPORT -->
+          <div class="card">
+            <div class="card-title">Need Help?</div>
+            <p
+              style="
+                font-size: 12px;
+                color: var(--muted);
+                margin-bottom: 10px;
+                line-height: 1.6;
+              "
+            >
+              If you have any questions or concerns about your booking, our
+              support team is here to help.
+            </p>
+            <button
+              class="btn btn-secondary"
+              style="width: 100%"
+              onclick="openSupport()"
+            >
+              Contact Support
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sample order data
+      const orderData = {
+        bookingId: "SRV-2024-001234",
+        status: "in-progress",
+        service: "AC Maintenance",
+        provider: {
+          name: "John Doe",
+          avatar: "👨‍🔧",
+          rating: 4.8,
+          reviews: 245,
+        },
+        scheduledTime: "May 15, 2024 • 10:00 AM",
+        amount: 619.5,
+        distance: 2.0,
+        eta: "10 minutes",
+      };
+
+      function initPage() {
+        document.getElementById("bookingSubtitle").textContent =
+          `Booking ID: #${orderData.bookingId}`;
+        // Update status based on orderData.status
+        if (orderData.status === "in-progress") {
+          document.getElementById("statusTitle").textContent =
+            "Provider Assigned";
+          document.getElementById("statusDesc").textContent =
+            "Your service provider is on the way";
+        }
+      }
+
+      function contactProvider() {
+        alert(`Calling ${orderData.provider.name}...\n+91 98765 43210`);
+      }
+
+      function messageProvider() {
+        alert(`Opening chat with ${orderData.provider.name}...`);
+      }
+
+      function cancelOrder() {
+        if (
+          confirm(
+            "Are you sure you want to cancel this booking? Cancellation charges may apply.",
+          )
+        ) {
+          alert(
+            "Booking cancelled. Refund will be processed in 3-5 business days.",
+          );
+        }
+      }
+
+      function viewDetails() {
+        alert(
+          `Service Details:\n\nService: ${orderData.service}\nProvider: ${orderData.provider.name}\nTime: ${orderData.scheduledTime}\nAmount: ₹${orderData.amount}`,
+        );
+      }
+
+      function trackLive() {
+        alert("Opening live tracking...");
+      }
+
+      function openSupport() {
+        alert("Opening support chat...");
+      }
+
+      window.addEventListener("load", initPage);
+    </script>
+  </body>
+</html>

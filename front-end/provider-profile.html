@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Provider Profile — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      /* HEADER */
+      .profile-header {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 28px;
+        margin-bottom: 28px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px;
+        align-items: start;
+      }
+      .profile-avatar {
+        width: 200px;
+        height: 200px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 80px;
+      }
+      .profile-info h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 8px;
+      }
+      .profile-category {
+        font-size: 15px;
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      .profile-rating {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+        font-size: 13px;
+      }
+      .stars {
+        color: #ffc27a;
+        font-size: 16px;
+      }
+      .profile-meta {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .meta-item {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .profile-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+      }
+      .btn {
+        padding: 12px 24px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-family: "DM Sans", sans-serif;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(92, 107, 255, 0.3);
+      }
+      .btn-primary:hover {
+        background: #4d5cf0;
+        transform: translateY(-1px);
+      }
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        border-color: var(--accent);
+      }
+      /* TABS */
+      .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 28px;
+      }
+      .tab-btn {
+        padding: 16px 20px;
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.15s;
+        border-bottom: 3px solid transparent;
+      }
+      .tab-btn:hover {
+        color: var(--text);
+      }
+      .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      /* ABOUT SECTION */
+      .about-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .section-title {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      .about-text {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .skills-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .skill-tag {
+        background: rgba(92, 107, 255, 0.12);
+        color: #a0aaff;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      /* PRICING */
+      .pricing-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+      }
+      .pricing-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        text-align: center;
+      }
+      .pricing-service {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .pricing-amount {
+        font-family: "Syne", sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--accent);
+      }
+      /* REVIEWS */
+      .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .review-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .review-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .review-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7785ff, #ff7f7f);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+      .review-name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .review-rating {
+        color: #ffc27a;
+        font-size: 12px;
+      }
+      .review-date {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .review-text {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      /* GALLERY */
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+      }
+      .gallery-item {
+        aspect-ratio: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .gallery-item:hover {
+        transform: scale(1.05);
+      }
+      /* MODAL */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal.active {
+        display: flex;
+      }
+      .modal-content {
+        background: var(--surface);
+        border-radius: 14px;
+        overflow: hidden;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .profile-header {
+          grid-template-columns: 1fr;
+        }
+        .profile-avatar {
+          width: 100%;
+          height: auto;
+          aspect-ratio: 1;
+        }
+        .pricing-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 99px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- PROFILE HEADER -->
+      <div class="profile-header">
+        <div class="profile-avatar" id="avatar">👨‍🔧</div>
+        <div class="profile-info">
+          <div class="profile-category" id="category">AC Technician</div>
+          <h1 id="name">John Doe</h1>
+          <div class="profile-rating">
+            <span class="stars" id="stars">★★★★★</span>
+            <span id="ratingText">4.8 out of 5</span>
+            <span id="reviewCount">(245 reviews)</span>
+          </div>
+          <div class="profile-meta">
+            <div class="meta-item">
+              📍 <span id="distance">2.5 km away</span>
+            </div>
+            <div class="meta-item">
+              💼 <span id="experience">8 years experience</span>
+            </div>
+            <div class="meta-item">✓ <span id="status">Verified</span></div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn btn-primary" onclick="bookService()">
+              Book Now
+            </button>
+            <button class="btn btn-secondary" onclick="contactProvider()">
+              Contact
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('about')">
+          About
+        </button>
+        <button class="tab-btn" onclick="switchTab('pricing')">Pricing</button>
+        <button class="tab-btn" onclick="switchTab('gallery')">Gallery</button>
+        <button class="tab-btn" onclick="switchTab('reviews')">Reviews</button>
+      </div>
+
+      <!-- ABOUT TAB -->
+      <div id="about" class="tab-content active">
+        <div class="about-section">
+          <div class="section-title">Bio</div>
+          <p class="about-text" id="bio">
+            Experienced AC technician with 8 years in the field. Specializes in
+            installation, maintenance, and repair of all major AC brands. Quick,
+            reliable service with 24/7 availability.
+          </p>
+        </div>
+
+        <div class="about-section">
+          <div class="section-title">Services</div>
+          <ul style="list-style: none; font-size: 14px; color: var(--muted)">
+            <li style="padding: 6px 0">• Installation & Setup</li>
+            <li style="padding: 6px 0">• Maintenance & Cleaning</li>
+            <li style="padding: 6px 0">• Repair & Troubleshooting</li>
+            <li style="padding: 6px 0">• Gas Refill</li>
+            <li style="padding: 6px 0">• PCB Repair</li>
+          </ul>
+        </div>
+
+        <div class="about-section">
+          <div class="section-title">Skills</div>
+          <div class="skills-grid">
+            <div class="skill-tag">Installation</div>
+            <div class="skill-tag">Maintenance</div>
+            <div class="skill-tag">Repair</div>
+            <div class="skill-tag">Gas Refill</div>
+            <div class="skill-tag">Diagnostics</div>
+            <div class="skill-tag">All Major Brands</div>
+          </div>
+        </div>
+
+        <div class="about-section">
+          <div class="section-title">Languages</div>
+          <p class="about-text">English, Hindi, Marathi</p>
+        </div>
+      </div>
+
+      <!-- PRICING TAB -->
+      <div id="pricing" class="tab-content">
+        <div class="pricing-section">
+          <div class="section-title">Service Rates</div>
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <div class="pricing-service">Consultation</div>
+              <div class="pricing-amount">₹200</div>
+              <div
+                style="font-size: 11px; color: var(--muted); margin-top: 6px"
+              >
+                per visit
+              </div>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-service">Installation</div>
+              <div class="pricing-amount">₹3,500</div>
+              <div
+                style="font-size: 11px; color: var(--muted); margin-top: 6px"
+              >
+                per unit
+              </div>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-service">Maintenance</div>
+              <div class="pricing-amount">₹500</div>
+              <div
+                style="font-size: 11px; color: var(--muted); margin-top: 6px"
+              >
+                per service
+              </div>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-service">Repair</div>
+              <div class="pricing-amount">₹800+</div>
+              <div
+                style="font-size: 11px; color: var(--muted); margin-top: 6px"
+              >
+                as per work
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="about-section"
+          style="
+            background: rgba(67, 232, 160, 0.06);
+            border: 1px solid rgba(67, 232, 160, 0.2);
+          "
+        >
+          <p style="font-size: 13px; color: var(--muted); line-height: 1.7">
+            <strong style="color: var(--accent3)">💡 Note:</strong> Rates may
+            vary based on the type of service, location, and complexity. Contact
+            for custom quotes.
+          </p>
+        </div>
+      </div>
+
+      <!-- GALLERY TAB -->
+      <div id="gallery" class="tab-content">
+        <div class="about-section">
+          <div class="section-title">Work Portfolio</div>
+          <div class="gallery-grid">
+            <div class="gallery-item">🏠</div>
+            <div class="gallery-item">🔧</div>
+            <div class="gallery-item">❄️</div>
+            <div class="gallery-item">💼</div>
+            <div class="gallery-item">✨</div>
+            <div class="gallery-item">🛠️</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEWS TAB -->
+      <div id="reviews" class="tab-content">
+        <div class="reviews-list">
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-avatar">👤</div>
+              <div style="flex: 1">
+                <div class="review-name">Priya Sharma</div>
+                <div class="review-date">5 days ago</div>
+              </div>
+              <div class="review-rating">★★★★★</div>
+            </div>
+            <p class="review-text">
+              Excellent service! Fixed my AC unit quickly and professionally.
+              Very courteous and hygienic. Highly recommended.
+            </p>
+          </div>
+
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-avatar">👨</div>
+              <div style="flex: 1">
+                <div class="review-name">Rajesh Kumar</div>
+                <div class="review-date">2 weeks ago</div>
+              </div>
+              <div class="review-rating">★★★★☆</div>
+            </div>
+            <p class="review-text">
+              Good work, though a bit expensive. Will call him again for
+              maintenance.
+            </p>
+          </div>
+
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-avatar">👩</div>
+              <div style="flex: 1">
+                <div class="review-name">Anjali Patel</div>
+                <div class="review-date">1 month ago</div>
+              </div>
+              <div class="review-rating">★★★★★</div>
+            </div>
+            <p class="review-text">
+              Perfect! He installed my new AC system perfectly. Gave good tips
+              on maintenance too. Very professional.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const providerData = {
+        id: 1,
+        name: "John Doe",
+        avatar: "👨‍🔧",
+        category: "AC Technician",
+        rating: 4.8,
+        reviews: 245,
+        distance: 2.5,
+        experience: 8,
+        bio: "Experienced AC technician with 8 years in the field. Specializes in installation, maintenance, and repair of all major AC brands. Quick, reliable service with 24/7 availability.",
+      };
+
+      function initProfile() {
+        document.getElementById("avatar").textContent = providerData.avatar;
+        document.getElementById("name").textContent = providerData.name;
+        document.getElementById("category").textContent = providerData.category;
+        document.getElementById("stars").textContent =
+          "★".repeat(Math.floor(providerData.rating)) +
+          "☆".repeat(5 - Math.floor(providerData.rating));
+        document.getElementById("ratingText").textContent =
+          `${providerData.rating} out of 5`;
+        document.getElementById("reviewCount").textContent =
+          `(${providerData.reviews} reviews)`;
+        document.getElementById("distance").textContent =
+          `${providerData.distance} km away`;
+        document.getElementById("experience").textContent =
+          `${providerData.experience} years experience`;
+        document.getElementById("bio").textContent = providerData.bio;
+      }
+
+      function switchTab(tabName) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById(tabName).classList.add("active");
+        event.target.classList.add("active");
+      }
+
+      function bookService() {
+        console.log("Booking service...");
+        if (window.parent !== window) {
+          window.parent.postMessage(
+            { type: "openBookingModal", providerId: providerData.id },
+            "*",
+          );
+        }
+      }
+
+      function contactProvider() {
+        alert(
+          `Contact details:\nPhone: +91 98765 43210\nEmail: ${providerData.name.toLowerCase().replace(" ", ".")}@servease.com`,
+        );
+      }
+
+      window.addEventListener("load", initProfile);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ServEase — Marketplace</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+        --sidebar-w: 280px;
+        --radius: 14px;
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        overflow: hidden;
+      }
+
+      /* ═══ LAYOUT ═══ */
+      .shell {
+        display: flex;
+        height: 100vh;
+      }
+
+      /* ═══ SIDEBAR ═══ */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        z-index: 100;
+        position: relative;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .brand {
+        padding: 24px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--accent), #7785ff);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 4px 16px rgba(92, 107, 255, 0.3);
+        flex-shrink: 0;
+      }
+
+      .brand-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .brand-name {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 20px;
+        letter-spacing: -0.3px;
+        color: var(--text);
+      }
+
+      .brand-name span {
+        color: var(--accent);
+      }
+
+      .brand-tag {
+        font-size: 10px;
+        color: var(--muted);
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+
+      /* ─ Nav ─ */
+      .nav {
+        flex: 1;
+        padding: 16px 8px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .nav-label {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        padding: 12px 14px 8px;
+        font-weight: 600;
+        margin-top: 8px;
+      }
+
+      .nav-label:first-child {
+        margin-top: 0;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        border: 1px solid transparent;
+        position: relative;
+      }
+
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+        border-color: rgba(92, 107, 255, 0.2);
+      }
+
+      .nav-item.active {
+        background: rgba(92, 107, 255, 0.15);
+        color: var(--accent);
+        border-color: rgba(92, 107, 255, 0.3);
+        font-weight: 600;
+      }
+
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--accent);
+        border-radius: 0 3px 3px 0;
+      }
+
+      .nav-badge {
+        margin-left: auto;
+        background: var(--accent2);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+
+      /* ─ User Card ─ */
+      .user-card {
+        margin: 12px 8px;
+        padding: 16px;
+        background: linear-gradient(
+          135deg,
+          rgba(92, 107, 255, 0.1),
+          rgba(67, 232, 160, 0.05)
+        );
+        border: 1px solid rgba(92, 107, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        color: #fff;
+      }
+
+      .user-info {
+        flex: 1;
+        width: 100%;
+      }
+
+      .user-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .logout-btn {
+        width: 100%;
+        padding: 8px 12px;
+        background: rgba(255, 107, 107, 0.12);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: var(--accent2);
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .logout-btn:hover {
+        background: rgba(255, 107, 107, 0.2);
+        border-color: rgba(255, 107, 107, 0.5);
+      }
+
+      /* ═══ MAIN AREA ═══ */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* ─ Topbar ─ */
+      .topbar {
+        height: 68px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 16px;
+        background: rgba(13, 15, 20, 0.7);
+        backdrop-filter: blur(10px);
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-toggle {
+        display: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        cursor: pointer;
+        font-size: 18px;
+        align-items: center;
+        justify-content: center;
+        transition: 0.15s;
+      }
+
+      .menu-toggle:hover {
+        background: var(--surface2);
+        border-color: var(--accent);
+      }
+
+      .page-title {
+        font-family: "Syne", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        flex: 1;
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .status-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        background: rgba(67, 232, 160, 0.1);
+        border: 1px solid rgba(67, 232, 160, 0.3);
+        border-radius: 20px;
+        font-size: 13px;
+        color: var(--accent3);
+        font-weight: 600;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--accent3);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.15s;
+        position: relative;
+      }
+
+      .icon-btn:hover {
+        background: var(--surface2);
+        color: var(--text);
+        border-color: var(--accent);
+      }
+
+      .notif-badge {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 8px;
+        height: 8px;
+        background: var(--accent2);
+        border: 2px solid var(--surface);
+        border-radius: 50%;
+      }
+
+      /* ═══ CONTENT ═══ */
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+
+      .content-frame {
+        display: none;
+        flex-direction: column;
+        gap: 20px;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .content-frame.active {
+        display: flex;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ─ Dashboard View ─ */
+      .dashboard-frame.active {
+        display: flex;
+      }
+
+      .hero-section {
+        background: linear-gradient(
+          135deg,
+          rgba(92, 107, 255, 0.15),
+          rgba(67, 232, 160, 0.08)
+        );
+        border: 1px solid rgba(92, 107, 255, 0.2);
+        border-radius: 18px;
+        padding: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(
+          circle,
+          rgba(92, 107, 255, 0.1),
+          transparent 70%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+      }
+
+      .hero-content h2 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+      }
+
+      .hero-content p {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+
+      .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        box-shadow: 0 4px 16px rgba(92, 107, 255, 0.3);
+      }
+
+      .hero-cta:hover {
+        background: #4d5cf0;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(92, 107, 255, 0.4);
+      }
+
+      .hero-image {
+        font-size: 80px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ─ Stats Grid ─ */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        transition: all 0.15s;
+      }
+
+      .stat-card:hover {
+        border-color: rgba(92, 107, 255, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(92, 107, 255, 0.1);
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+      }
+
+      .stat-icon {
+        font-size: 24px;
+        opacity: 0.8;
+      }
+
+      .stat-value {
+        font-family: "Syne", sans-serif;
+        font-size: 32px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .stat-change {
+        font-size: 12px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .stat-change.up {
+        color: var(--accent3);
+      }
+      .stat-change.down {
+        color: var(--accent2);
+      }
+
+      /* ─ Services Section ─ */
+      .services-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 600px;
+      }
+
+      .services-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .services-title {
+        font-family: "Syne", sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+      }
+
+      .services-tools {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        flex: 1;
+        justify-content: flex-end;
+      }
+
+      .search-box {
+        position: relative;
+        width: 220px;
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-size: 16px;
+        pointer-events: none;
+      }
+
+      .search-input {
+        width: 100%;
+        height: 38px;
+        padding: 0 12px 0 38px;
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        color: var(--text);
+        border-radius: 8px;
+        font-size: 13px;
+        outline: none;
+        transition: all 0.15s;
+      }
+
+      .search-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(92, 107, 255, 0.1);
+      }
+
+      .filter-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-size: 12px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .filter-tag:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(92, 107, 255, 0.08);
+      }
+
+      .services-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 24px;
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      .service-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transition: all 0.18s;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .service-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--accent3));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+        transform-origin: left;
+      }
+
+      .service-card:hover {
+        border-color: var(--accent);
+        background: rgba(92, 107, 255, 0.08);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(92, 107, 255, 0.15);
+      }
+
+      .service-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .service-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .service-info h3 {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+        line-height: 1.3;
+      }
+
+      .service-category {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .service-badge {
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid transparent;
+        font-weight: 600;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .badge-popular {
+        background: rgba(92, 107, 255, 0.15);
+        border-color: rgba(92, 107, 255, 0.3);
+        color: #a0aaff;
+      }
+
+      .badge-new {
+        background: rgba(255, 184, 107, 0.15);
+        border-color: rgba(255, 184, 107, 0.3);
+        color: #ffc27a;
+      }
+
+      .badge-available {
+        background: rgba(67, 232, 160, 0.15);
+        border-color: rgba(67, 232, 160, 0.3);
+        color: #6bffb7;
+      }
+
+      .service-action {
+        width: 100%;
+        padding: 10px 12px;
+        background: linear-gradient(
+          135deg,
+          rgba(92, 107, 255, 0.15),
+          rgba(92, 107, 255, 0.08)
+        );
+        border: 1px solid rgba(92, 107, 255, 0.3);
+        color: var(--accent);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .service-action:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(92, 107, 255, 0.25),
+          rgba(92, 107, 255, 0.15)
+        );
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--muted);
+      }
+
+      .empty-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+        opacity: 0.6;
+      }
+
+      .empty-text {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* ─ Scrollbar ─ */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 999px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3a4050;
+      }
+
+      /* ─ Responsive ─ */
+      @media (max-width: 1400px) {
+        .services-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          transform: translateX(-100%);
+          transition: transform 0.25s ease;
+          width: 280px;
+          z-index: 1000;
+          box-shadow: 2px 0 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .menu-toggle {
+          display: flex;
+        }
+
+        .status-badge {
+          display: none;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .services-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-section {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .hero-image {
+          font-size: 60px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .sidebar {
+          width: 240px;
+        }
+
+        .topbar {
+          padding: 0 16px;
+          height: 60px;
+        }
+
+        .page-title {
+          font-size: 20px;
+        }
+
+        .content {
+          padding: 16px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .services-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .services-tools {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .search-box {
+          width: 100%;
+        }
+
+        .hero-section {
+          padding: 20px;
+        }
+
+        .hero-content h2 {
+          font-size: 22px;
+        }
+      }
+
+      /* ─ Toast Notifications ─ */
+      .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 300px;
+      }
+
+      .toast {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 10px;
+        padding: 14px 18px;
+        color: var(--text);
+        font-size: 13px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-icon">⚡</div>
+          <div class="brand-text">
+            <div class="brand-name">Serv<span>Ease</span></div>
+            <div class="brand-tag">Marketplace</div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <div class="nav-label">Main</div>
+          <a
+            class="nav-item active"
+            href="#"
+            id="nav-dashboard"
+            onclick="
+              showDashboard(this);
+              return false;
+            "
+          >
+            📊 Dashboard
+          </a>
+
+          <div class="nav-label">Browse</div>
+          <a
+            class="nav-item"
+            href="#"
+            id="nav-services"
+            onclick="
+              showServices(this);
+              return false;
+            "
+          >
+            🔍 Services <span class="nav-badge">30</span>
+          </a>
+          <a
+            class="nav-item"
+            href="#"
+            onclick="
+              showBookings(this);
+              return false;
+            "
+          >
+            📅 My Bookings
+          </a>
+
+          <div class="nav-label">Account</div>
+          <a
+            class="nav-item"
+            href="#"
+            onclick="
+              loadPage('account.html', '👤 My Account', this);
+              return false;
+            "
+          >
+            👤 Account
+          </a>
+          <a
+            class="nav-item"
+            href="#"
+            onclick="
+              loadPage('orders.html', '📋 My Orders', this);
+              return false;
+            "
+          >
+            📋 Orders
+          </a>
+          <a
+            class="nav-item"
+            href="#"
+            onclick="
+              loadPage('chores.html', '✅ Chores', this);
+              return false;
+            "
+          >
+            ✅ Chores
+          </a>
+          <a
+            class="nav-item"
+            href="#"
+            onclick="
+              loadPage('settings.html', '⚙️ Settings', this);
+              return false;
+            "
+          >
+            ⚙️ Settings
+          </a>
+        </nav>
+
+        <div class="user-card">
+          <div class="user-avatar" id="user-avatar">U</div>
+          <div class="user-info">
+            <div class="user-name" id="user-name">User Name</div>
+            <div class="user-role">Premium Member</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Area -->
+      <div class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+          <button
+            class="menu-toggle"
+            id="menu-toggle"
+            onclick="toggleSidebar()"
+          >
+            ☰
+          </button>
+          <div class="page-title" id="page-title">Dashboard</div>
+          <div class="topbar-actions">
+            <div class="status-badge">
+              <div class="status-dot"></div>
+              Online
+            </div>
+            <button
+              class="icon-btn"
+              onclick="openNotifications()"
+              title="Notifications"
+            >
+              🔔
+              <div class="notif-badge"></div>
+            </button>
+            <button class="icon-btn" onclick="openHelp()" title="Help">
+              ?
+            </button>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Dashboard View -->
+          <div class="content-frame dashboard-frame active" id="dashboard-view">
+            <!-- Hero Section -->
+            <div class="hero-section">
+              <div class="hero-content">
+                <h2>Welcome back, <span id="hero-name">User</span>! 👋</h2>
+                <p>
+                  Find verified professionals for home, office, and personal
+                  services. Book instantly, pay securely.
+                </p>
+                <button
+                  class="hero-cta"
+                  onclick="
+                    showServices(document.getElementById('nav-services'))
+                  "
+                >
+                  Explore Services
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  >
+                    <path d="M2 7h10M8 2l5 5-5 5" />
+                  </svg>
+                </button>
+              </div>
+              <div class="hero-image">🏠</div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-label">Active Orders</div>
+                  <div class="stat-icon">🛒</div>
+                </div>
+                <div class="stat-value" id="stat-active">0</div>
+                <div class="stat-change up">↑ Updated today</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-label">Completed</div>
+                  <div class="stat-icon">✅</div>
+                </div>
+                <div class="stat-value" id="stat-completed">12</div>
+                <div class="stat-change up">↑ This month</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-label">Wallet Balance</div>
+                  <div class="stat-icon">💳</div>
+                </div>
+                <div class="stat-value" id="stat-wallet">$125</div>
+                <div class="stat-change down">↓ $15 spent</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-label">Rating</div>
+                  <div class="stat-icon">⭐</div>
+                </div>
+                <div class="stat-value" id="stat-rating">4.8</div>
+                <div class="stat-change up">↑ 12 reviews</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Services View -->
+          <div class="content-frame" id="services-view">
+            <div class="services-section">
+              <div class="services-header">
+                <div class="services-title">Explore Services</div>
+                <div class="services-tools">
+                  <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input
+                      type="text"
+                      class="search-input"
+                      id="service-search"
+                      placeholder="Search services..."
+                      oninput="filterServices()"
+                    />
+                  </div>
+                  <div class="filter-tag" onclick="alert('Filter coming soon')">
+                    🎯 Filter
+                  </div>
+                </div>
+              </div>
+              <div class="services-body">
+                <div class="services-grid" id="services-grid"></div>
+                <div class="empty-state" id="empty-state" style="display: none">
+                  <div class="empty-icon">🔍</div>
+                  <div class="empty-text">
+                    No services found. Try a different search.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+      // ═══════════════ DATA ═══════════════
+      const SERVICES = [
+        {
+          id: 1,
+          name: "House Cleaning",
+          category: "Home Care",
+          badge: "popular",
+          icon: "🧹",
+          desc: "Professional deep cleaning service",
+        },
+        {
+          id: 2,
+          name: "Plumbing Repair",
+          category: "Maintenance",
+          badge: "available",
+          icon: "🔧",
+          desc: "Expert plumbing solutions",
+        },
+        {
+          id: 3,
+          name: "AC Service",
+          category: "Maintenance",
+          badge: "new",
+          icon: "❄️",
+          desc: "AC installation & repair",
+        },
+        {
+          id: 4,
+          name: "Electrical Work",
+          category: "Maintenance",
+          badge: "popular",
+          icon: "⚡",
+          desc: "Professional electrician",
+        },
+        {
+          id: 5,
+          name: "Painting",
+          category: "Renovation",
+          badge: "available",
+          icon: "🎨",
+          desc: "Interior & exterior painting",
+        },
+        {
+          id: 6,
+          name: "Pest Control",
+          category: "Home Care",
+          badge: "popular",
+          icon: "🦟",
+          desc: "Safe pest control solutions",
+        },
+        {
+          id: 7,
+          name: "Plumber",
+          category: "Maintenance",
+          badge: "available",
+          icon: "🚰",
+          desc: "24/7 plumbing services",
+        },
+        {
+          id: 8,
+          name: "Carpenter",
+          category: "Renovation",
+          badge: "new",
+          icon: "🪵",
+          desc: "Custom carpentry work",
+        },
+        {
+          id: 9,
+          name: "Gardening",
+          category: "Outdoor",
+          badge: "available",
+          icon: "🌿",
+          desc: "Lawn & garden maintenance",
+        },
+      ];
+
+      // ═══════════════ UI FUNCTIONS ═══════════════
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+      }
+
+      function closeSidebar() {
+        document.getElementById("sidebar").classList.remove("open");
+      }
+
+      function clearNav() {
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((el) => el.classList.remove("active"));
+      }
+
+      function showDashboard(el) {
+        clearNav();
+        el.classList.add("active");
+        switchView("dashboard");
+        document.getElementById("page-title").textContent = "Dashboard";
+        closeSidebar();
+      }
+
+      function showServices(el) {
+        clearNav();
+        el.classList.add("active");
+        switchView("services");
+        document.getElementById("page-title").textContent = "Explore Services";
+        renderServices(SERVICES);
+        closeSidebar();
+      }
+
+      function showBookings(el) {
+        clearNav();
+        el.classList.add("active");
+        switchView("services"); // Placeholder
+        document.getElementById("page-title").textContent = "My Bookings";
+        closeSidebar();
+        showToast("Bookings feature coming soon!", "info");
+      }
+
+      function switchView(view) {
+        document
+          .querySelectorAll(".content-frame")
+          .forEach((f) => f.classList.remove("active"));
+        document.getElementById(`${view}-view`).classList.add("active");
+      }
+
+      function loadPage(url, title, navEl) {
+        clearNav();
+        if (navEl) navEl.classList.add("active");
+        document.getElementById("page-title").textContent = title;
+        closeSidebar();
+        showToast(`Loading ${title}...`, "info");
+      }
+
+      // ═══════════════ SERVICES ═══════════════
+      function renderServices(services) {
+        const grid = document.getElementById("services-grid");
+        const emptyState = document.getElementById("empty-state");
+
+        grid.innerHTML = "";
+
+        if (services.length === 0) {
+          emptyState.style.display = "flex";
+          return;
+        }
+
+        emptyState.style.display = "none";
+
+        services.forEach((service, i) => {
+          const card = document.createElement("div");
+          card.className = "service-card";
+          card.style.animationDelay = i * 0.05 + "s";
+          card.innerHTML = `
+          <div class="service-header">
+            <div class="service-info">
+              <h3>${service.name}</h3>
+              <div class="service-category">${service.category}</div>
+            </div>
+            <div class="service-badge badge-${service.badge}">
+              ${service.badge === "new" ? "🆕 New" : service.badge === "popular" ? "🔥 Popular" : "✓ Available"}
+            </div>
+          </div>
+          <div style="font-size: 32px; text-align: center;">${service.icon}</div>
+          <p style="font-size: 12px; color: var(--muted); line-height: 1.4;">${service.desc}</p>
+          <button class="service-action" onclick="bookService('${service.name}')">
+            Book Now →
+          </button>
+        `;
+          grid.appendChild(card);
+        });
+      }
+
+      function filterServices() {
+        const query = document
+          .getElementById("service-search")
+          .value.toLowerCase();
+        const filtered = SERVICES.filter(
+          (s) =>
+            s.name.toLowerCase().includes(query) ||
+            s.category.toLowerCase().includes(query) ||
+            s.desc.toLowerCase().includes(query),
+        );
+        renderServices(filtered);
+      }
+
+      function bookService(serviceName) {
+        showToast(`"${serviceName}" booking coming soon!`, "info");
+      }
+
+      // ═══════════════ USER INFO ═══════════════
+      function getCurrentUser() {
+        try {
+          return (
+            JSON.parse(localStorage.getItem("user")) || {
+              firstName: "User",
+              email: "user@example.com",
+            }
+          );
+        } catch {
+          return { firstName: "User", email: "user@example.com" };
+        }
+      }
+
+      function updateUserInfo() {
+        const user = getCurrentUser();
+        const initials =
+          (user.firstName?.[0] || "U") + (user.lastName?.[0] || "");
+        document.getElementById("user-avatar").textContent =
+          initials.toUpperCase();
+        document.getElementById("user-name").textContent =
+          user.firstName + " " + (user.lastName || "");
+        document.getElementById("hero-name").textContent = user.firstName;
+      }
+
+      function logout() {
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "ServEase1.html";
+        }
+      }
+
+      // ═══════════════ NOTIFICATIONS ═══════════════
+      function openNotifications() {
+        showToast("You have 3 new notifications!", "info");
+      }
+
+      function openHelp() {
+        showToast("Help & Support coming soon!", "info");
+      }
+
+      // ═══════════════ TOAST ═══════════════
+      function showToast(message, type = "info") {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.animation = "slideOut 0.3s ease";
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      // ═══════════════ INIT ═══════════════
+      window.addEventListener("DOMContentLoaded", () => {
+        updateUserInfo();
+        renderServices(SERVICES);
+
+        // Close sidebar on link click (mobile)
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.addEventListener("click", closeSidebar);
+        });
+      });
+
+      // ─ Responsive ─
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 900) {
+          document.getElementById("sidebar").classList.remove("open");
+        }
+      });
+    </script>
+  </body>
+</html>
