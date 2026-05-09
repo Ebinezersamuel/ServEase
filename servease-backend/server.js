@@ -5,20 +5,20 @@ require("dotenv").config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Routes
 app.get("/", (req, res) => {
-  res.json({ message: "ServEase API running" });
+  res.send("ServEase API running");
 });
 
+// Routes
 app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/dashboard", require("./routes/dashboardRoutes"));
+app.use("/api/services", require("./routes/serviceRoutes"));
+app.use("/api/providers", require("./routes/providerRoutes"));
+app.use("/api/bookings", require("./routes/bookingRoutes"));
+app.use("/api/tasks", require("./routes/bookingRoutes")); // Alias for tasks
 
-// Database connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -32,5 +32,3 @@ mongoose
     console.error("DB error:", err.message);
     process.exit(1);
   });
-
-module.exports = app;

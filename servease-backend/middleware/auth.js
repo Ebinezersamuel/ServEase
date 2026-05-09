@@ -1,20 +1,20 @@
-	const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
-const authMiddleware = (req, res, next) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
 
-    if (!token) {
-      return res.status(401).json({ message: "No token provided" });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.id;
-    req.userRole = decoded.role;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: "Invalid token", error: error.message });
+  if (!token) {
+    return res.status(401).json({ message: "Access token required" });
   }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid or expired token" });
+    }
+    req.user = user;
+    next();
+  });
 };
 
-module.exports = authMiddleware;
+module.exports = { authenticateToken };
