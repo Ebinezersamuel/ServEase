@@ -1,31 +1,37 @@
 const User = require("../models/User");
 const Task = require("../models/Task");
 
+const getRequestUserId = (req) => req.user?.id || req.userId;
+
 // Get user dashboard data
 exports.getDashboardData = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select("-password");
+    const userId = getRequestUserId(req);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Get active tasks (pending, assigned, in-progress)
     const activeTasks = await Task.find({
-      userId: req.userId,
-      status: { $in: ["pending", "assigned", "in-progress"] },
+      customerId: userId,
+      status: { $in: ["open", "accepted", "in-progress", "pending", "assigned"] },
     })
       .populate("providerId", "firstName lastName avatar rating")
       .sort({ createdAt: -1 });
 
     // Get statistics
-    const allTasks = await Task.find({ userId: req.userId });
+    const allTasks = await Task.find({ customerId: userId });
     const completedTasks = allTasks.filter((t) => t.status === "completed");
-    const totalSpent = allTasks.reduce((sum, t) => sum + (t.price || 0), 0);
+    const totalSpent = allTasks.reduce(
+      (sum, t) => sum + (t.finalPrice || t.budget || t.price?.totalAmount || 0),
+      0
+    );
 
     // Get upcoming bookings (next 7 days)
     const upcomingBookings = await Task.find({
-      userId: req.userId,
-      scheduledTime: {
+      customerId: userId,
+      scheduledDate: {
         $gte: new Date(),
         $lte: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
@@ -38,6 +44,7 @@ exports.getDashboardData = async (req, res) => {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
+        name: user.name,
         email: user.email,
         phone: user.phone,
         avatar: user.avatar,
@@ -51,7 +58,7 @@ exports.getDashboardData = async (req, res) => {
         completedBookings: completedTasks.length,
         activeBookings: activeTasks.length,
         totalSpent: totalSpent.toFixed(2),
-        averageRating: user.rating.toFixed(1),
+        averageRating: Number(user.rating || 0).toFixed(1),
       },
       activeTasks,
       upcomingBookings,
@@ -64,9 +71,10 @@ exports.getDashboardData = async (req, res) => {
 // Get user's booking history
 exports.getBookingHistory = async (req, res) => {
   try {
+    const userId = getRequestUserId(req);
     const { status, limit = 10, skip = 0 } = req.query;
 
-    const query = { userId: req.userId };
+    const query = { customerId: userId };
     if (status) {
       query.status = status;
     }
@@ -95,8 +103,9 @@ exports.getBookingHistory = async (req, res) => {
 // Get specific task details
 exports.getTaskDetails = async (req, res) => {
   try {
+    const userId = getRequestUserId(req);
     const task = await Task.findById(req.params.id)
-      .populate("userId", "firstName lastName phone address")
+      .populate("customerId", "firstName lastName name phone address")
       .populate("providerId", "firstName lastName phone avatar rating");
 
     if (!task) {
@@ -105,8 +114,8 @@ exports.getTaskDetails = async (req, res) => {
 
     // Check authorization
     if (
-      task.userId.toString() !== req.userId &&
-      task.providerId?.toString() !== req.userId
+      task.customerId?.toString() !== userId &&
+      task.providerId?.toString() !== userId
     ) {
       return res
         .status(403)
@@ -122,9 +131,10 @@ exports.getTaskDetails = async (req, res) => {
 // Get active chores (pending + in-progress)
 exports.getActiveChores = async (req, res) => {
   try {
+    const userId = getRequestUserId(req);
     const chores = await Task.find({
-      userId: req.userId,
-      status: { $in: ["pending", "assigned", "in-progress"] },
+      customerId: userId,
+      status: { $in: ["open", "accepted", "in-progress", "pending", "assigned"] },
     })
       .populate("providerId", "firstName lastName avatar rating")
       .sort({ scheduledTime: 1 });
@@ -141,19 +151,20 @@ exports.getActiveChores = async (req, res) => {
 // Get completed services
 exports.getCompletedServices = async (req, res) => {
   try {
+    const userId = getRequestUserId(req);
     const { limit = 10, skip = 0 } = req.query;
 
     const services = await Task.find({
-      userId: req.userId,
+      customerId: userId,
       status: "completed",
     })
       .populate("providerId", "firstName lastName avatar rating")
-      .sort({ completedAt: -1 })
+      .sort({ completionDate: -1 })
       .limit(parseInt(limit))
       .skip(parseInt(skip));
 
     const total = await Task.countDocuments({
-      userId: req.userId,
+      customerId: userId,
       status: "completed",
     });
 
@@ -173,6 +184,7 @@ exports.getCompletedServices = async (req, res) => {
 // Cancel task
 exports.cancelTask = async (req, res) => {
   try {
+    const userId = getRequestUserId(req);
     const { reason } = req.body;
     const task = await Task.findById(req.params.id);
 
@@ -180,7 +192,7 @@ exports.cancelTask = async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    if (task.userId.toString() !== req.userId) {
+    if (task.customerId?.toString() !== userId) {
       return res.status(403).json({ message: "Not authorized" });
     }
 

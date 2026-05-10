@@ -483,6 +483,8 @@
     </div>
 
     <script>
+      const API_BASE_URL = "http://localhost:5000";
+
       // Sample provider data (from parent context)
       const providerData = {
         id: 1,
@@ -510,6 +512,7 @@
         document.getElementById("servicePrice").textContent =
           `₹${providerData.price}`;
         updatePriceCalculation();
+        loadServices();
       }
 
       function updatePriceCalculation() {
@@ -563,29 +566,86 @@
       function confirmBooking() {
         if (!validateForm()) return;
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("Please login to create a booking.");
+          return;
+        }
+
         const bookingData = {
           providerId: providerData.id,
-          service: document.getElementById("serviceSelect").value,
-          date: document.getElementById("bookingDate").value,
-          time: document.getElementById("bookingTime").value,
+          serviceId: document.getElementById("serviceSelect").value,
+          service: document
+            .getElementById("serviceSelect")
+            .selectedOptions[0]?.textContent,
+          scheduledTime: new Date(
+            `${document.getElementById("bookingDate").value}T${document.getElementById("bookingTime").value}:00`,
+          ).toISOString(),
           location: document.getElementById("serviceLocation").value,
           notes: document.getElementById("bookingNotes").value,
-          amount: parseInt(
-            document
-              .getElementById("totalAmount")
-              .textContent.replace(/[^\d]/g, ""),
-          ),
+          paymentMethod: "cash",
         };
 
-        console.log("Booking confirmed:", bookingData);
-        // Send to parent window or backend
-        if (window.parent && window.parent !== window) {
-          window.parent.postMessage(
-            { type: "bookingConfirmed", data: bookingData },
-            "*",
-          );
+        const confirmBtn = document.getElementById("confirmBtn");
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = "Booking...";
+
+        fetch(`${API_BASE_URL}/api/bookings/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(bookingData),
+        })
+          .then(async (response) => {
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.message || "Booking failed");
+            }
+
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage(
+                { type: "bookingConfirmed", data },
+                "*",
+              );
+            }
+            alert("Booking created successfully.");
+            closeModal();
+          })
+          .catch((error) => {
+            alert(error.message || "Unable to create booking.");
+            console.error(error);
+          })
+          .finally(() => {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = "Confirm Booking";
+          });
+      }
+
+      async function loadServices() {
+        const serviceSelect = document.getElementById("serviceSelect");
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/services`);
+          if (!response.ok) {
+            return;
+          }
+
+          const services = await response.json();
+          if (!Array.isArray(services) || services.length === 0) {
+            return;
+          }
+
+          serviceSelect.innerHTML = '<option value="">Choose a service</option>';
+          services.forEach((service) => {
+            const option = document.createElement("option");
+            option.value = service._id;
+            option.textContent = service.name;
+            serviceSelect.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Unable to load services:", error);
         }
-        closeModal();
       }
 
       function closeModal() {
