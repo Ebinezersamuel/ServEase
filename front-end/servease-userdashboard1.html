@@ -1179,6 +1179,8 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script>
+      const API_BASE_URL = "http://localhost:5000";
+
       // ═══════════════ DATA ═══════════════
       const SERVICES = [
         {
@@ -1283,7 +1285,7 @@
         el.classList.add("active");
         switchView("services");
         document.getElementById("page-title").textContent = "Explore Services";
-        renderServices(SERVICES);
+        fetchServices();
         closeSidebar();
       }
 
@@ -1362,6 +1364,36 @@
         renderServices(filtered);
       }
 
+      async function fetchServices() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/services`);
+          if (!response.ok) {
+            throw new Error("Failed to load services");
+          }
+
+          const data = await response.json();
+          if (!Array.isArray(data)) {
+            throw new Error("Unexpected services response");
+          }
+
+          SERVICES.length = 0;
+          data.forEach((service, index) => {
+            SERVICES.push({
+              id: service._id || index + 1,
+              name: service.name,
+              category: service.category || "Other",
+              badge: "available",
+              icon: service.icon || "🔧",
+              desc: service.description || "",
+            });
+          });
+        } catch (error) {
+          console.error("Unable to fetch services:", error);
+        }
+
+        renderServices(SERVICES);
+      }
+
       function bookService(serviceName) {
         showToast(`"${serviceName}" booking coming soon!`, "info");
       }
@@ -1425,7 +1457,7 @@
       // ═══════════════ INIT ═══════════════
       window.addEventListener("DOMContentLoaded", () => {
         updateUserInfo();
-        renderServices(SERVICES);
+        fetchServices();
 
         // Close sidebar on link click (mobile)
         document.querySelectorAll(".nav-item").forEach((item) => {

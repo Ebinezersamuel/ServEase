@@ -4,6 +4,7 @@ const bookingController = require("../controllers/bookingController");
 const { authenticateToken } = require("../middleware/auth");
 
 // Protected routes
+router.post("/create", authenticateToken, bookingController.createBooking);
 router.post("/", authenticateToken, bookingController.createBooking);
 router.get("/user", authenticateToken, bookingController.getUserBookings);
 router.get("/provider", authenticateToken, bookingController.getProviderTasks);

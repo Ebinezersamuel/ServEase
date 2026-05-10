@@ -339,19 +339,41 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  /* ═══════════════════════════════════════════════
-     SIMULATED DATABASE LAYER
-     Replace fetchChoresFromDB() with a real fetch()
-     call to your API endpoint, e.g.:
-       const res  = await fetch('/api/chores?user_id=1');
-       const data = await res.json();
-       return data.chores;
-  ═══════════════════════════════════════════════ */
-  async function fetchChoresFromDB() {
-    // Simulate network latency
-    await new Promise(r => setTimeout(r, 900));
+  const API_BASE_URL = 'http://localhost:5000';
 
-    // Mock DB records — swap this return value with real API data
+  /* ═══════════════════════════════════════════════
+     DATABASE/API LAYER
+   ═══════════════════════════════════════════════ */
+  async function fetchChoresFromDB() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const res = await fetch(`${API_BASE_URL}/api/dashboard/chores`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error('Unable to fetch chores');
+      }
+
+      const payload = await res.json();
+      const choresFromApi = Array.isArray(payload.chores) ? payload.chores : [];
+      return choresFromApi.map((task, index) => ({
+        id: task._id || index + 1,
+        name: task.title || task.service || 'Service',
+        provider: task.providerId?.businessName || task.providerId?.name || 'Assigned Provider',
+        category: task.category || 'General',
+        emoji: '🧰',
+        color: 'rgba(92,107,255,.1)',
+        price: Number(task.finalPrice || task.budget || 0),
+        qty: 1,
+        scheduled: task.scheduledDate
+          ? new Date(task.scheduledDate).toLocaleDateString()
+          : 'TBD'
+      }));
+    }
+
     return [
       {
         id: 1,
@@ -521,7 +543,7 @@
   /* ═══════════════════════════════════════════════
      ACTIONS
   ═══════════════════════════════════════════════ */
-function removeChore(id) {
+  function removeChore(id) {
     chores = chores.filter(c => c.id !== id);
     if (chores.length === 0) status = 'empty';
     render();

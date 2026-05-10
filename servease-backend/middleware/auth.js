@@ -20,6 +20,7 @@ exports.auth = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.id);
+    req.userId = decoded.id;
 
     if (!req.user) {
       return res.status(404).json({
@@ -36,6 +37,8 @@ exports.auth = async (req, res, next) => {
     });
   }
 };
+
+exports.authenticateToken = exports.auth;
 
 exports.authorize = (...roles) => {
   return (req, res, next) => {

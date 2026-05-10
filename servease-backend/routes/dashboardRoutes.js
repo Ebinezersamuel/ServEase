@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middleware/auth");
+const { auth } = require("../middleware/auth");
 const {
   getDashboardData,
   getBookingHistory,
@@ -11,7 +11,7 @@ const {
 } = require("../controllers/dashboardController");
 
 // All dashboard routes require authentication
-router.use(authMiddleware);
+router.use(auth);
 
 // Dashboard overview
 router.get("/", getDashboardData);
