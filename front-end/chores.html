@@ -543,7 +543,7 @@
   /* ═══════════════════════════════════════════════
      ACTIONS
   ═══════════════════════════════════════════════ */
-function removeChore(id) {
+  function removeChore(id) {
     chores = chores.filter(c => c.id !== id);
     if (chores.length === 0) status = 'empty';
     render();
