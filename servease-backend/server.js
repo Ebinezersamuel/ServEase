@@ -9,6 +9,10 @@ const userRoutes = require('./routes/userRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const providerRoutes = require('./routes/providerRoutes');
+const serviceRoutes = require('./routes/serviceRoutes');
 
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -34,6 +38,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/providers', providerRoutes);
+app.use('/api/services', serviceRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
