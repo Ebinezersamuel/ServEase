@@ -30,6 +30,7 @@ exports.registerProvider = async (req, res) => {
       hourlyRate,
       availability,
       location,
+      isVerified: true,
     });
 
     await newProvider.save();
@@ -51,7 +52,7 @@ exports.getAllProviders = async (req, res) => {
   try {
     const { category, rating, verified } = req.query;
 
-    let query = {};
+    let query = { isVerified: true };
 
     if (category) {
       query.services = { $in: [category] };

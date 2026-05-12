@@ -1,6 +1,6 @@
 const Booking = require("../models/Booking");
 
-const parseNumber = (value, fallback) => {
+const parseInteger = (value, fallback) => {
   const parsed = Number.parseInt(value, 10);
   return Number.isNaN(parsed) ? fallback : parsed;
 };
@@ -70,8 +70,8 @@ exports.getBookingHistory = async (req, res) => {
       query.status = status;
     }
 
-    const parsedLimit = parseNumber(limit, 10);
-    const parsedSkip = parseNumber(skip, 0);
+    const parsedLimit = parseInteger(limit, 10);
+    const parsedSkip = parseInteger(skip, 0);
 
     const [tasks, total] = await Promise.all([
       Booking.find(query).sort({ createdAt: -1 }).limit(parsedLimit).skip(parsedSkip),
@@ -136,8 +136,8 @@ exports.getCompletedServices = async (req, res) => {
       status: "completed",
     };
 
-    const parsedLimit = parseNumber(limit, 10);
-    const parsedSkip = parseNumber(skip, 0);
+    const parsedLimit = parseInteger(limit, 10);
+    const parsedSkip = parseInteger(skip, 0);
 
     const [services, total] = await Promise.all([
       Booking.find(query).sort({ completedTime: -1, updatedAt: -1 }).limit(parsedLimit).skip(parsedSkip),

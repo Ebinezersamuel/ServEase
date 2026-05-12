@@ -15,7 +15,6 @@ const providerRoutes = require('./routes/providerRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 
 // Import middleware
-const { auth } = require('./middleware/auth');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -32,7 +31,6 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api', auth);
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/reviews', reviewRoutes);

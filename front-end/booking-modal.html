@@ -531,7 +531,15 @@
             serviceSelect.value = selectedService._id;
           }
 
-          const chosenProvider = providers.find((provider) => provider._id === selectedProviderId) || providers[0];
+          let chosenProvider = providers[0];
+          if (selectedProviderId) {
+            chosenProvider = providers.find((provider) => provider._id === selectedProviderId);
+            if (!chosenProvider) {
+              alert("Selected provider was not found. Please choose a provider again.");
+              window.location.href = "search-filters.html";
+              return;
+            }
+          }
 
           if (chosenProvider) {
             providerData = {

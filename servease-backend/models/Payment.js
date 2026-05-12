@@ -71,4 +71,16 @@ const paymentSchema = new mongoose.Schema({
   }
 });
 
+paymentSchema.pre('validate', function(next) {
+  const hasTask = Boolean(this.taskId);
+  const hasBooking = Boolean(this.bookingId);
+
+  if ((hasTask && hasBooking) || (!hasTask && !hasBooking)) {
+    this.invalidate('taskId', 'Provide exactly one of taskId or bookingId');
+    this.invalidate('bookingId', 'Provide exactly one of taskId or bookingId');
+  }
+
+  next();
+});
+
 module.exports = mongoose.model('Payment', paymentSchema);

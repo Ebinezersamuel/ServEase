@@ -8,11 +8,12 @@ const Booking = require('../models/Booking');
 exports.createPayment = async (req, res, next) => {
   try {
     const { taskId, bookingId, amount, paymentMethod } = req.body;
+    const hasExactlyOneReference = Boolean(taskId) !== Boolean(bookingId);
 
-    if ((!taskId && !bookingId) || !paymentMethod) {
+    if (!hasExactlyOneReference || !paymentMethod) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide all required fields'
+        message: 'Please provide either taskId or bookingId with payment method'
       });
     }
 

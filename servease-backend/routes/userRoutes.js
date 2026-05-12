@@ -17,7 +17,7 @@ router.get('/', getUsers);
 router.get('/search/providers', searchProviders);
 router.get('/:id', getUser);
 router.get('/:id/stats', getUserStats);
-router.put('/:id', auth, updateUser);
-router.delete('/:id', auth, deleteUser);
+router.put('/:id', updateUser);
+router.delete('/:id', deleteUser);
 
 module.exports = router;

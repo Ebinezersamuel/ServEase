@@ -15,7 +15,7 @@ exports.register = async (req, res, next) => {
   try {
     const { name, firstName, lastName, email, password, phone, userType, role } = req.body;
     const resolvedName = name || [firstName, lastName].filter(Boolean).join(' ').trim();
-    const resolvedPhone = phone || '0000000000';
+    const resolvedPhone = phone;
     const resolvedUserType = userType || role || 'customer';
 
     // Validation
