@@ -13,10 +13,13 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, phone, userType } = req.body;
+    const { name, firstName, lastName, email, password, phone, userType, role } = req.body;
+    const resolvedName = name || [firstName, lastName].filter(Boolean).join(' ').trim();
+    const resolvedPhone = phone || '0000000000';
+    const resolvedUserType = userType || role || 'customer';
 
     // Validation
-    if (!name || !email || !password || !phone) {
+    if (!resolvedName || !email || !password) {
       return res.status(400).json({
         success: false,
         message: 'Please provide all required fields'
@@ -37,8 +40,8 @@ exports.register = async (req, res, next) => {
       name,
       email,
       password,
-      phone,
-      userType: userType || 'customer'
+      phone: resolvedPhone,
+      userType: resolvedUserType
     });
 
     // Create token
@@ -52,7 +55,8 @@ exports.register = async (req, res, next) => {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        userType: user.userType
+        userType: user.userType,
+        role: user.userType
       }
     });
   } catch (error) {
@@ -107,6 +111,7 @@ exports.login = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         userType: user.userType,
+        role: user.userType,
         rating: user.rating,
         verified: user.verified
       }

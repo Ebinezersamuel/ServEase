@@ -1,45 +1,76 @@
 const Payment = require('../models/Payment');
 const Task = require('../models/Task');
+const Booking = require('../models/Booking');
 
 // @desc    Create a payment
 // @route   POST /api/payments
 // @access  Private
 exports.createPayment = async (req, res, next) => {
   try {
-    const { taskId, amount, paymentMethod } = req.body;
+    const { taskId, bookingId, amount, paymentMethod } = req.body;
 
-    if (!taskId || !amount || !paymentMethod) {
+    if ((!taskId && !bookingId) || !paymentMethod) {
       return res.status(400).json({
         success: false,
         message: 'Please provide all required fields'
       });
     }
 
-    const task = await Task.findById(taskId);
+    let providerId;
+    let payerAllowed = false;
+    let resolvedAmount = amount;
 
-    if (!task) {
-      return res.status(404).json({
-        success: false,
-        message: 'Task not found'
-      });
+    if (taskId) {
+      const task = await Task.findById(taskId);
+
+      if (!task) {
+        return res.status(404).json({
+          success: false,
+          message: 'Task not found'
+        });
+      }
+
+      providerId = task.providerId;
+      payerAllowed = task.customerId.toString() === req.user.id;
+      resolvedAmount = resolvedAmount || task.finalPrice || task.budget;
+    } else {
+      const booking = await Booking.findById(bookingId);
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+
+      providerId = booking.providerId;
+      payerAllowed = booking.customerId.toString() === req.user.id;
+      resolvedAmount = resolvedAmount || booking.price?.totalAmount;
     }
 
-    if (task.customerId.toString() !== req.user.id) {
+    if (!payerAllowed) {
       return res.status(403).json({
         success: false,
-        message: 'Only task owner can create payment'
+        message: 'Only booking/task owner can create payment'
       });
     }
 
-    // Calculate commission (10% of amount)
-    const commission = amount * 0.1;
-    const providerEarnings = amount - commission;
+    if (!resolvedAmount || Number(resolvedAmount) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid amount'
+      });
+    }
+
+    const commission = Number(resolvedAmount) * 0.1;
+    const providerEarnings = Number(resolvedAmount) - commission;
 
     const payment = await Payment.create({
       taskId,
+      bookingId,
       customerId: req.user.id,
-      providerId: task.providerId,
-      amount,
+      providerId,
+      amount: Number(resolvedAmount),
       paymentMethod,
       commission,
       providerEarnings,

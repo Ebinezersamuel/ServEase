@@ -483,19 +483,69 @@
     </div>
 
     <script>
-      // Sample provider data (from parent context)
-      const providerData = {
-        id: 1,
-        name: "John Doe",
+      const API_BASE_URL = "http://localhost:5000";
+      let providerData = {
+        _id: "",
+        name: "Provider",
         avatar: "👨‍🔧",
         rating: 4.8,
-        reviews: 245,
-        category: "AC Technician",
+        category: "Service Provider",
         price: 500,
         distance: 2.5,
       };
 
-      function initModal() {
+      const getAuthHeaders = () => ({
+        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        "Content-Type": "application/json",
+      });
+
+      async function initModal() {
+        if (!localStorage.getItem("token")) {
+          window.location.href = "ServEase1.html";
+          return;
+        }
+
+        const selectedService = JSON.parse(localStorage.getItem("selectedService") || "null");
+        const selectedProviderId = new URLSearchParams(window.location.search).get("providerId");
+        const serviceSelect = document.getElementById("serviceSelect");
+        serviceSelect.innerHTML = '<option value="">Choose a service</option>';
+
+        try {
+          const [servicesResponse, providersResponse] = await Promise.all([
+            fetch(`${API_BASE_URL}/api/services`, { headers: getAuthHeaders() }),
+            fetch(`${API_BASE_URL}/api/providers`, { headers: getAuthHeaders() }),
+          ]);
+
+          const services = servicesResponse.ok ? await servicesResponse.json() : [];
+          const providers = providersResponse.ok ? await providersResponse.json() : [];
+
+          services.forEach((service) => {
+            const option = document.createElement("option");
+            option.value = service._id;
+            option.textContent = service.name;
+            option.dataset.price = service.basePrice || 500;
+            serviceSelect.appendChild(option);
+          });
+
+          if (selectedService?._id) {
+            serviceSelect.value = selectedService._id;
+          }
+
+          const chosenProvider = providers.find((provider) => provider._id === selectedProviderId) || providers[0];
+
+          if (chosenProvider) {
+            providerData = {
+              _id: chosenProvider._id,
+              name: chosenProvider.businessName || chosenProvider.userId?.name || "Provider",
+              avatar: "👨‍🔧",
+              rating: chosenProvider.rating || 4.5,
+              category: "Verified Provider",
+              price: selectedService?.basePrice || services[0]?.basePrice || 500,
+              distance: 2.5,
+            };
+          }
+        } catch (error) {}
+
         document.getElementById("providerName").textContent = providerData.name;
         document.getElementById("providerAvatar").textContent =
           providerData.avatar;
@@ -513,7 +563,8 @@
       }
 
       function updatePriceCalculation() {
-        const basePrice = providerData.price;
+        const selectedOption = document.getElementById("serviceSelect").selectedOptions[0];
+        const basePrice = Number(selectedOption?.dataset?.price || providerData.price || 500);
         const platformFee = Math.round(basePrice * 0.05);
         const gst = Math.round((basePrice + platformFee) * 0.18);
         const total = basePrice + platformFee + gst;
@@ -560,32 +611,40 @@
         return isValid;
       }
 
-      function confirmBooking() {
+      async function confirmBooking() {
         if (!validateForm()) return;
 
+        const date = document.getElementById("bookingDate").value;
+        const time = document.getElementById("bookingTime").value;
+        const serviceId = document.getElementById("serviceSelect").value;
         const bookingData = {
-          providerId: providerData.id,
-          service: document.getElementById("serviceSelect").value,
-          date: document.getElementById("bookingDate").value,
-          time: document.getElementById("bookingTime").value,
-          location: document.getElementById("serviceLocation").value,
+          providerId: providerData._id,
+          serviceId,
+          scheduledTime: `${date}T${time}:00`,
+          location: { address: document.getElementById("serviceLocation").value },
+          description: "Service booking",
           notes: document.getElementById("bookingNotes").value,
-          amount: parseInt(
-            document
-              .getElementById("totalAmount")
-              .textContent.replace(/[^\d]/g, ""),
-          ),
+          paymentMethod: "card",
         };
 
-        console.log("Booking confirmed:", bookingData);
-        // Send to parent window or backend
-        if (window.parent && window.parent !== window) {
-          window.parent.postMessage(
-            { type: "bookingConfirmed", data: bookingData },
-            "*",
-          );
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/bookings`, {
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: JSON.stringify(bookingData),
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message || "Booking failed");
+          }
+
+          localStorage.setItem("latestBooking", JSON.stringify(data.booking));
+          window.location.href = "payment-checkout.html";
+        } catch (error) {
+          alert(error.message || "Failed to create booking");
+          return;
         }
-        closeModal();
       }
 
       function closeModal() {
@@ -605,7 +664,7 @@
         .toISOString()
         .split("T")[0];
 
-      // Initialize on load
+      document.getElementById("serviceSelect").addEventListener("change", updatePriceCalculation);
       window.addEventListener("load", initModal);
     </script>
   </body>

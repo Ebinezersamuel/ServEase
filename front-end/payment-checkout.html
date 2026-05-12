@@ -706,6 +706,15 @@
     </div>
 
     <script>
+      const API_BASE_URL = "http://localhost:5000";
+
+      function getAuthHeaders() {
+        return {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          "Content-Type": "application/json",
+        };
+      }
+
       function updatePaymentMethod(method) {
         const cardDetails = document.getElementById("cardDetails");
         if (method === "card") {
@@ -715,7 +724,7 @@
         }
       }
 
-      function processPayment() {
+      async function processPayment() {
         const terms = document.getElementById("termsCheck").checked;
         if (!terms) {
           alert("Please accept the terms and conditions");
@@ -725,12 +734,37 @@
         document.getElementById("payBtn").disabled = true;
         document.getElementById("payBtn").textContent = "Processing...";
 
-        setTimeout(() => {
+        try {
+          const booking = JSON.parse(localStorage.getItem("latestBooking") || "null");
+          if (!booking?._id) {
+            throw new Error("No booking found for payment");
+          }
+
+          const selectedMethodRaw = document.querySelector('input[name="paymentMethod"]:checked')?.value || "card";
+          const selectedMethod = selectedMethodRaw === "netbanking" ? "bank_transfer" : selectedMethodRaw;
+          const response = await fetch(`${API_BASE_URL}/api/payments`, {
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+              bookingId: booking._id,
+              amount: booking.price?.totalAmount,
+              paymentMethod: selectedMethod,
+            }),
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message || "Payment failed");
+          }
+
           document.querySelector(".checkout-grid").style.display = "none";
           document.getElementById("successScreen").classList.add("show");
-          document.getElementById("bookingId").textContent =
-            "#SRV-2024-" + Math.floor(Math.random() * 1000000);
-        }, 2000);
+          document.getElementById("bookingId").textContent = data.payment?.transactionId || booking._id;
+        } catch (error) {
+          alert(error.message || "Failed to process payment");
+          document.getElementById("payBtn").disabled = false;
+          document.getElementById("payBtn").textContent = "Pay ₹590";
+        }
       }
 
       function goBack() {
@@ -738,7 +772,7 @@
       }
 
       function goToDashboard() {
-        window.location.href = "servease-userdashboard.html";
+        window.location.href = "servease-userdashboard1.html";
       }
     </script>
   </body>

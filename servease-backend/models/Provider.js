@@ -50,13 +50,41 @@ const ProviderSchema = new mongoose.Schema(
       },
     ],
     availability: {
-      monday: { start: "09:00", end: "18:00", available: true },
-      tuesday: { start: "09:00", end: "18:00", available: true },
-      wednesday: { start: "09:00", end: "18:00", available: true },
-      thursday: { start: "09:00", end: "18:00", available: true },
-      friday: { start: "09:00", end: "18:00", available: true },
-      saturday: { start: "10:00", end: "16:00", available: true },
-      sunday: { start: "00:00", end: "00:00", available: false },
+      monday: {
+        start: { type: String, default: "09:00" },
+        end: { type: String, default: "18:00" },
+        available: { type: Boolean, default: true },
+      },
+      tuesday: {
+        start: { type: String, default: "09:00" },
+        end: { type: String, default: "18:00" },
+        available: { type: Boolean, default: true },
+      },
+      wednesday: {
+        start: { type: String, default: "09:00" },
+        end: { type: String, default: "18:00" },
+        available: { type: Boolean, default: true },
+      },
+      thursday: {
+        start: { type: String, default: "09:00" },
+        end: { type: String, default: "18:00" },
+        available: { type: Boolean, default: true },
+      },
+      friday: {
+        start: { type: String, default: "09:00" },
+        end: { type: String, default: "18:00" },
+        available: { type: Boolean, default: true },
+      },
+      saturday: {
+        start: { type: String, default: "10:00" },
+        end: { type: String, default: "16:00" },
+        available: { type: Boolean, default: true },
+      },
+      sunday: {
+        start: { type: String, default: "00:00" },
+        end: { type: String, default: "00:00" },
+        available: { type: Boolean, default: false },
+      },
     },
     location: {
       latitude: Number,

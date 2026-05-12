@@ -4,7 +4,12 @@ const paymentSchema = new mongoose.Schema({
   taskId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',
-    required: true
+    required: false
+  },
+  bookingId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Booking',
+    required: false
   },
   customerId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -23,7 +28,7 @@ const paymentSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['credit_card', 'debit_card', 'wallet', 'bank_transfer'],
+    enum: ['credit_card', 'debit_card', 'wallet', 'bank_transfer', 'card', 'upi', 'cash'],
     required: true
   },
   status: {

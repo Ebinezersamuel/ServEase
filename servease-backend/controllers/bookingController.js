@@ -105,7 +105,7 @@ exports.getProviderTasks = async (req, res) => {
     }
 
     const tasks = await Booking.find(query)
-      .populate("customerId", "firstName lastName email phone")
+      .populate("customerId", "name email phone")
       .populate("serviceId")
       .sort({ scheduledTime: -1 });
 

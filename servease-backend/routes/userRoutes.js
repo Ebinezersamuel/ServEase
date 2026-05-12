@@ -11,6 +11,8 @@ const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
+router.use(auth);
+
 router.get('/', getUsers);
 router.get('/search/providers', searchProviders);
 router.get('/:id', getUser);

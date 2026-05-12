@@ -14,6 +14,8 @@ const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
+router.use(auth);
+
 router.get('/', getTasks);
 router.get('/user/mytasks', auth, getUserTasks);
 router.post('/', auth, createTask);

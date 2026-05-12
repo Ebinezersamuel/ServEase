@@ -3,13 +3,12 @@ const router = express.Router();
 const providerController = require("../controllers/providerController");
 const { authenticateToken } = require("../middleware/auth");
 
-// Public routes
-router.get("/", providerController.getAllProviders);
-router.get("/:id", providerController.getProviderById);
+router.use(authenticateToken);
 
-// Protected routes
-router.post("/register", authenticateToken, providerController.registerProvider);
-router.put("/profile", authenticateToken, providerController.updateProviderProfile);
-router.get("/tasks/list", authenticateToken, providerController.getProviderTasks);
+router.get("/", providerController.getAllProviders);
+router.get("/tasks/list", providerController.getProviderTasks);
+router.post("/register", providerController.registerProvider);
+router.put("/profile", providerController.updateProviderProfile);
+router.get("/:id", providerController.getProviderById);
 
 module.exports = router;
