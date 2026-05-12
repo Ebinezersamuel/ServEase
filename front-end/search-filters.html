@@ -654,7 +654,8 @@
     </div>
 
     <script>
-      const sampleProviders = [
+      const API_BASE_URL = "http://localhost:5000";
+      let sampleProviders = [
         {
           id: 1,
           name: "John Doe",
@@ -877,14 +878,7 @@
       }
 
       function bookNow(providerId) {
-        console.log("Booking provider:", providerId);
-        // Open booking modal
-        if (window.parent !== window) {
-          window.parent.postMessage(
-            { type: "openBookingModal", providerId },
-            "*",
-          );
-        }
+        window.location.href = `booking-modal.html?providerId=${encodeURIComponent(providerId)}`;
       }
 
       function toggleFiltersModal() {
@@ -899,8 +893,45 @@
         .getElementById("searchInput")
         .addEventListener("keyup", updateFilters);
 
+      async function loadProviders() {
+        if (!localStorage.getItem("token")) {
+          window.location.href = "ServEase1.html";
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/providers`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to load providers");
+          }
+
+          const providers = await response.json();
+          if (Array.isArray(providers) && providers.length > 0) {
+            sampleProviders = providers.map((provider) => ({
+              id: provider._id,
+              name: provider.businessName || provider.userId?.name || "Provider",
+              category: provider.services?.[0]?.name || "General",
+              emoji: "👨‍🔧",
+              price: provider.hourlyRate || 0,
+              rating: provider.rating || 0,
+              reviews: provider.totalReviews || 0,
+              distance: 1,
+              available: true,
+            }));
+            filteredProviders = [...sampleProviders];
+          }
+        } catch (error) {}
+
+        renderProviders();
+      }
+
       // Initialize
-      renderProviders();
+      loadProviders();
     </script>
   </body>
 </html>

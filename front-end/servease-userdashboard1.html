@@ -1179,7 +1179,7 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script>
-      // ═══════════════ DATA ═══════════════
+      const API_BASE_URL = "http://localhost:5000";
       const SERVICES = [
         {
           id: 1,
@@ -1287,13 +1287,37 @@
         closeSidebar();
       }
 
-      function showBookings(el) {
+      async function showBookings(el) {
         clearNav();
         el.classList.add("active");
-        switchView("services"); // Placeholder
+        switchView("services");
         document.getElementById("page-title").textContent = "My Bookings";
         closeSidebar();
-        showToast("Bookings feature coming soon!", "info");
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/bookings/user`, {
+            headers: getAuthHeaders(),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to load bookings");
+          }
+
+          const data = await response.json();
+          const bookingCards = (data.tasks || []).map((booking) => ({
+            id: booking._id,
+            name: booking.service || "Service",
+            category: booking.status || "pending",
+            badge: booking.status === "completed" ? "popular" : "available",
+            icon: "📅",
+            desc: new Date(booking.scheduledTime).toLocaleString(),
+          }));
+
+          renderServices(bookingCards);
+          showToast("Bookings loaded", "info");
+        } catch (error) {
+          showToast(error.message || "Failed to load bookings", "info");
+        }
       }
 
       function switchView(view) {
@@ -1363,32 +1387,60 @@
       }
 
       function bookService(serviceName) {
-        showToast(`"${serviceName}" booking coming soon!`, "info");
+        const service = SERVICES.find((item) => item.name === serviceName);
+        if (service && service._id) {
+          localStorage.setItem("selectedService", JSON.stringify(service));
+          window.location.href = `booking-modal.html?serviceId=${encodeURIComponent(service._id)}`;
+          return;
+        }
+        showToast(`"${serviceName}" booking setup incomplete`, "info");
+      }
+
+      function getAuthHeaders() {
+        const token = localStorage.getItem("token");
+        return {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+      }
+
+      async function fetchServices() {
+        const response = await fetch(`${API_BASE_URL}/api/services`, {
+          headers: getAuthHeaders(),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load services");
+        }
+
+        const data = await response.json();
+        return (data || []).map((service) => ({
+          _id: service._id,
+          name: service.name,
+          category: service.category,
+          badge: service.isActive ? "available" : "new",
+          icon: service.icon || "🛠️",
+          desc: service.description || "Service available",
+        }));
       }
 
       // ═══════════════ USER INFO ═══════════════
       function getCurrentUser() {
         try {
-          return (
-            JSON.parse(localStorage.getItem("user")) || {
-              firstName: "User",
-              email: "user@example.com",
-            }
-          );
+          return JSON.parse(localStorage.getItem("user")) || { name: "User", email: "user@example.com" };
         } catch {
-          return { firstName: "User", email: "user@example.com" };
+          return { name: "User", email: "user@example.com" };
         }
       }
 
       function updateUserInfo() {
         const user = getCurrentUser();
-        const initials =
-          (user.firstName?.[0] || "U") + (user.lastName?.[0] || "");
+        const name = user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "User";
+        const initials = (name[0] || "U") + (name.split(" ")[1]?.[0] || "");
         document.getElementById("user-avatar").textContent =
           initials.toUpperCase();
-        document.getElementById("user-name").textContent =
-          user.firstName + " " + (user.lastName || "");
-        document.getElementById("hero-name").textContent = user.firstName;
+        document.getElementById("user-name").textContent = name;
+        document.getElementById("hero-name").textContent = name.split(" ")[0];
       }
 
       function logout() {
@@ -1424,8 +1476,18 @@
 
       // ═══════════════ INIT ═══════════════
       window.addEventListener("DOMContentLoaded", () => {
+        if (!localStorage.getItem("token")) {
+          window.location.href = "ServEase1.html";
+          return;
+        }
+
         updateUserInfo();
-        renderServices(SERVICES);
+        fetchServices()
+          .then((services) => {
+            SERVICES.splice(0, SERVICES.length, ...services);
+            renderServices(SERVICES);
+          })
+          .catch(() => renderServices(SERVICES));
 
         // Close sidebar on link click (mobile)
         document.querySelectorAll(".nav-item").forEach((item) => {

@@ -30,12 +30,13 @@ exports.registerProvider = async (req, res) => {
       hourlyRate,
       availability,
       location,
+      isVerified: true,
     });
 
     await newProvider.save();
 
-    // Update user role
-    await User.findByIdAndUpdate(req.user.id, { role: "provider" });
+    // Update user type
+    await User.findByIdAndUpdate(req.user.id, { userType: "provider" });
 
     res.status(201).json({
       message: "Provider registered successfully",
@@ -61,8 +62,12 @@ exports.getAllProviders = async (req, res) => {
       query.rating = { $gte: parseFloat(rating) };
     }
 
+    if (verified !== undefined) {
+      query.isVerified = verified === "true";
+    }
+
     const providers = await Provider.find(query)
-      .populate("userId", "firstName lastName phone email")
+      .populate("userId", "name phone email")
       .populate("services");
 
     res.json(providers);
@@ -75,7 +80,7 @@ exports.getAllProviders = async (req, res) => {
 exports.getProviderById = async (req, res) => {
   try {
     const provider = await Provider.findById(req.params.id)
-      .populate("userId", "firstName lastName phone email")
+      .populate("userId", "name phone email")
       .populate("services");
 
     if (!provider) {
@@ -145,7 +150,7 @@ exports.getProviderTasks = async (req, res) => {
     }
 
     const tasks = await Booking.find({ providerId: provider._id })
-      .populate("customerId", "firstName lastName email phone")
+      .populate("customerId", "name email phone")
       .populate("serviceId")
       .sort({ scheduledTime: -1 });
 

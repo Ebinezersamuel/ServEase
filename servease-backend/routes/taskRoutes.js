@@ -14,14 +14,16 @@ const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
+router.use(auth);
+
 router.get('/', getTasks);
-router.get('/user/mytasks', auth, getUserTasks);
-router.post('/', auth, createTask);
+router.get('/user/mytasks', getUserTasks);
+router.post('/', createTask);
 router.get('/:id', getTask);
-router.put('/:id', auth, updateTask);
-router.put('/:id/accept', auth, acceptTask);
-router.put('/:id/complete', auth, completeTask);
-router.put('/:id/cancel', auth, cancelTask);
-router.delete('/:id', auth, deleteTask);
+router.put('/:id', updateTask);
+router.put('/:id/accept', acceptTask);
+router.put('/:id/complete', completeTask);
+router.put('/:id/cancel', cancelTask);
+router.delete('/:id', deleteTask);
 
 module.exports = router;

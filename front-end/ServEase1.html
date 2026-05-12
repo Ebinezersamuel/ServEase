@@ -518,10 +518,10 @@
             localStorage.setItem("user", JSON.stringify(data.user));
 
             // Redirect based on role
-            if (data.user.role === "provider") {
+            if ((data.user.userType || data.user.role) === "provider") {
               window.location.href = "servease-dashboard.html";
             } else {
-              window.location.href = "servease-userdashboard.html";
+              window.location.href = "servease-userdashboard1.html";
             }
           } catch (error) {
             alert("Server not reachable. Make sure backend is running.");

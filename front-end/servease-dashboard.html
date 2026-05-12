@@ -1008,7 +1008,7 @@
                     🛒
                   </div>
                 </div>
-                <div class="stat-value">0</div>
+                <div class="stat-value" id="total-orders">0</div>
               </div>
               <div class="stat-card">
                 <div class="stat-header">
@@ -1020,7 +1020,7 @@
                     💳
                   </div>
                 </div>
-                <div class="stat-value">$0</div>
+                <div class="stat-value" id="wallet-balance">₹0</div>
               </div>
               <div class="stat-card">
                 <div class="stat-header">
@@ -1032,7 +1032,7 @@
                     ⚡
                   </div>
                 </div>
-                <div class="stat-value">0</div>
+                <div class="stat-value" id="active-orders">0</div>
               </div>
               <div class="stat-card">
                 <div class="stat-header">
@@ -1044,7 +1044,7 @@
                     ⭐
                   </div>
                 </div>
-                <div class="stat-value">0</div>
+                <div class="stat-value" id="provider-rating">0</div>
               </div>
             </div>
           </div>
@@ -1057,6 +1057,7 @@
     <!-- /shell -->
 
     <script>
+      const API_BASE_URL = "http://localhost:5000";
       const frame = document.getElementById("page-frame");
       const homePanel = document.getElementById("home-panel");
       const pageTitle = document.getElementById("page-title");
@@ -1158,18 +1159,19 @@
         }
       }
 
+      function getAuthHeaders() {
+        return {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          "Content-Type": "application/json",
+        };
+      }
+
       function renderUserCard() {
         const user = getCurrentUser();
         // Fallback initials if name missing
-        const initials =
-          (user.firstName?.[0] || "") + (user.lastName?.[0] || "") ||
-          user.email?.[0] ||
-          "U";
-        const userName =
-          user.firstName && user.lastName
-            ? user.firstName + " " + user.lastName
-            : user.email || "Unknown User";
-        const role = user.role === "provider" ? "Provider" : "Customer";
+        const userName = user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email || "Unknown User";
+        const initials = (userName[0] || "U") + (userName.split(" ")[1]?.[0] || "");
+        const role = (user.userType || user.role) === "provider" ? "Provider" : "Customer";
 
         // Update user card HTML
         document.querySelector(".user-avatar").textContent =
@@ -1205,7 +1207,7 @@
       // Show a provider-only welcome message in dashboard
       function providerWelcome() {
         const user = getCurrentUser();
-        if (user.role === "provider") {
+        if ((user.userType || user.role) === "provider") {
           const banner = document.createElement("div");
           banner.className = "welcome-banner";
           banner.style.marginBottom = "16px";
@@ -1223,14 +1225,33 @@
 
       // Run on page load:
       window.addEventListener("DOMContentLoaded", () => {
+        if (!localStorage.getItem("token")) {
+          window.location.href = "ServEase1.html";
+          return;
+        }
+
         renderUserCard();
         addLogoutBtn();
         providerWelcome();
-        // Optionally, restrict access for non-providers:
         const user = getCurrentUser();
-        if (user.role !== "provider") {
-          window.location.href = "dashboardPOP.html";
+        if ((user.userType || user.role) !== "provider") {
+          window.location.href = "servease-userdashboard1.html";
+          return;
         }
+
+        Promise.all([
+          fetch(`${API_BASE_URL}/api/providers/tasks/list`, { headers: getAuthHeaders() }),
+          fetch(`${API_BASE_URL}/api/dashboard`, { headers: getAuthHeaders() }),
+        ])
+          .then(async ([tasksResponse, dashboardResponse]) => {
+            const tasksData = tasksResponse.ok ? await tasksResponse.json() : { tasks: [] };
+            const dashboardData = dashboardResponse.ok ? await dashboardResponse.json() : {};
+            document.getElementById("active-orders").textContent = (tasksData.tasks || []).filter((task) => ["pending", "accepted", "in-progress"].includes(task.status)).length;
+            document.getElementById("total-orders").textContent = dashboardData.stats?.totalBookings || 0;
+            document.getElementById("wallet-balance").textContent = `₹${dashboardData.stats?.totalSpent || 0}`;
+            document.getElementById("provider-rating").textContent = user.rating || 0;
+          })
+          .catch(() => {});
       });
     </script>
   </body>
