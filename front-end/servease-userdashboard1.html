@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ServEase — Marketplace</title>
+    <title>Dashboard — ServEase</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -16,6 +16,7 @@
         margin: 0;
         padding: 0;
       }
+
       :root {
         --bg: #0d0f14;
         --surface: #13161e;
@@ -26,370 +27,394 @@
         --accent3: #43e8a0;
         --text: #e8eaf0;
         --muted: #6b7385;
-        --sidebar-w: 280px;
-        --radius: 14px;
       }
 
       html,
       body {
-        height: 100%;
+        min-height: 100%;
         background: var(--bg);
         color: var(--text);
         font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+      }
+
+      .shell {
+        display: flex;
+        min-height: 100vh;
         overflow: hidden;
       }
 
-      /* ═══ LAYOUT ═══ */
-      .shell {
-        display: flex;
-        height: 100vh;
-      }
-
-      /* ═══ SIDEBAR ═══ */
+      /* ── SIDEBAR ── */
       .sidebar {
-        width: var(--sidebar-w);
+        width: 280px;
         background: var(--surface);
         border-right: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
+        padding: 24px;
+        overflow-y: auto;
         flex-shrink: 0;
-        z-index: 100;
-        position: relative;
-        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
       }
 
       .brand {
-        padding: 24px 20px;
-        border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
         gap: 12px;
+        margin-bottom: 28px;
       }
 
       .brand-icon {
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, var(--accent), #7785ff);
-        border-radius: 12px;
+        background: var(--accent);
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 20px;
-        box-shadow: 0 4px 16px rgba(92, 107, 255, 0.3);
-        flex-shrink: 0;
-      }
-
-      .brand-text {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+        box-shadow: 0 0 18px rgba(92, 107, 255, 0.35);
       }
 
       .brand-name {
         font-family: "Syne", sans-serif;
-        font-weight: 800;
         font-size: 20px;
+        font-weight: 800;
         letter-spacing: -0.3px;
-        color: var(--text);
       }
-
       .brand-name span {
         color: var(--accent);
       }
 
-      .brand-tag {
-        font-size: 10px;
-        color: var(--muted);
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        font-weight: 500;
-      }
-
-      /* ─ Nav ─ */
-      .nav {
-        flex: 1;
-        padding: 16px 8px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+      .nav-section {
+        margin-bottom: 24px;
       }
 
       .nav-label {
         font-size: 11px;
         color: var(--muted);
-        letter-spacing: 1.2px;
         text-transform: uppercase;
-        padding: 12px 14px 8px;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
         font-weight: 600;
-        margin-top: 8px;
-      }
-
-      .nav-label:first-child {
-        margin-top: 0;
       }
 
       .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
         padding: 12px 14px;
         border-radius: 10px;
+        margin-bottom: 4px;
         cursor: pointer;
-        text-decoration: none;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
         color: var(--muted);
-        font-size: 14px;
-        font-weight: 500;
-        transition: all 0.15s ease;
-        border: 1px solid transparent;
-        position: relative;
       }
 
       .nav-item:hover {
         background: var(--surface2);
         color: var(--text);
-        border-color: rgba(92, 107, 255, 0.2);
       }
 
       .nav-item.active {
-        background: rgba(92, 107, 255, 0.15);
-        color: var(--accent);
-        border-color: rgba(92, 107, 255, 0.3);
-        font-weight: 600;
-      }
-
-      .nav-item.active::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 3px;
         background: var(--accent);
-        border-radius: 0 3px 3px 0;
-      }
-
-      .nav-badge {
-        margin-left: auto;
-        background: var(--accent2);
-        color: #fff;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 3px 8px;
-        border-radius: 999px;
-        flex-shrink: 0;
-      }
-
-      /* ─ User Card ─ */
-      .user-card {
-        margin: 12px 8px;
-        padding: 16px;
-        background: linear-gradient(
-          135deg,
-          rgba(92, 107, 255, 0.1),
-          rgba(67, 232, 160, 0.05)
-        );
-        border: 1px solid rgba(92, 107, 255, 0.2);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .user-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--accent), var(--accent2));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: "Syne", sans-serif;
-        font-weight: 700;
-        font-size: 18px;
         color: #fff;
       }
 
-      .user-info {
-        flex: 1;
-        width: 100%;
+      .nav-icon {
+        font-size: 16px;
       }
 
-      .user-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 2px;
-      }
-
-      .user-role {
-        font-size: 12px;
-        color: var(--muted);
-        margin-bottom: 8px;
-      }
-
-      .logout-btn {
-        width: 100%;
-        padding: 8px 12px;
-        background: rgba(255, 107, 107, 0.12);
-        border: 1px solid rgba(255, 107, 107, 0.3);
-        color: var(--accent2);
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-
-      .logout-btn:hover {
-        background: rgba(255, 107, 107, 0.2);
-        border-color: rgba(255, 107, 107, 0.5);
-      }
-
-      /* ═══ MAIN AREA ═══ */
-      .main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-
-      /* ─ Topbar ─ */
-      .topbar {
-        height: 68px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        padding: 0 24px;
-        gap: 16px;
-        background: rgba(13, 15, 20, 0.7);
-        backdrop-filter: blur(10px);
-        flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      .menu-toggle {
-        display: none;
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        color: var(--text);
-        cursor: pointer;
-        font-size: 18px;
-        align-items: center;
-        justify-content: center;
-        transition: 0.15s;
-      }
-
-      .menu-toggle:hover {
-        background: var(--surface2);
-        border-color: var(--accent);
-      }
-
-      .page-title {
-        font-family: "Syne", sans-serif;
-        font-size: 24px;
-        font-weight: 700;
-        letter-spacing: -0.3px;
-        flex: 1;
-      }
-
-      .topbar-actions {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .status-badge {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        background: rgba(67, 232, 160, 0.1);
-        border: 1px solid rgba(67, 232, 160, 0.3);
-        border-radius: 20px;
-        font-size: 13px;
-        color: var(--accent3);
-        font-weight: 600;
-      }
-
-      .status-dot {
-        width: 8px;
-        height: 8px;
-        background: var(--accent3);
-        border-radius: 50%;
-        animation: pulse 2s infinite;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
-      }
-
-      .icon-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        color: var(--muted);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        transition: all 0.15s;
-        position: relative;
-      }
-
-      .icon-btn:hover {
-        background: var(--surface2);
-        color: var(--text);
-        border-color: var(--accent);
-      }
-
-      .notif-badge {
-        position: absolute;
-        top: 6px;
-        right: 6px;
-        width: 8px;
-        height: 8px;
-        background: var(--accent2);
-        border: 2px solid var(--surface);
-        border-radius: 50%;
-      }
-
-      /* ═══ CONTENT ═══ */
-      .content {
+      /* ── MAIN CONTENT ── */
+      .main-content {
         flex: 1;
         overflow-y: auto;
+        padding: 28px;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.15s;
+        color: var(--text);
+      }
+
+      .btn-icon:hover {
+        background: var(--surface2);
+        border-color: var(--accent);
+      }
+
+      /* ── STATS GRID ── */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        background: rgba(92, 107, 255, 0.1);
+        flex-shrink: 0;
+      }
+
+      .stat-content {
+        flex: 1;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .stat-value {
+        font-family: "Syne", sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .stat-desc {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      /* ── CARDS ── */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
         padding: 24px;
+        margin-bottom: 20px;
       }
 
-      .content-frame {
-        display: none;
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .card-title {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .card-action {
+        font-size: 13px;
+        color: var(--accent);
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.15s;
+      }
+
+      .card-action:hover {
+        color: #4a58e8;
+      }
+
+      /* ── ITEMS LIST ── */
+      .items-list {
+        display: flex;
         flex-direction: column;
-        gap: 20px;
-        animation: fadeIn 0.3s ease;
+        gap: 10px;
       }
 
-      .content-frame.active {
+      .item-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: all 0.15s;
+      }
+
+      .item-card:hover {
+        border-color: var(--accent);
+        background: rgba(92, 107, 255, 0.04);
+      }
+
+      .item-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        background: rgba(92, 107, 255, 0.1);
+        flex-shrink: 0;
+      }
+
+      .item-info {
+        flex: 1;
+      }
+
+      .item-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 3px;
+      }
+
+      .item-meta {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .item-status {
+        display: inline-block;
+        padding: 2px 8px;
+        background: rgba(92, 107, 255, 0.12);
+        color: #a0aaff;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .item-status.completed {
+        background: rgba(67, 232, 160, 0.12);
+        color: #40d99f;
+      }
+
+      .item-status.pending {
+        background: rgba(255, 200, 50, 0.12);
+        color: #ffc27a;
+      }
+
+      .item-status.cancelled {
+        background: rgba(255, 107, 107, 0.12);
+        color: #ff9b9b;
+      }
+
+      .item-action {
+        font-size: 18px;
+        cursor: pointer;
+        color: var(--muted);
+        transition: all 0.15s;
+        padding: 4px;
+      }
+
+      .item-action:hover {
+        color: var(--accent);
+      }
+
+      /* ── STATE MESSAGES ── */
+      .state-box {
+        text-align: center;
+        padding: 60px 20px;
+        border: 1px dashed var(--border);
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .state-icon {
+        font-size: 48px;
+      }
+
+      .state-box h3 {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .state-box p {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      /* ── MODAL ── */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.show {
         display: flex;
       }
 
-      @keyframes fadeIn {
+      .modal-content {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        width: min(100%, 500px);
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        animation: slideUp 0.3s ease-out;
+      }
+
+      @keyframes slideUp {
         from {
           opacity: 0;
-          transform: translateY(10px);
+          transform: translateY(40px);
         }
         to {
           opacity: 1;
@@ -397,198 +422,56 @@
         }
       }
 
-      /* ─ Dashboard View ─ */
-      .dashboard-frame.active {
-        display: flex;
-      }
-
-      .hero-section {
-        background: linear-gradient(
-          135deg,
-          rgba(92, 107, 255, 0.15),
-          rgba(67, 232, 160, 0.08)
-        );
-        border: 1px solid rgba(92, 107, 255, 0.2);
-        border-radius: 18px;
-        padding: 32px;
+      .modal-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--border);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 24px;
-        position: relative;
-        overflow: hidden;
       }
 
-      .hero-section::before {
-        content: "";
-        position: absolute;
-        top: -100px;
-        right: -100px;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(
-          circle,
-          rgba(92, 107, 255, 0.1),
-          transparent 70%
-        );
-        border-radius: 50%;
-        pointer-events: none;
-      }
-
-      .hero-content {
-        position: relative;
-        z-index: 1;
-        flex: 1;
-      }
-
-      .hero-content h2 {
-        font-family: "Syne", sans-serif;
-        font-size: 28px;
-        font-weight: 800;
-        margin-bottom: 8px;
-        letter-spacing: -0.5px;
-      }
-
-      .hero-content p {
+      .modal-close {
+        background: none;
+        border: none;
+        cursor: pointer;
         color: var(--muted);
-        font-size: 15px;
-        line-height: 1.6;
+        font-size: 24px;
+        transition: color 0.15s;
+      }
+
+      .modal-close:hover {
+        color: var(--text);
+      }
+
+      .modal-body {
+        padding: 24px;
+      }
+
+      /* ── SEARCH ── */
+      .search-wrap {
+        position: relative;
         margin-bottom: 16px;
       }
 
-      .hero-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 24px;
-        background: var(--accent);
-        color: #fff;
-        border: none;
+      .search-wrap input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
         border-radius: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-        box-shadow: 0 4px 16px rgba(92, 107, 255, 0.3);
+        color: var(--text);
+        padding: 11px 14px 11px 36px;
+        font-size: 13px;
+        font-family: "DM Sans", sans-serif;
+        outline: none;
+        transition: border-color 0.15s;
       }
 
-      .hero-cta:hover {
-        background: #4d5cf0;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(92, 107, 255, 0.4);
+      .search-wrap input:focus {
+        border-color: var(--accent);
       }
 
-      .hero-image {
-        font-size: 80px;
-        position: relative;
-        z-index: 1;
-      }
-
-      /* ─ Stats Grid ─ */
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
-      }
-
-      .stat-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        transition: all 0.15s;
-      }
-
-      .stat-card:hover {
-        border-color: rgba(92, 107, 255, 0.3);
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(92, 107, 255, 0.1);
-      }
-
-      .stat-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-      }
-
-      .stat-label {
-        font-size: 12px;
+      .search-wrap input::placeholder {
         color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        font-weight: 600;
-      }
-
-      .stat-icon {
-        font-size: 24px;
-        opacity: 0.8;
-      }
-
-      .stat-value {
-        font-family: "Syne", sans-serif;
-        font-size: 32px;
-        font-weight: 800;
-        line-height: 1;
-      }
-
-      .stat-change {
-        font-size: 12px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .stat-change.up {
-        color: var(--accent3);
-      }
-      .stat-change.down {
-        color: var(--accent2);
-      }
-
-      /* ─ Services Section ─ */
-      .services-section {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        height: 600px;
-      }
-
-      .services-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-
-      .services-title {
-        font-family: "Syne", sans-serif;
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: -0.3px;
-      }
-
-      .services-tools {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: center;
-        flex: 1;
-        justify-content: flex-end;
-      }
-
-      .search-box {
-        position: relative;
-        width: 220px;
       }
 
       .search-icon {
@@ -597,577 +480,265 @@
         top: 50%;
         transform: translateY(-50%);
         color: var(--muted);
-        font-size: 16px;
-        pointer-events: none;
-      }
-
-      .search-input {
-        width: 100%;
-        height: 38px;
-        padding: 0 12px 0 38px;
-        border: 1px solid var(--border);
-        background: var(--surface2);
-        color: var(--text);
-        border-radius: 8px;
-        font-size: 13px;
-        outline: none;
-        transition: all 0.15s;
-      }
-
-      .search-input:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(92, 107, 255, 0.1);
-      }
-
-      .filter-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        font-size: 12px;
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-
-      .filter-tag:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-        background: rgba(92, 107, 255, 0.08);
-      }
-
-      .services-body {
-        flex: 1;
-        overflow-y: auto;
-        padding: 16px 24px;
-      }
-
-      .services-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-      }
-
-      .service-card {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        transition: all 0.18s;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .service-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--accent), var(--accent3));
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
-        transform-origin: left;
-      }
-
-      .service-card:hover {
-        border-color: var(--accent);
-        background: rgba(92, 107, 255, 0.08);
-        transform: translateY(-4px);
-        box-shadow: 0 8px 16px rgba(92, 107, 255, 0.15);
-      }
-
-      .service-card:hover::before {
-        transform: scaleX(1);
-      }
-
-      .service-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 8px;
-      }
-
-      .service-info h3 {
-        font-size: 15px;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 4px;
-        line-height: 1.3;
-      }
-
-      .service-category {
-        font-size: 12px;
-        color: var(--muted);
-      }
-
-      .service-badge {
-        font-size: 10px;
-        padding: 4px 10px;
-        border-radius: 20px;
-        border: 1px solid transparent;
-        font-weight: 600;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-
-      .badge-popular {
-        background: rgba(92, 107, 255, 0.15);
-        border-color: rgba(92, 107, 255, 0.3);
-        color: #a0aaff;
-      }
-
-      .badge-new {
-        background: rgba(255, 184, 107, 0.15);
-        border-color: rgba(255, 184, 107, 0.3);
-        color: #ffc27a;
-      }
-
-      .badge-available {
-        background: rgba(67, 232, 160, 0.15);
-        border-color: rgba(67, 232, 160, 0.3);
-        color: #6bffb7;
-      }
-
-      .service-action {
-        width: 100%;
-        padding: 10px 12px;
-        background: linear-gradient(
-          135deg,
-          rgba(92, 107, 255, 0.15),
-          rgba(92, 107, 255, 0.08)
-        );
-        border: 1px solid rgba(92, 107, 255, 0.3);
-        color: var(--accent);
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-
-      .service-action:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(92, 107, 255, 0.25),
-          rgba(92, 107, 255, 0.15)
-        );
-        border-color: var(--accent);
-        transform: translateY(-1px);
-      }
-
-      .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        color: var(--muted);
-      }
-
-      .empty-icon {
-        font-size: 48px;
-        margin-bottom: 12px;
-        opacity: 0.6;
-      }
-
-      .empty-text {
         font-size: 14px;
-        line-height: 1.6;
       }
 
-      /* ─ Scrollbar ─ */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
+      /* ── LOADING ── */
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
       }
 
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 999px;
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: #3a4050;
-      }
-
-      /* ─ Responsive ─ */
-      @media (max-width: 1400px) {
-        .services-grid {
-          grid-template-columns: repeat(2, 1fr);
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
       }
 
-      @media (max-width: 900px) {
-        .sidebar {
-          position: fixed;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          transform: translateX(-100%);
-          transition: transform 0.25s ease;
-          width: 280px;
-          z-index: 1000;
-          box-shadow: 2px 0 16px rgba(0, 0, 0, 0.4);
-        }
+      /* ── TOAST ── */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-size: 13px;
+        color: var(--text);
+        transition: transform 0.3s ease;
+        transform: translateY(120px);
+        z-index: 2000;
+      }
 
-        .sidebar.open {
-          transform: translateX(0);
-        }
+      .toast.show {
+        transform: translateY(0);
+      }
 
-        .menu-toggle {
-          display: flex;
-        }
-
-        .status-badge {
-          display: none;
-        }
-
-        .stats-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-
-        .services-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .hero-section {
+      /* ── RESPONSIVE ── */
+      @media (max-width: 768px) {
+        .shell {
           flex-direction: column;
-          text-align: center;
         }
 
-        .hero-image {
-          font-size: 60px;
-        }
-      }
-
-      @media (max-width: 640px) {
         .sidebar {
-          width: 240px;
+          width: 100%;
+          padding: 16px;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+          max-height: 60px;
+          overflow: hidden;
         }
 
-        .topbar {
-          padding: 0 16px;
-          height: 60px;
-        }
-
-        .page-title {
-          font-size: 20px;
-        }
-
-        .content {
+        .main-content {
           padding: 16px;
         }
 
-        .stats-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .services-header {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .services-tools {
-          width: 100%;
-          justify-content: flex-start;
-        }
-
-        .search-box {
-          width: 100%;
-        }
-
-        .hero-section {
-          padding: 20px;
-        }
-
-        .hero-content h2 {
+        .header h1 {
           font-size: 22px;
         }
-      }
 
-      /* ─ Toast Notifications ─ */
-      .toast-container {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 2000;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        max-width: 300px;
-      }
-
-      .toast {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-left: 3px solid var(--accent);
-        border-radius: 10px;
-        padding: 14px 18px;
-        color: var(--text);
-        font-size: 13px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        animation: slideIn 0.3s ease;
-      }
-
-      @keyframes slideIn {
-        from {
-          transform: translateX(400px);
-          opacity: 0;
+        .stats-grid {
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 99px;
       }
     </style>
   </head>
   <body>
     <div class="shell">
-      <!-- Sidebar -->
-      <aside class="sidebar" id="sidebar">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
         <div class="brand">
-          <div class="brand-icon">⚡</div>
-          <div class="brand-text">
-            <div class="brand-name">Serv<span>Ease</span></div>
-            <div class="brand-tag">Marketplace</div>
-          </div>
+          <div class="brand-icon">⚙️</div>
+          <div class="brand-name">Serv<span>Ease</span></div>
         </div>
 
-        <nav class="nav">
+        <div class="nav-section">
           <div class="nav-label">Main</div>
-          <a
-            class="nav-item active"
-            href="#"
-            id="nav-dashboard"
-            onclick="
-              showDashboard(this);
-              return false;
-            "
-          >
-            📊 Dashboard
-          </a>
-
-          <div class="nav-label">Browse</div>
-          <a
-            class="nav-item"
-            href="#"
-            id="nav-services"
-            onclick="
-              showServices(this);
-              return false;
-            "
-          >
-            🔍 Services <span class="nav-badge">30</span>
-          </a>
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              showBookings(this);
-              return false;
-            "
-          >
-            📅 My Bookings
-          </a>
-
-          <div class="nav-label">Account</div>
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              loadPage('account.html', '👤 My Account', this);
-              return false;
-            "
-          >
-            👤 Account
-          </a>
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              loadPage('orders.html', '📋 My Orders', this);
-              return false;
-            "
-          >
-            📋 Orders
-          </a>
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              loadPage('chores.html', '✅ Chores', this);
-              return false;
-            "
-          >
-            ✅ Chores
-          </a>
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              loadPage('settings.html', '⚙️ Settings', this);
-              return false;
-            "
-          >
-            ⚙️ Settings
-          </a>
-        </nav>
-
-        <div class="user-card">
-          <div class="user-avatar" id="user-avatar">U</div>
-          <div class="user-info">
-            <div class="user-name" id="user-name">User Name</div>
-            <div class="user-role">Premium Member</div>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+          <div class="nav-item active" onclick="switchTab('dashboard')">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('active')">
+            <span class="nav-icon">⏳</span>
+            <span>Active Bookings</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('history')">
+            <span class="nav-icon">📜</span>
+            <span>Order History</span>
           </div>
         </div>
-      </aside>
 
-      <!-- Main Area -->
-      <div class="main">
-        <!-- Topbar -->
-        <header class="topbar">
-          <button
-            class="menu-toggle"
-            id="menu-toggle"
-            onclick="toggleSidebar()"
-          >
-            ☰
-          </button>
-          <div class="page-title" id="page-title">Dashboard</div>
-          <div class="topbar-actions">
-            <div class="status-badge">
-              <div class="status-dot"></div>
-              Online
-            </div>
-            <button
-              class="icon-btn"
-              onclick="openNotifications()"
-              title="Notifications"
-            >
-              🔔
-              <div class="notif-badge"></div>
-            </button>
-            <button class="icon-btn" onclick="openHelp()" title="Help">
-              ?
-            </button>
+        <div class="nav-section">
+          <div class="nav-label">Account</div>
+          <div class="nav-item" onclick="switchTab('profile')">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
           </div>
-        </header>
+          <div class="nav-item" onclick="logout()">
+            <span class="nav-icon">🚪</span>
+            <span>Logout</span>
+          </div>
+        </div>
+      </div>
 
-        <!-- Content -->
-        <div class="content">
-          <!-- Dashboard View -->
-          <div class="content-frame dashboard-frame active" id="dashboard-view">
-            <!-- Hero Section -->
-            <div class="hero-section">
-              <div class="hero-content">
-                <h2>Welcome back, <span id="hero-name">User</span>! 👋</h2>
-                <p>
-                  Find verified professionals for home, office, and personal
-                  services. Book instantly, pay securely.
-                </p>
-                <button
-                  class="hero-cta"
-                  onclick="
-                    showServices(document.getElementById('nav-services'))
-                  "
-                >
-                  Explore Services
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  >
-                    <path d="M2 7h10M8 2l5 5-5 5" />
-                  </svg>
-                </button>
+      <!-- MAIN CONTENT -->
+      <div class="main-content">
+        <div class="header">
+          <h1>Welcome, <span id="userName">User</span></h1>
+          <div class="header-actions">
+            <button class="btn-icon" onclick="refreshData()">🔄</button>
+            <button class="btn-icon" onclick="openNotifications()">🔔</button>
+          </div>
+        </div>
+
+        <!-- ── DASHBOARD TAB ── -->
+        <div id="dashboardTab" class="tab-content">
+          <!-- STATS -->
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+              <div class="stat-icon">📦</div>
+              <div class="stat-content">
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-value" id="totalBookings">0</div>
+                <div class="stat-desc">All time</div>
               </div>
-              <div class="hero-image">🏠</div>
             </div>
 
-            <!-- Stats Grid -->
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-header">
-                  <div class="stat-label">Active Orders</div>
-                  <div class="stat-icon">🛒</div>
-                </div>
-                <div class="stat-value" id="stat-active">0</div>
-                <div class="stat-change up">↑ Updated today</div>
+            <div class="stat-card">
+              <div class="stat-icon">✅</div>
+              <div class="stat-content">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value" id="completedBookings">0</div>
+                <div class="stat-desc">Services done</div>
               </div>
+            </div>
 
-              <div class="stat-card">
-                <div class="stat-header">
-                  <div class="stat-label">Completed</div>
-                  <div class="stat-icon">✅</div>
-                </div>
-                <div class="stat-value" id="stat-completed">12</div>
-                <div class="stat-change up">↑ This month</div>
+            <div class="stat-card">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-content">
+                <div class="stat-label">In Progress</div>
+                <div class="stat-value" id="inProgressBookings">0</div>
+                <div class="stat-desc">Active now</div>
               </div>
+            </div>
 
-              <div class="stat-card">
-                <div class="stat-header">
-                  <div class="stat-label">Wallet Balance</div>
-                  <div class="stat-icon">💳</div>
-                </div>
-                <div class="stat-value" id="stat-wallet">$125</div>
-                <div class="stat-change down">↓ $15 spent</div>
-              </div>
-
-              <div class="stat-card">
-                <div class="stat-header">
-                  <div class="stat-label">Rating</div>
-                  <div class="stat-icon">⭐</div>
-                </div>
-                <div class="stat-value" id="stat-rating">4.8</div>
-                <div class="stat-change up">↑ 12 reviews</div>
+            <div class="stat-card">
+              <div class="stat-icon">💰</div>
+              <div class="stat-content">
+                <div class="stat-label">Total Spent</div>
+                <div class="stat-value" id="totalSpent">₹0</div>
+                <div class="stat-desc">All services</div>
               </div>
             </div>
           </div>
 
-          <!-- Services View -->
-          <div class="content-frame" id="services-view">
-            <div class="services-section">
-              <div class="services-header">
-                <div class="services-title">Explore Services</div>
-                <div class="services-tools">
-                  <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input
-                      type="text"
-                      class="search-input"
-                      id="service-search"
-                      placeholder="Search services..."
-                      oninput="filterServices()"
-                    />
-                  </div>
-                  <div class="filter-tag" onclick="alert('Filter coming soon')">
-                    🎯 Filter
-                  </div>
-                </div>
+          <!-- ACTIVE BOOKINGS -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Active Bookings</div>
+              <div class="card-action" onclick="switchTab('active')">
+                View all →
               </div>
-              <div class="services-body">
-                <div class="services-grid" id="services-grid"></div>
-                <div class="empty-state" id="empty-state" style="display: none">
-                  <div class="empty-icon">🔍</div>
-                  <div class="empty-text">
-                    No services found. Try a different search.
-                  </div>
-                </div>
+            </div>
+            <div id="activeBookingsList">
+              <div class="state-box">
+                <div class="spinner"></div>
+                <h3>Loading bookings...</h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- RECENT ORDERS -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Recent Orders</div>
+              <div class="card-action" onclick="switchTab('history')">
+                View history →
+              </div>
+            </div>
+            <div id="recentOrdersList">
+              <div class="state-box">
+                <div class="spinner"></div>
+                <h3>Loading orders...</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ACTIVE BOOKINGS TAB ── -->
+        <div id="activeTab" class="tab-content" style="display: none">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Active Bookings & Chores</div>
+              <div class="search-wrap">
+                <div class="search-icon">🔍</div>
+                <input
+                  type="text"
+                  id="activeSearch"
+                  placeholder="Search bookings..."
+                  onkeyup="filterActive()"
+                />
+              </div>
+            </div>
+            <div id="fullActiveBookingsList">
+              <div class="state-box">
+                <div class="spinner"></div>
+                <h3>Loading bookings...</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ORDER HISTORY TAB ── -->
+        <div id="historyTab" class="tab-content" style="display: none">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Order History</div>
+              <div class="search-wrap">
+                <div class="search-icon">🔍</div>
+                <input
+                  type="text"
+                  id="historySearch"
+                  placeholder="Search orders..."
+                  onkeyup="filterHistory()"
+                />
+              </div>
+            </div>
+            <div id="orderHistoryList">
+              <div class="state-box">
+                <div class="spinner"></div>
+                <h3>Loading history...</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PROFILE TAB ── -->
+        <div id="profileTab" class="tab-content" style="display: none">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">My Profile</div>
+            </div>
+            <div id="profileContent">
+              <div class="state-box">
+                <div class="spinner"></div>
+                <h3>Loading profile...</h3>
               </div>
             </div>
           </div>
@@ -1175,8 +746,23 @@
       </div>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toast-container"></div>
+    <!-- MODALS -->
+    <div id="bookingModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Booking Details</h2>
+          <button class="modal-close" onclick="closeModal('bookingModal')">
+            ✕
+          </button>
+        </div>
+        <div class="modal-body" id="bookingModalContent">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
 
     <script>
       const API_BASE_URL = "http://localhost:5000";
@@ -1255,10 +841,9 @@
         },
       ];
 
-      // ═══════════════ UI FUNCTIONS ═══════════════
-      function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("open");
-      }
+      // ══════════════════════════════════════════════════════════════════════════════════
+      // INITIALIZATION
+      // ══════════════════════════════════════════════════════════════════════════════════
 
       function closeSidebar() {
         document.getElementById("sidebar").classList.remove("open");
@@ -1427,7 +1012,12 @@
       // ═══════════════ USER INFO ═══════════════
       function getCurrentUser() {
         try {
-          return JSON.parse(localStorage.getItem("user")) || { name: "User", email: "user@example.com" };
+          return (
+            JSON.parse(localStorage.getItem("user")) || {
+              name: "User",
+              email: "user@example.com",
+            }
+          );
         } catch {
           return { name: "User", email: "user@example.com" };
         }
@@ -1435,7 +1025,10 @@
 
       function updateUserInfo() {
         const user = getCurrentUser();
-        const name = user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "User";
+        const name =
+          user.name ||
+          `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
+          "User";
         const initials = (name[0] || "U") + (name.split(" ")[1]?.[0] || "");
         document.getElementById("user-avatar").textContent =
           initials.toUpperCase();
@@ -1451,27 +1044,15 @@
         }
       }
 
-      // ═══════════════ NOTIFICATIONS ═══════════════
-      function openNotifications() {
-        showToast("You have 3 new notifications!", "info");
+      function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove("show");
       }
 
-      function openHelp() {
-        showToast("Help & Support coming soon!", "info");
-      }
-
-      // ═══════════════ TOAST ═══════════════
-      function showToast(message, type = "info") {
-        const container = document.getElementById("toast-container");
-        const toast = document.createElement("div");
-        toast.className = "toast";
+      function showToast(message) {
+        const toast = document.getElementById("toast");
         toast.textContent = message;
-        container.appendChild(toast);
-
-        setTimeout(() => {
-          toast.style.animation = "slideOut 0.3s ease";
-          setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 3000);
       }
 
       // ═══════════════ INIT ═══════════════
