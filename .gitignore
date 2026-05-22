@@ -1,6 +1,0 @@
-node_modules/
-servease-backend/node_modules/
-*.log
-.env
-servease-backend/.env
-.DS_Store
