@@ -559,11 +559,12 @@
       // Google & Facebook code can remain as is (it doesn't affect email/password registration).
 
       // ======== BACKEND CONNECTED REGISTRATION HANDLER ========
+
+      // Replace the existing event listener with:
       document
         .getElementById("registerForm")
         .addEventListener("submit", async function (e) {
           e.preventDefault();
-
           const firstName = document.getElementById("firstName").value.trim();
           const lastName = document.getElementById("lastName").value.trim();
           const email = document.getElementById("regEmail").value.trim();
@@ -572,39 +573,29 @@
             .getElementById("confirmPassword")
             .value.trim();
 
-          if (pass !== confirmPass) {
-            alert("Passwords do not match.");
-            return;
-          }
+          if (!firstName || !lastName || !email || !pass)
+            return alert("Please fill all fields");
+          if (pass !== confirmPass) return alert("Passwords do not match");
 
           try {
-            const response = await fetch(
-              "http://localhost:5000/api/auth/register",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  firstName,
-                  lastName,
-                  email,
-                  password: pass,
-                  role: selectedRole,
-                }),
-              },
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-              alert(data.message || "Registration failed");
-              return;
-            }
-
+            const res = await fetch("http://localhost:5000/api/auth/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                password: pass,
+                role: selectedRole,
+              }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
-
-            if ((data.user.userType || data.user.role) === "provider") {
-              window.location.href = "servease-dashboard.html";
+            if (data.user.role === "provider") {
+              // Check if provider profile exists, else redirect to provider-register
+              window.location.href = "provider-register.html";
             } else {
               window.location.href = "servease-userdashboard1.html";
             }

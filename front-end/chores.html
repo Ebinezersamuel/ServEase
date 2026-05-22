@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chores — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      html,
+      body {
+        min-height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+      }
+      .page {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+      }
+      .page-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        gap: 16px;
+      }
+      .page-header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--text);
+      }
+      .page-header h1 span {
+        color: var(--accent);
+      }
+      .item-count {
+        font-size: 12px;
+        color: var(--muted);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        padding: 4px 12px;
+        border-radius: 20px;
+      }
+      .state-box {
+        text-align: center;
+        padding: 60px 20px;
+        border: 1px dashed var(--border);
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+      .state-icon {
+        font-size: 42px;
+      }
+      .state-box h3 {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .state-box p {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .state-box button {
+        margin-top: 10px;
+        padding: 10px 24px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .state-box button:hover {
+        background: #4a58e8;
+      }
+      .chores-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .chore-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .chore-thumb {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: rgba(92, 107, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+      }
+      .chore-info {
+        flex: 1;
+      }
+      .chore-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 3px;
+      }
+      .chore-meta {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        gap: 10px;
+      }
+      .chore-meta .tag {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        padding: 2px 8px;
+        border-radius: 20px;
+      }
+      .chore-price {
+        font-family: "Syne", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        min-width: 64px;
+        text-align: right;
+      }
+      .remove-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        padding: 4px;
+        border-radius: 6px;
+        font-size: 18px;
+      }
+      .remove-btn:hover {
+        color: var(--accent2);
+        background: rgba(255, 107, 107, 0.08);
+      }
+      .summary-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .summary-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        font-family: "Syne", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .summary-body {
+        padding: 16px 20px;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 13px;
+        color: var(--muted);
+        border-bottom: 1px solid var(--border);
+      }
+      .summary-row .val {
+        color: var(--text);
+        font-weight: 500;
+      }
+      .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: rgba(92, 107, 255, 0.06);
+        border-top: 1px solid rgba(92, 107, 255, 0.2);
+      }
+      .summary-total .label {
+        font-family: "Syne", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .summary-total .amount {
+        font-family: "Syne", sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--accent3);
+      }
+      .continue-btn {
+        width: 100%;
+        padding: 14px 20px;
+        margin-top: 14px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-family: "Syne", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .continue-btn:hover {
+        background: #4a58e8;
+        transform: translateY(-2px);
+      }
+      .clear-btn {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        background: none;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      .clear-btn:hover {
+        color: var(--accent2);
+        background: rgba(255, 107, 107, 0.08);
+      }
+      .error-msg {
+        background: rgba(255, 107, 107, 0.1);
+        color: var(--accent2);
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        border-left: 3px solid var(--accent2);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="page-header">
+        <h1>My <span>Chores</span></h1>
+        <span class="item-count" id="item-count">0 items</span>
+      </div>
+      <div id="root"></div>
+    </div>
+
+    <script>
+      let chores = [];
+
+      function saveChores() {
+        try {
+          localStorage.setItem("chores", JSON.stringify(chores));
+        } catch (err) {
+          console.error(err);
+          showError("Failed to save chores.");
+        }
+      }
+
+      function showError(msg) {
+        const root = document.getElementById("root");
+        const errDiv = document.createElement("div");
+        errDiv.className = "error-msg";
+        errDiv.innerText = msg;
+        root.insertBefore(errDiv, root.firstChild);
+        setTimeout(() => errDiv.remove(), 5000);
+      }
+
+      function render() {
+        const root = document.getElementById("root");
+        const stored = localStorage.getItem("chores");
+        chores = stored ? JSON.parse(stored) : [];
+
+        if (!chores.length) {
+          root.innerHTML = `
+        <div class="state-box">
+          <div class="state-icon">🛒</div>
+          <h3>No chores saved</h3>
+          <p>Browse services and add them here.</p>
+          <button id="browseServicesBtn">Browse Services</button>
+        </div>
+      `;
+          document.getElementById("item-count").innerText = "0 items";
+          const browseBtn = document.getElementById("browseServicesBtn");
+          if (browseBtn) {
+            browseBtn.onclick = () => {
+              // Navigate the parent dashboard to the services view
+              if (window.parent && window.parent !== window) {
+                window.parent.location.href =
+                  "servease-userdashboard1.html?view=services";
+              } else {
+                window.location.href =
+                  "servease-userdashboard1.html?view=services";
+              }
+            };
+          }
+          return;
+        }
+
+        document.getElementById("item-count").innerText =
+          `${chores.length} item${chores.length !== 1 ? "s" : ""}`;
+        const list = document.createElement("div");
+        list.className = "chores-list";
+        chores.forEach((ch) => {
+          const card = document.createElement("div");
+          card.className = "chore-card";
+          card.innerHTML = `
+        <div class="chore-thumb">🔧</div>
+        <div class="chore-info">
+          <div class="chore-name">${ch.serviceName || "Service"}</div>
+          <div class="chore-meta"><span>${ch.providerName || "Provider"}</span><span class="tag">📅 ${ch.scheduledDate || "Not scheduled"} ${ch.scheduledTime || ""}</span></div>
+        </div>
+        <div class="chore-price">₹${ch.totalAmount || 0}</div>
+        <button class="remove-btn" onclick="removeChore(${ch.id})">✕</button>
+      `;
+          list.appendChild(card);
+        });
+        root.innerHTML = "";
+        root.appendChild(list);
+
+        const subtotal = chores.reduce((s, c) => s + (c.totalAmount || 0), 0);
+        const platformFee = Math.round(subtotal * 0.05);
+        const gst = Math.round((subtotal + platformFee) * 0.18);
+        const total = subtotal + platformFee + gst;
+
+        const summary = document.createElement("div");
+        summary.className = "summary-card";
+        summary.innerHTML = `
+      <div class="summary-header">Order summary</div>
+      <div class="summary-body">
+        <div class="summary-row"><span>Subtotal</span><span class="val">₹${subtotal}</span></div>
+        <div class="summary-row"><span>Platform Fee (5%)</span><span class="val">₹${platformFee}</span></div>
+        <div class="summary-row"><span>GST (18%)</span><span class="val">₹${gst}</span></div>
+      </div>
+      <div class="summary-total"><span class="label">Total</span><span class="amount">₹${total}</span></div>
+    `;
+
+        const continueBtn = document.createElement("button");
+        continueBtn.className = "continue-btn";
+        continueBtn.innerText = "Continue to checkout →";
+        continueBtn.onclick = () => {
+          localStorage.setItem("pendingCheckout", JSON.stringify(chores));
+          window.location.href = "payment-checkout.html";
+        };
+
+        const clearBtn = document.createElement("button");
+        clearBtn.className = "clear-btn";
+        clearBtn.innerText = "Clear all chores";
+        clearBtn.onclick = () => {
+          if (confirm("Clear all chores?")) {
+            chores = [];
+            saveChores();
+            render();
+          }
+        };
+
+        root.appendChild(summary);
+        root.appendChild(continueBtn);
+        root.appendChild(clearBtn);
+      }
+
+      function removeChore(id) {
+        chores = chores.filter((c) => c.id !== id);
+        saveChores();
+        render();
+      }
+
+      render();
+      window.addEventListener("storage", (e) => {
+        if (e.key === "chores") render();
+      });
+    </script>
+  </body>
+</html>

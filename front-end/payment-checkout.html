@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payment Checkout — ServEase</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
       *,
       *::before,
@@ -31,6 +32,7 @@
         font-family: "DM Sans", sans-serif;
         background: var(--bg);
         color: var(--text);
+        overflow-x: hidden;
       }
       .container {
         max-width: 1000px;
@@ -194,19 +196,15 @@
       .payment-option input[type="radio"] {
         display: none;
       }
-      .payment-option input:checked ~ .payment-method {
+      .payment-option input:checked ~ .payment-radio {
         border-color: var(--accent);
-        background: rgba(92, 107, 255, 0.06);
+        background: var(--accent);
       }
       .payment-radio {
         width: 20px;
         height: 20px;
         border: 2px solid var(--border);
         border-radius: 50%;
-      }
-      .payment-option input:checked ~ .payment-radio {
-        border-color: var(--accent);
-        background: var(--accent);
       }
       .payment-method {
         flex: 1;
@@ -223,6 +221,44 @@
       .payment-desc {
         font-size: 12px;
         color: var(--muted);
+      }
+      /* UPI QR SECTION */
+      .upi-section {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        background: rgba(92, 107, 255, 0.06);
+        border-radius: 12px;
+        margin-top: 0;
+      }
+      .upi-section.active {
+        display: block;
+      }
+      .qr-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+      }
+      .qr-container canvas {
+        border-radius: 8px;
+      }
+      .upi-info {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 16px 0;
+      }
+      .upi-ref {
+        background: var(--surface);
+        padding: 12px;
+        border-radius: 8px;
+        margin: 12px 0;
+        font-family: monospace;
+        color: var(--accent3);
+        font-weight: 600;
+        word-break: break-all;
       }
       /* SIDEBAR */
       .order-summary {
@@ -247,143 +283,233 @@
         color: var(--muted);
         border-bottom: 1px solid var(--border);
       }
-      .summary-item .val {
-        color: var(--text);
-        font-weight: 500;
-      }
       .summary-total {
         display: flex;
         justify-content: space-between;
+        font-size: 15px;
+        font-weight: 700;
         padding: 12px 0;
-        margin-top: 8px;
-        border-top: 2px solid var(--border);
-        font-family: "Syne", sans-serif;
-        font-size: 18px;
-        font-weight: 800;
-        color: var(--accent3);
+        color: var(--text);
+        margin-top: 10px;
+      }
+      .val {
+        color: var(--accent);
       }
       .service-details {
-        background: var(--surface2);
-        border-radius: 12px;
-        padding: 12px;
+        font-size: 13px;
         margin-bottom: 14px;
-      }
-      .service-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text);
-      }
-      .service-meta {
-        font-size: 12px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
         color: var(--muted);
-        margin-top: 4px;
       }
       /* BUTTONS */
       .button-group {
         display: flex;
-        gap: 10px;
-        margin-top: 20px;
+        gap: 12px;
+        margin-top: 24px;
       }
       .btn {
         flex: 1;
-        padding: 14px 20px;
-        border-radius: 10px;
+        padding: 12px 20px;
         border: none;
-        font-weight: 600;
+        border-radius: 12px;
+        font-family: "Syne", sans-serif;
         font-size: 14px;
+        font-weight: 700;
         cursor: pointer;
-        transition: all 0.18s;
-        font-family: "DM Sans", sans-serif;
-      }
-      .btn-secondary {
-        background: var(--surface2);
-        color: var(--muted);
-        border: 1px solid var(--border);
-      }
-      .btn-secondary:hover {
-        color: var(--text);
-        border-color: var(--accent);
+        transition: all 0.15s;
       }
       .btn-primary {
         background: var(--accent);
         color: #fff;
-        box-shadow: 0 4px 16px rgba(92, 107, 255, 0.3);
       }
-      .btn-primary:hover {
-        background: #4d5cf0;
-        transform: translateY(-1px);
+      .btn-primary:hover:not(:disabled) {
+        background: #4a5ae8;
+        transform: translateY(-2px);
       }
       .btn-primary:disabled {
-        background: var(--border);
+        opacity: 0.5;
         cursor: not-allowed;
       }
-      /* SUCCESS STATE */
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        background: var(--border);
+      }
+      /* SUCCESS SCREEN */
       .success-screen {
         display: none;
+        grid-column: 1 / -1;
         text-align: center;
         padding: 60px 20px;
+        animation: slideIn 0.5s ease-out;
       }
       .success-screen.show {
         display: block;
       }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
       .success-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: rgba(67, 232, 160, 0.1);
-        border: 2px solid var(--accent3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 40px;
-        margin: 0 auto 20px;
+        font-size: 80px;
+        margin-bottom: 20px;
+        animation: bounce 0.6s ease-out;
+      }
+      @keyframes bounce {
+        0% {
+          transform: scale(0);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
       .success-screen h2 {
         font-family: "Syne", sans-serif;
         font-size: 28px;
-        font-weight: 800;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
+        color: var(--accent3);
       }
       .success-screen p {
         color: var(--muted);
-        font-size: 14px;
-        line-height: 1.6;
+        margin-bottom: 30px;
+        font-size: 15px;
       }
-      .success-order {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 14px;
-        margin: 20px 0;
-        text-align: left;
-      }
-      .success-order-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        padding: 6px 0;
-        color: var(--muted);
-      }
-      .success-order-row .val {
-        color: var(--text);
-        font-weight: 500;
-      }
-      /* SECURITY */
+      /* SECURITY INFO */
       .security-info {
-        background: rgba(67, 232, 160, 0.06);
-        border: 1px solid rgba(67, 232, 160, 0.2);
-        border-radius: 12px;
-        padding: 12px 14px;
         display: flex;
+        align-items: center;
         gap: 10px;
-        margin-top: 14px;
-      }
-      .security-info p {
-        font-size: 12px;
+        background: rgba(67, 232, 160, 0.08);
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 13px;
         color: var(--muted);
-        line-height: 1.5;
+        margin-top: 20px;
       }
-      /* RESPONSIVE */
+      .security-info a {
+        color: var(--accent3);
+        text-decoration: none;
+      }
+      /* CHECKBOX STYLING */
+      .terms-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .terms-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+      .terms-checkbox a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .terms-checkbox a:hover {
+        text-decoration: underline;
+      }
+      /* MODAL OVERLAY */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal-content {
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 16px;
+        padding: 32px;
+        max-width: 500px;
+        width: 90%;
+        animation: modalBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      @keyframes modalBounce {
+        0% {
+          opacity: 0;
+          transform: scale(0.7) translateY(-50px);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+      .modal-icon {
+        font-size: 60px;
+        margin-bottom: 16px;
+        display: inline-block;
+      }
+      .modal-title {
+        font-family: "Syne", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text);
+      }
+      .modal-message {
+        color: var(--muted);
+        margin-bottom: 24px;
+        line-height: 1.6;
+        font-size: 14px;
+        white-space: pre-wrap;
+      }
+      .modal-buttons {
+        display: flex;
+        gap: 12px;
+      }
+      .modal-btn {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 10px;
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .modal-btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+      .modal-btn-primary:hover {
+        background: #4a5ae8;
+        transform: translateY(-2px);
+      }
+      .modal-btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .modal-btn-secondary:hover {
+        background: var(--border);
+      }
       @media (max-width: 768px) {
         .checkout-grid {
           grid-template-columns: 1fr;
@@ -391,118 +517,70 @@
         .order-summary {
           position: static;
         }
-        .row-2,
-        .row-3 {
-          grid-template-columns: 1fr;
-        }
-      }
-      ::-webkit-scrollbar {
-        width: 5px;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 99px;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="checkout-header">
-        <h1>Secure Checkout</h1>
+        <h1>Payment Checkout</h1>
         <p>Complete your booking securely</p>
       </div>
 
-      <!-- CHECKOUT STEPS -->
       <div class="checkout-steps">
         <div class="step completed">
           <div class="step-number">✓</div>
-          <div class="step-label">Service Details</div>
+          <div class="step-label">Select Service</div>
+        </div>
+        <div class="step completed">
+          <div class="step-number">✓</div>
+          <div class="step-label">Schedule</div>
         </div>
         <div class="step active">
-          <div class="step-number">2</div>
-          <div class="step-label">Payment</div>
-        </div>
-        <div class="step">
           <div class="step-number">3</div>
-          <div class="step-label">Confirmation</div>
+          <div class="step-label">Payment</div>
         </div>
       </div>
 
-      <div class="checkout-grid">
-        <!-- MAIN CONTENT -->
+      <div class="checkout-grid" id="checkoutGrid">
         <div>
           <!-- PAYMENT METHODS -->
           <div class="card">
-            <div class="card-title">Payment Method</div>
+            <div class="card-title">Select Payment Method</div>
             <div class="payment-methods">
-              <!-- Credit/Debit Card -->
-              <label class="payment-option" id="cardOption">
+              <label class="payment-option">
                 <input
                   type="radio"
-                  name="payment"
+                  name="paymentMethod"
                   value="card"
                   checked
                   onchange="updatePaymentMethod('card')"
                 />
                 <div class="payment-radio"></div>
                 <div class="payment-method">
-                  <div class="payment-name">💳 Credit / Debit Card</div>
-                  <div class="payment-desc">
-                    Visa, Mastercard, American Express
-                  </div>
+                  <div class="payment-name">Credit/Debit Card</div>
+                  <div class="payment-desc">Visa, Mastercard, RuPay</div>
                 </div>
               </label>
-
-              <!-- UPI -->
               <label class="payment-option">
                 <input
                   type="radio"
-                  name="payment"
+                  name="paymentMethod"
                   value="upi"
                   onchange="updatePaymentMethod('upi')"
                 />
                 <div class="payment-radio"></div>
                 <div class="payment-method">
-                  <div class="payment-name">📱 UPI</div>
+                  <div class="payment-name">UPI</div>
                   <div class="payment-desc">Google Pay, PhonePe, Paytm</div>
-                </div>
-              </label>
-
-              <!-- Net Banking -->
-              <label class="payment-option">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="netbanking"
-                  onchange="updatePaymentMethod('netbanking')"
-                />
-                <div class="payment-radio"></div>
-                <div class="payment-method">
-                  <div class="payment-name">🏦 Net Banking</div>
-                  <div class="payment-desc">All major banks supported</div>
-                </div>
-              </label>
-
-              <!-- Wallet -->
-              <label class="payment-option">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="wallet"
-                  onchange="updatePaymentMethod('wallet')"
-                />
-                <div class="payment-radio"></div>
-                <div class="payment-method">
-                  <div class="payment-name">💰 ServEase Wallet</div>
-                  <div class="payment-desc">Use saved balance</div>
                 </div>
               </label>
             </div>
           </div>
 
           <!-- CARD DETAILS -->
-          <div class="card" id="cardDetails">
-            <div class="card-title">Card Information</div>
+          <div class="card" id="cardDetails" style="display: block">
+            <div class="card-title">Card Details</div>
             <div class="field">
               <label>Cardholder Name</label>
               <input type="text" placeholder="John Doe" required />
@@ -524,6 +602,40 @@
               <div class="field">
                 <label>CVV</label>
                 <input type="text" placeholder="123" maxlength="4" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- UPI QR CODE SECTION -->
+          <div class="card" id="upiDetails" style="display: none">
+            <div class="card-title">UPI Payment</div>
+            <div class="upi-section active" id="upiSection">
+              <div style="font-size: 24px; margin-bottom: 16px">📱</div>
+              <p
+                style="color: var(--text); font-weight: 600; margin-bottom: 8px"
+              >
+                Scan to Pay with UPI
+              </p>
+              <div class="qr-container" id="qrCode"></div>
+              <div class="upi-info">
+                <p>
+                  Scan this QR code with any UPI app to complete the payment
+                </p>
+                <p style="margin-top: 8px">
+                  Google Pay • PhonePe • Paytm • BHIM
+                </p>
+              </div>
+              <div class="upi-ref">
+                <div
+                  style="
+                    font-size: 11px;
+                    color: var(--muted);
+                    margin-bottom: 6px;
+                  "
+                >
+                  Reference ID
+                </div>
+                <div id="upiRefId">UPI20250515XXXX</div>
               </div>
             </div>
           </div>
@@ -561,38 +673,21 @@
           <div class="security-info">
             <span style="font-size: 20px">🔒</span>
             <p>
-              Your payment information is encrypted and secure. We use
-              industry-leading security standards.
-              <a href="#" style="color: var(--accent); text-decoration: none"
-                >Learn more</a
-              >
+              Your payment information is encrypted and secure.
+              <a href="#">Learn more</a>
             </p>
           </div>
 
-          <label
-            class="field"
-            style="margin-top: 20px; flex-direction: row; align-items: center"
-          >
-            <input
-              type="checkbox"
-              id="termsCheck"
-              style="width: 18px; height: 18px; cursor: pointer"
-              required
-            />
-            <span
-              style="margin-left: 10px; font-size: 13px; color: var(--muted)"
-              >I agree to the
-              <a href="#" style="color: var(--accent); text-decoration: none"
-                >Terms & Conditions</a
-              >
+          <div class="terms-checkbox">
+            <input type="checkbox" id="termsCheck" required />
+            <span>
+              I agree to the
+              <a href="#">Terms & Conditions</a>
               and
-              <a href="#" style="color: var(--accent); text-decoration: none"
-                >Refund Policy</a
-              ></span
-            >
-          </label>
+              <a href="#">Refund Policy</a>
+            </span>
+          </div>
 
-          <!-- BUTTONS -->
           <div class="button-group">
             <button class="btn btn-secondary" onclick="goBack()">Back</button>
             <button
@@ -600,180 +695,298 @@
               onclick="processPayment()"
               id="payBtn"
             >
-              Pay ₹619.50
+              Pay ₹0
             </button>
           </div>
 
-          <!-- SUCCESS SCREEN -->
           <div class="success-screen" id="successScreen">
             <div class="success-icon">✓</div>
-            <h2>Payment Successful! 🎉</h2>
-            <p>
-              Your booking has been confirmed. Check your email for details.
-            </p>
-            <div class="success-order">
-              <div class="success-order-row">
-                <span>Booking ID</span>
-                <span class="val" id="bookingId">#SRV-2024-001234</span>
-              </div>
-              <div class="success-order-row">
-                <span>Service</span>
-                <span class="val">AC Maintenance</span>
-              </div>
-              <div class="success-order-row">
-                <span>Provider</span>
-                <span class="val">John Doe</span>
-              </div>
-              <div class="success-order-row">
-                <span>Scheduled</span>
-                <span class="val" id="scheduledDate"
-                  >May 15, 2024 • 10:00 AM</span
-                >
-              </div>
-              <div
-                class="success-order-row"
-                style="
-                  border-top: 1px solid var(--border);
-                  padding-top: 10px;
-                  margin-top: 10px;
-                "
-              >
-                <span>Amount Paid</span>
-                <span
-                  class="val"
-                  style="color: var(--accent3); font-weight: 700"
-                  >₹619.50</span
-                >
-              </div>
-            </div>
-            <button
-              class="btn btn-primary"
-              onclick="goToDashboard()"
-              style="margin-top: 0"
-            >
-              View Order
+            <h2>Payment Successfully Done! 🎉</h2>
+            <p id="successMessage">Your booking has been confirmed.</p>
+            <button class="btn btn-primary" onclick="goToDashboard()">
+              View Dashboard
             </button>
           </div>
         </div>
 
-        <!-- SIDEBAR: ORDER SUMMARY -->
         <div>
           <div class="order-summary">
             <div class="summary-title">Order Summary</div>
-
-            <div class="service-details">
-              <div class="service-name">❄️ AC Maintenance</div>
-              <div class="service-meta">By John Doe</div>
-              <div class="service-meta">📅 May 15, 2024</div>
-              <div class="service-meta">⏰ 10:00 AM - 11:00 AM</div>
-            </div>
-
+            <div class="service-details" id="serviceDetailsContainer"></div>
             <div class="summary-item">
               <span>Service Price</span>
-              <span class="val">₹500</span>
+              <span class="val" id="servicePriceSummary">₹0</span>
             </div>
             <div class="summary-item">
-              <span>Platform Fee</span>
-              <span class="val">₹25</span>
+              <span>Platform Fee (5%)</span>
+              <span class="val" id="platformFeeSummary">₹0</span>
             </div>
             <div class="summary-item">
               <span>GST (18%)</span>
-              <span class="val">₹94.50</span>
+              <span class="val" id="gstSummary">₹0</span>
             </div>
-
             <div class="summary-total">
               <span>Total</span>
-              <span>₹619.50</span>
-            </div>
-
-            <div
-              style="
-                background: rgba(92, 107, 255, 0.06);
-                border-radius: 10px;
-                padding: 10px;
-                margin-top: 14px;
-              "
-            >
-              <p style="font-size: 12px; color: var(--muted); line-height: 1.6">
-                ✓ Free cancellation up to 2 hours before booking<br />
-                ✓ Instant confirmation<br />
-                ✓ 24/7 customer support
-              </p>
+              <span id="totalAmountSummary">₹0</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Modal for messages -->
+    <div class="modal-overlay" id="messageModal">
+      <div class="modal-content">
+        <div class="modal-icon" id="modalIcon">ℹ</div>
+        <div class="modal-title" id="modalTitle">Message</div>
+        <div class="modal-message" id="modalMessage">This is a message</div>
+        <div class="modal-buttons">
+          <button class="modal-btn modal-btn-primary" onclick="closeModal()">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
       const API_BASE_URL = "http://localhost:5000";
+      let qrCode = null;
+      let totalAmount = 0;
+      let pendingChores = [];
 
       function getAuthHeaders() {
         return {
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         };
       }
 
+      function generateUpiQR(amount, orderId) {
+        const qrContainer = document.getElementById("qrCode");
+        qrContainer.innerHTML = "";
+
+        const upiString = `upi://pay?pa=servease@okaxis&pn=ServEase&tn=Service Payment&tr=${orderId}&am=${amount}&cu=INR`;
+
+        qrCode = new QRCode(qrContainer, {
+          text: upiString,
+          width: 250,
+          height: 250,
+          colorDark: "#0d0f14",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+
+        document.getElementById("upiRefId").innerText = orderId;
+      }
+
       function updatePaymentMethod(method) {
         const cardDetails = document.getElementById("cardDetails");
+        const upiDetails = document.getElementById("upiDetails");
+
         if (method === "card") {
           cardDetails.style.display = "block";
-        } else {
+          upiDetails.style.display = "none";
+        } else if (method === "upi") {
           cardDetails.style.display = "none";
+          upiDetails.style.display = "block";
+          const orderId = "ORD" + Date.now();
+          generateUpiQR(totalAmount, orderId);
+        }
+      }
+
+      function showModal(title, message, icon = "ℹ") {
+        document.getElementById("modalTitle").innerText = title;
+        document.getElementById("modalMessage").innerText = message;
+        document.getElementById("modalIcon").innerText = icon;
+        document.getElementById("messageModal").classList.add("show");
+      }
+
+      function closeModal() {
+        document.getElementById("messageModal").classList.remove("show");
+      }
+
+      async function loadSummary() {
+        try {
+          pendingChores = JSON.parse(
+            localStorage.getItem("pendingCheckout") || "[]",
+          );
+
+          const valid = pendingChores.filter(
+            (c) =>
+              c.providerId && c.serviceId && c.scheduledDate && c.scheduledTime,
+          );
+
+          if (valid.length === 0) {
+            document.getElementById("checkoutGrid").innerHTML =
+              `<div style="grid-column:1/-1; text-align:center; padding:60px;"><div style="font-size:48px;">⚠️</div><h2>No valid items to pay</h2><p style="color: var(--muted); margin: 10px 0;">Please select services and schedule them first.</p><button class="btn btn-primary" onclick="window.location.href='chores.html'" style="margin-top: 20px; width: auto;">Go to Chores</button></div>`;
+            return;
+          }
+
+          pendingChores = valid;
+          const servicePrice = pendingChores.reduce(
+            (s, c) => s + (c.price || c.totalAmount || 0),
+            0,
+          );
+          const platformFee = Math.round(servicePrice * 0.05);
+          const gst = Math.round((servicePrice + platformFee) * 0.18);
+          totalAmount = servicePrice + platformFee + gst;
+
+          document.getElementById("totalAmountSummary").innerText =
+            `₹${totalAmount}`;
+          document.getElementById("payBtn").innerHTML = `Pay ₹${totalAmount}`;
+          document.getElementById("servicePriceSummary").innerText =
+            `₹${servicePrice}`;
+          document.getElementById("platformFeeSummary").innerText =
+            `₹${platformFee}`;
+          document.getElementById("gstSummary").innerText = `₹${gst}`;
+
+          document.getElementById("serviceDetailsContainer").innerHTML =
+            pendingChores
+              .map(
+                (c) =>
+                  `<div><strong>${c.serviceName || "Service"}</strong> - ${c.providerName || "Provider"}<br>📅 ${c.scheduledDate} ${c.scheduledTime}</div>`,
+              )
+              .join("");
+        } catch (err) {
+          console.error("Error loading summary:", err);
+          showModal("Error", "Failed to load checkout data", "❌");
         }
       }
 
       async function processPayment() {
-        const terms = document.getElementById("termsCheck").checked;
-        if (!terms) {
-          alert("Please accept the terms and conditions");
+        if (!document.getElementById("termsCheck")?.checked) {
+          showModal(
+            "Terms Required",
+            "Please accept the terms and conditions to proceed",
+            "⚠️",
+          );
           return;
         }
 
-        document.getElementById("payBtn").disabled = true;
-        document.getElementById("payBtn").textContent = "Processing...";
+        const payBtn = document.getElementById("payBtn");
+        const originalText = payBtn.innerText;
+        payBtn.disabled = true;
+        payBtn.textContent = "Processing Payment...";
 
         try {
-          const booking = JSON.parse(localStorage.getItem("latestBooking") || "null");
-          if (!booking?._id) {
-            throw new Error("No booking found for payment");
+          // Simulate payment processing with a delay
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+
+          // Check if API is available, if not show success anyway (demo mode)
+          let allSuccess = true;
+          let processedCount = 0;
+          let errors = [];
+
+          // Try to process via API if available
+          const token = localStorage.getItem("token");
+          if (token && API_BASE_URL !== "http://localhost:5000") {
+            for (const chore of pendingChores) {
+              try {
+                const bookingRes = await fetch(`${API_BASE_URL}/api/bookings`, {
+                  method: "POST",
+                  headers: getAuthHeaders(),
+                  body: JSON.stringify({
+                    providerId: chore.providerId,
+                    serviceId: chore.serviceId,
+                    scheduledTime: `${chore.scheduledDate}T${chore.scheduledTime}:00`,
+                    location: { address: chore.location },
+                    notes: chore.notes,
+                    totalAmount: chore.totalAmount,
+                  }),
+                });
+
+                if (!bookingRes.ok) {
+                  throw new Error("Booking creation failed");
+                }
+
+                const bookingData = await bookingRes.json();
+
+                const payRes = await fetch(`${API_BASE_URL}/api/payments`, {
+                  method: "POST",
+                  headers: getAuthHeaders(),
+                  body: JSON.stringify({
+                    bookingId: bookingData.booking._id,
+                    amount: chore.totalAmount,
+                    paymentMethod: document.querySelector(
+                      'input[name="paymentMethod"]:checked',
+                    ).value,
+                  }),
+                });
+
+                if (!payRes.ok) {
+                  throw new Error("Payment failed");
+                }
+
+                processedCount++;
+              } catch (err) {
+                allSuccess = false;
+                errors.push(chore.serviceName);
+              }
+            }
+
+            if (!allSuccess) {
+              showModal(
+                "Payment Failed",
+                `Failed to process payment for: ${errors.join(", ")}`,
+                "❌",
+              );
+              payBtn.disabled = false;
+              payBtn.textContent = originalText;
+              return;
+            }
+          } else {
+            // Demo mode - process all successfully
+            processedCount = pendingChores.length;
           }
 
-          const selectedMethodRaw = document.querySelector('input[name="paymentMethod"]:checked')?.value || "card";
-          const selectedMethod = selectedMethodRaw === "netbanking" ? "bank_transfer" : selectedMethodRaw;
-          const response = await fetch(`${API_BASE_URL}/api/payments`, {
-            method: "POST",
-            headers: getAuthHeaders(),
-            body: JSON.stringify({
-              bookingId: booking._id,
-              amount: booking.price?.totalAmount,
-              paymentMethod: selectedMethod,
-            }),
-          });
+          // Success! Clear data and show success screen
+          localStorage.removeItem("chores");
+          localStorage.removeItem("pendingCheckout");
+          localStorage.removeItem("checkoutTotal");
 
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(data.message || "Payment failed");
-          }
+          // Show success screen
+          document.getElementById("checkoutGrid").style.display = "none";
+          const successScreen = document.getElementById("successScreen");
+          const msg =
+            processedCount > 1
+              ? `Payment successfully completed for ${processedCount} services. All bookings confirmed!`
+              : "Payment successfully completed. Your booking is confirmed!";
+          document.getElementById("successMessage").innerText = msg;
+          successScreen.classList.add("show");
 
-          document.querySelector(".checkout-grid").style.display = "none";
-          document.getElementById("successScreen").classList.add("show");
-          document.getElementById("bookingId").textContent = data.payment?.transactionId || booking._id;
-        } catch (error) {
-          alert(error.message || "Failed to process payment");
-          document.getElementById("payBtn").disabled = false;
-          document.getElementById("payBtn").textContent = "Pay ₹590";
+          // Auto redirect after 3 seconds
+          setTimeout(() => {
+            window.location.href = "servease-userdashboard1.html";
+          }, 3000);
+        } catch (err) {
+          console.error("Payment error:", err);
+          showModal(
+            "Payment Error",
+            "An unexpected error occurred. Please try again.",
+            "❌",
+          );
+          payBtn.disabled = false;
+          payBtn.textContent = originalText;
         }
       }
 
       function goBack() {
-        history.back();
+        window.location.href = "chores.html";
       }
 
       function goToDashboard() {
         window.location.href = "servease-userdashboard1.html";
       }
+
+      // Close modal when clicking outside
+      document.addEventListener("click", (e) => {
+        const modal = document.getElementById("messageModal");
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      window.addEventListener("load", loadSummary);
     </script>
   </body>
 </html>

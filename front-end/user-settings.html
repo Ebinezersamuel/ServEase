@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 20px;
+      }
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      .header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 24px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .card-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: var(--text);
+      }
+      .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .setting-item:last-child {
+        border-bottom: none;
+      }
+      .setting-label {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .setting-name {
+        font-size: 14px;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .setting-desc {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .toggle {
+        width: 50px;
+        height: 28px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.2s;
+      }
+      .toggle.active {
+        background: var(--accent3);
+        border-color: var(--accent3);
+      }
+      .toggle::after {
+        content: "";
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: left 0.2s;
+      }
+      .toggle.active::after {
+        left: 24px;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn:hover {
+        background: #4a58e8;
+      }
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        color: var(--text);
+        border-color: var(--accent);
+      }
+
+      .link {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Settings</h1>
+      </div>
+
+      <!-- Notifications -->
+      <div class="card">
+        <div class="card-title">🔔 Notifications</div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">Email Notifications</span>
+            <span class="setting-desc">Receive booking updates via email</span>
+          </div>
+          <div
+            class="toggle active"
+            onclick="this.classList.toggle('active')"
+          ></div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">SMS Notifications</span>
+            <span class="setting-desc">Get alerts on your phone</span>
+          </div>
+          <div
+            class="toggle active"
+            onclick="this.classList.toggle('active')"
+          ></div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">Push Notifications</span>
+            <span class="setting-desc">In-app notifications</span>
+          </div>
+          <div class="toggle" onclick="this.classList.toggle('active')"></div>
+        </div>
+      </div>
+
+      <!-- Privacy -->
+      <div class="card">
+        <div class="card-title">🔐 Privacy & Security</div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">Two-Factor Authentication</span>
+            <span class="setting-desc">Extra security for your account</span>
+          </div>
+          <button class="btn btn-secondary" onclick="alert('Enable 2FA')">
+            Setup
+          </button>
+        </div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">Profile Visibility</span>
+            <span class="setting-desc">Who can see your profile</span>
+          </div>
+          <select
+            style="
+              padding: 6px 10px;
+              background: var(--surface2);
+              border: 1px solid var(--border);
+              border-radius: 6px;
+              color: var(--text);
+              font-size: 12px;
+            "
+          >
+            <option>Public</option>
+            <option>Private</option>
+            <option>Friends Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Preferences -->
+      <div class="card">
+        <div class="card-title">⚙️ Preferences</div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">Theme</span>
+            <span class="setting-desc">Dark or Light mode</span>
+          </div>
+          <select
+            style="
+              padding: 6px 10px;
+              background: var(--surface2);
+              border: 1px solid var(--border);
+              border-radius: 6px;
+              color: var(--text);
+              font-size: 12px;
+            "
+          >
+            <option>Dark</option>
+            <option>Light</option>
+            <option>Auto</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">Language</span>
+            <span class="setting-desc">Select your preferred language</span>
+          </div>
+          <select
+            style="
+              padding: 6px 10px;
+              background: var(--surface2);
+              border: 1px solid var(--border);
+              border-radius: 6px;
+              color: var(--text);
+              font-size: 12px;
+            "
+          >
+            <option>English</option>
+            <option>Hindi</option>
+            <option>Marathi</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Connections -->
+      <div class="card">
+        <div class="card-title">🔗 Connected Accounts</div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">Google</span>
+            <span class="setting-desc">john.doe@gmail.com</span>
+          </div>
+          <button class="btn btn-secondary" onclick="alert('Disconnect')">
+            Disconnect
+          </button>
+        </div>
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-name">Facebook</span>
+            <span class="setting-desc">Not connected</span>
+          </div>
+          <button class="btn" onclick="alert('Connect Facebook')">
+            Connect
+          </button>
+        </div>
+      </div>
+
+      <!-- Support & Legal -->
+      <div class="card">
+        <div class="card-title">ℹ️ Support & Legal</div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <a href="#" class="link">Help & Support</a>
+          <a href="#" class="link">Terms of Service</a>
+          <a href="#" class="link">Privacy Policy</a>
+          <a href="#" class="link">Report a Problem</a>
+        </div>
+      </div>
+
+      <!-- Session -->
+      <div class="card">
+        <div class="card-title">🚪 Session</div>
+        <button
+          class="btn btn-secondary"
+          style="
+            width: 100%;
+            background: rgba(255, 107, 107, 0.12);
+            color: var(--accent2);
+            border-color: rgba(255, 107, 107, 0.3);
+            margin-bottom: 8px;
+          "
+          onclick="logout()"
+        >
+          Logout from All Devices
+        </button>
+        <button
+          class="btn btn-secondary"
+          style="width: 100%"
+          onclick="alert('Current session terminated')"
+        >
+          Logout
+        </button>
+      </div>
+
+      <!-- Version -->
+      <div
+        style="
+          text-align: center;
+          padding: 20px;
+          color: var(--muted);
+          font-size: 12px;
+        "
+      >
+        ServEase v1.0.0<br />
+        © 2024 All rights reserved
+      </div>
+    </div>
+
+    <script>
+      function logout() {
+        if (confirm("Are you sure you want to logout from all devices?")) {
+          alert("Logged out from all devices");
+        }
+      }
+    </script>
+  </body>
+</html>

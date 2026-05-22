@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Account — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 20px;
+      }
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      .header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 24px;
+      }
+      .profile-header {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 16px;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+      }
+      .profile-info h2 {
+        font-size: 20px;
+        margin-bottom: 4px;
+      }
+      .profile-rating {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .star {
+        color: #ffc27a;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .card-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .form-group {
+        margin-bottom: 14px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+      }
+      .form-group input:focus,
+      .form-group textarea:focus {
+        border-color: var(--accent);
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .btn {
+        padding: 10px 16px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #4a58e8;
+      }
+      .verification-badge {
+        display: inline-block;
+        background: rgba(67, 232, 160, 0.15);
+        color: var(--accent3);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .error-msg {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid var(--accent2);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--accent2);
+        margin-bottom: 16px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header"><h1>My Account</h1></div>
+      <div id="errorMessage" class="error-msg" style="display: none"></div>
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">👨‍🔧</div>
+        <div class="profile-info">
+          <h2 id="profileName">Loading...</h2>
+          <div class="profile-rating">
+            <span class="star" id="profileStars">★★★★★</span>
+            <span id="profileRatingText">(0 reviews)</span>
+          </div>
+          <div style="margin-top: 8px">
+            <span class="verification-badge" id="verificationBadge"
+              >✓ Verified</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Personal Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label><input type="text" id="firstName" />
+          </div>
+          <div class="form-group">
+            <label>Last Name</label><input type="text" id="lastName" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label><input type="email" id="email" />
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label><input type="tel" id="phone" />
+        </div>
+        <button class="btn" id="savePersonalBtn">Save Changes</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Professional Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Service Category</label
+            ><select id="serviceCategory">
+              <option value="">Select category</option>
+              <option>AC Technician</option>
+              <option>Plumber</option>
+              <option>Electrician</option>
+              <option>Carpenter</option>
+              <option>Cleaner</option>
+              <option>Beautician</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Years of Experience</label
+            ><input type="text" id="experience" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Hourly Rate (₹)</label><input type="number" id="hourlyRate" />
+        </div>
+        <div class="form-group">
+          <label>Bio / About Me</label><textarea id="bio" rows="4"></textarea>
+        </div>
+        <button class="btn" id="saveProfessionalBtn">Save Changes</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Service Location</div>
+        <div class="form-group">
+          <label>Street Address</label><input type="text" id="streetAddress" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label><input type="text" id="city" />
+          </div>
+          <div class="form-group">
+            <label>State</label><input type="text" id="state" />
+          </div>
+        </div>
+        <button class="btn" id="saveLocationBtn">Save Changes</button>
+      </div>
+    </div>
+
+    <script>
+      const token = localStorage.getItem("token");
+      if (!token) window.location.href = "provider-register.html";
+
+      function getProviderId() {
+        try {
+          const payload = JSON.parse(
+            atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
+          );
+          return payload.sub || payload.userId || payload.id || payload._id;
+        } catch (e) {
+          return null;
+        }
+      }
+      const providerId = getProviderId();
+      if (!providerId) {
+        document.getElementById("errorMessage").innerText =
+          "Invalid token. Please log in again.";
+        document.getElementById("errorMessage").style.display = "block";
+        setTimeout(
+          () => (window.location.href = "provider-register.html"),
+          3000,
+        );
+      }
+
+      const API_BASE = "http://localhost:5000/api";
+
+      async function fetchProviderData() {
+        try {
+          const res = await fetch(`${API_BASE}/providers/${providerId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!res.ok) throw new Error("Failed to load profile");
+          const data = await res.json();
+          return data.provider || data;
+        } catch (err) {
+          document.getElementById("errorMessage").innerText = err.message;
+          document.getElementById("errorMessage").style.display = "block";
+          return null;
+        }
+      }
+
+      async function updateProviderData(payload) {
+        try {
+          const res = await fetch(`${API_BASE}/providers/${providerId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error(await res.text());
+          alert("Profile updated successfully!");
+          loadAccountPage();
+          return true;
+        } catch (err) {
+          alert("Update failed: " + err.message);
+          return false;
+        }
+      }
+
+      async function loadAccountPage() {
+        const provider = await fetchProviderData();
+        if (!provider) return;
+
+        const fullName = provider.fullName || provider.name || "";
+        document.getElementById("profileName").innerText =
+          fullName || "Provider";
+        document.getElementById("profileAvatar").innerText =
+          provider.avatar || "👨‍🔧";
+        const rating = provider.rating || 0;
+        const fullStars = Math.floor(rating);
+        const emptyStars = 5 - fullStars;
+        document.getElementById("profileStars").innerHTML =
+          "★".repeat(fullStars) + "☆".repeat(emptyStars);
+        document.getElementById("profileRatingText").innerText =
+          `(${rating} · ${provider.totalReviews || 0} reviews)`;
+
+        const badge = document.getElementById("verificationBadge");
+        if (provider.verificationStatus === "verified") {
+          badge.innerText = "✓ Verified";
+          badge.style.background = "rgba(67,232,160,0.15)";
+          badge.style.color = "var(--accent3)";
+        } else {
+          badge.innerText = "⏳ Pending Verification";
+          badge.style.background = "rgba(245,197,66,0.15)";
+          badge.style.color = "#f5c542";
+        }
+
+        document.getElementById("firstName").value = provider.firstName || "";
+        document.getElementById("lastName").value = provider.lastName || "";
+        document.getElementById("email").value = provider.email || "";
+        document.getElementById("phone").value =
+          provider.mobile || provider.phone || "";
+        document.getElementById("serviceCategory").value =
+          provider.category || "";
+        document.getElementById("experience").value = provider.experience || "";
+        document.getElementById("hourlyRate").value = provider.hourlyRate || "";
+        document.getElementById("bio").value = provider.bio || "";
+        document.getElementById("streetAddress").value =
+          provider.address || provider.location?.address || "";
+        document.getElementById("city").value =
+          provider.city || provider.location?.city || "";
+        document.getElementById("state").value =
+          provider.state || provider.location?.state || "";
+      }
+
+      document
+        .getElementById("savePersonalBtn")
+        .addEventListener("click", async () => {
+          const payload = {
+            fullName:
+              `${document.getElementById("firstName").value} ${document.getElementById("lastName").value}`.trim(),
+            email: document.getElementById("email").value,
+            mobile: document.getElementById("phone").value,
+          };
+          await updateProviderData(payload);
+        });
+      document
+        .getElementById("saveProfessionalBtn")
+        .addEventListener("click", async () => {
+          const payload = {
+            category: document.getElementById("serviceCategory").value,
+            experience: document.getElementById("experience").value,
+            hourlyRate:
+              parseInt(document.getElementById("hourlyRate").value) || 0,
+            bio: document.getElementById("bio").value,
+          };
+          await updateProviderData(payload);
+        });
+      document
+        .getElementById("saveLocationBtn")
+        .addEventListener("click", async () => {
+          const payload = {
+            address: document.getElementById("streetAddress").value,
+            city: document.getElementById("city").value,
+            state: document.getElementById("state").value,
+          };
+          await updateProviderData(payload);
+        });
+
+      loadAccountPage();
+    </script>
+  </body>
+</html>

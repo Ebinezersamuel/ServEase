@@ -9,14 +9,12 @@
       rel="stylesheet"
     />
     <style>
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
+      /* ========== same sidebar + topbar styles as your original ========== */
+      * {
         margin: 0;
         padding: 0;
+        box-sizing: border-box;
       }
-
       :root {
         --bg: #0d0f14;
         --surface: #13161e;
@@ -29,59 +27,34 @@
         --muted: #6b7385;
         --sidebar-w: 240px;
       }
-
-      html,
       body {
-        height: 100%;
-        background: var(--bg);
-        color: var(--text);
+        height: 100vh;
         font-family: "DM Sans", sans-serif;
         font-size: 14px;
+        background: var(--bg);
+        color: var(--text);
         overflow: hidden;
       }
-
-      /* ─── Layout ─────────────────────────────── */
       .shell {
         display: flex;
-        height: 100vh;
+        height: 100%;
       }
-
-      /* ─── Sidebar ─────────────────────────────── */
       .sidebar {
         width: var(--sidebar-w);
         background: var(--surface);
         border-right: 1px solid var(--border);
         display: flex;
         flex-direction: column;
-        padding: 0;
-        flex-shrink: 0;
-        position: relative;
-        z-index: 10;
       }
-
-      .sidebar::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          180deg,
-          rgba(92, 107, 255, 0.07) 0%,
-          transparent 40%
-        );
-        pointer-events: none;
-      }
-
       .brand {
         padding: 28px 24px 24px;
         border-bottom: 1px solid var(--border);
       }
-
       .brand-logo {
         display: flex;
         align-items: center;
         gap: 10px;
       }
-
       .brand-icon {
         width: 34px;
         height: 34px;
@@ -93,29 +66,21 @@
         font-size: 16px;
         box-shadow: 0 0 20px rgba(92, 107, 255, 0.4);
       }
-
       .brand-name {
         font-family: "Syne", sans-serif;
         font-weight: 800;
         font-size: 20px;
-        letter-spacing: -0.5px;
-        color: var(--text);
       }
-
       .brand-name span {
         color: var(--accent);
       }
-
       .brand-tag {
         font-size: 10px;
         color: var(--muted);
         letter-spacing: 1.5px;
         text-transform: uppercase;
         margin-top: 4px;
-        font-weight: 300;
       }
-
-      /* Nav */
       .nav {
         flex: 1;
         padding: 20px 12px;
@@ -123,7 +88,6 @@
         flex-direction: column;
         gap: 2px;
       }
-
       .nav-section-label {
         font-size: 10px;
         letter-spacing: 1.8px;
@@ -132,7 +96,6 @@
         padding: 12px 12px 6px;
         font-weight: 500;
       }
-
       .nav-item {
         display: flex;
         align-items: center;
@@ -140,58 +103,25 @@
         padding: 11px 14px;
         border-radius: 10px;
         cursor: pointer;
-        text-decoration: none;
         color: var(--muted);
         font-size: 13.5px;
-        font-weight: 400;
-        transition: all 0.18s ease;
-        position: relative;
+        transition: all 0.18s;
         border: 1px solid transparent;
-        user-select: none;
       }
-
       .nav-item:hover {
         background: var(--surface2);
         color: var(--text);
         border-color: var(--border);
       }
-
       .nav-item.active {
         background: rgba(92, 107, 255, 0.12);
         color: #fff;
         border-color: rgba(92, 107, 255, 0.25);
-        font-weight: 500;
       }
-
-      .nav-item.active .nav-icon {
-        color: var(--accent);
-        filter: drop-shadow(0 0 6px rgba(92, 107, 255, 0.6));
-      }
-
       .nav-icon {
         width: 18px;
         height: 18px;
-        flex-shrink: 0;
-        transition: color 0.18s;
       }
-
-      .nav-badge {
-        margin-left: auto;
-        background: var(--accent2);
-        color: #fff;
-        font-size: 10px;
-        font-weight: 600;
-        padding: 2px 7px;
-        border-radius: 20px;
-        line-height: 1.4;
-      }
-
-      .nav-badge.green {
-        background: var(--accent3);
-        color: #0d0f14;
-      }
-
-      /* User card */
       .user-card {
         margin: 12px;
         padding: 14px;
@@ -202,7 +132,6 @@
         align-items: center;
         gap: 10px;
       }
-
       .user-avatar {
         width: 36px;
         height: 36px;
@@ -211,21 +140,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: "Syne", sans-serif;
         font-weight: 700;
         font-size: 13px;
-        color: #fff;
-        flex-shrink: 0;
       }
-
       .user-info {
         flex: 1;
-        min-width: 0;
       }
       .user-name {
         font-size: 13px;
         font-weight: 500;
-        color: var(--text);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -234,31 +157,12 @@
         font-size: 11px;
         color: var(--muted);
       }
-
-      .user-menu-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: var(--muted);
-        display: flex;
-        padding: 2px;
-        border-radius: 4px;
-        transition: color 0.15s;
-      }
-      .user-menu-btn:hover {
-        color: var(--text);
-      }
-
-      /* ─── Main ────────────────────────────────── */
       .main {
         flex: 1;
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        background: var(--bg);
       }
-
-      /* Top bar */
       .topbar {
         height: 60px;
         border-bottom: 1px solid var(--border);
@@ -268,54 +172,13 @@
         gap: 16px;
         background: rgba(13, 15, 20, 0.8);
         backdrop-filter: blur(12px);
-        flex-shrink: 0;
       }
-
       .page-title {
         font-family: "Syne", sans-serif;
         font-weight: 700;
         font-size: 17px;
-        letter-spacing: -0.3px;
-        color: var(--text);
         flex: 1;
       }
-
-      .topbar-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .icon-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 9px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: var(--muted);
-        transition: all 0.15s;
-        position: relative;
-      }
-      .icon-btn:hover {
-        color: var(--text);
-        border-color: var(--accent);
-      }
-
-      .notif-dot {
-        position: absolute;
-        top: 7px;
-        right: 7px;
-        width: 7px;
-        height: 7px;
-        background: var(--accent2);
-        border-radius: 50%;
-        border: 1.5px solid var(--bg);
-      }
-
       .status-pill {
         display: flex;
         align-items: center;
@@ -326,9 +189,7 @@
         border-radius: 20px;
         font-size: 12px;
         color: var(--accent3);
-        font-weight: 500;
       }
-
       .status-dot {
         width: 6px;
         height: 6px;
@@ -336,7 +197,6 @@
         border-radius: 50%;
         animation: pulse 2s infinite;
       }
-
       @keyframes pulse {
         0%,
         100% {
@@ -346,340 +206,24 @@
           opacity: 0.4;
         }
       }
-
-      /* ─── Content panel ───────────────────────── */
       .content-area {
         flex: 1;
-        overflow: hidden;
         position: relative;
+        overflow: hidden;
       }
-
-      /* Default/home panel shown when no iframe is loading */
-      .home-panel {
-        position: absolute;
-        inset: 0;
-        padding: 28px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        transition: opacity 0.3s;
-      }
-
-      .home-panel.hidden {
-        display: none;
-      }
-
-      /* iframe panel */
-      #page-frame {
-        position: absolute;
-        inset: 0;
+      iframe {
         width: 100%;
         height: 100%;
         border: none;
         background: var(--bg);
         display: none;
         opacity: 0;
-        transition: opacity 0.3s;
+        transition: opacity 0.2s;
       }
-
-      #page-frame.visible {
+      iframe.visible {
         display: block;
         opacity: 1;
       }
-
-      /* ─── Home Dashboard widgets ──────────────── */
-      .welcome-banner {
-        background: linear-gradient(
-          120deg,
-          rgba(92, 107, 255, 0.15) 0%,
-          rgba(255, 107, 107, 0.08) 100%
-        );
-        border: 1px solid rgba(92, 107, 255, 0.2);
-        border-radius: 16px;
-        padding: 28px 32px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .welcome-banner::before {
-        content: "";
-        position: absolute;
-        top: -40px;
-        right: -40px;
-        width: 180px;
-        height: 180px;
-        background: radial-gradient(
-          circle,
-          rgba(92, 107, 255, 0.15),
-          transparent 70%
-        );
-        pointer-events: none;
-      }
-
-      .welcome-text h2 {
-        font-family: "Syne", sans-serif;
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 6px;
-      }
-
-      .welcome-text p {
-        color: var(--muted);
-        font-size: 13.5px;
-        line-height: 1.6;
-      }
-
-      .welcome-cta {
-        background: var(--accent);
-        color: #fff;
-        border: none;
-        padding: 10px 22px;
-        border-radius: 10px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        white-space: nowrap;
-        box-shadow: 0 4px 16px rgba(92, 107, 255, 0.35);
-        transition: all 0.18s;
-        flex-shrink: 0;
-      }
-      .welcome-cta:hover {
-        background: #4a58e8;
-        transform: translateY(-1px);
-      }
-
-      /* Stats row */
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
-      }
-
-      .stat-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        transition:
-          border-color 0.2s,
-          transform 0.2s;
-        cursor: default;
-      }
-
-      .stat-card:hover {
-        border-color: rgba(92, 107, 255, 0.35);
-        transform: translateY(-2px);
-      }
-
-      .stat-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .stat-label {
-        font-size: 12px;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        font-weight: 500;
-      }
-
-      .stat-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 15px;
-      }
-
-      .stat-value {
-        font-family: "Syne", sans-serif;
-        font-size: 26px;
-        font-weight: 700;
-        color: var(--text);
-        line-height: 1;
-      }
-
-      .stat-change {
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-      .stat-change.up {
-        color: var(--accent3);
-      }
-      .stat-change.down {
-        color: var(--accent2);
-      }
-
-      /* Two col layout */
-      .two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-      }
-
-      .panel-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        overflow: hidden;
-      }
-
-      .panel-card-header {
-        padding: 18px 20px 14px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .panel-card-title {
-        font-family: "Syne", sans-serif;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--text);
-      }
-
-      .panel-card-action {
-        font-size: 12px;
-        color: var(--accent);
-        cursor: pointer;
-        text-decoration: none;
-      }
-      .panel-card-action:hover {
-        text-decoration: underline;
-      }
-
-      .panel-card-body {
-        padding: 14px 20px;
-      }
-
-      /* Order list */
-      .order-list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .order-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 12px;
-        border-radius: 10px;
-        background: var(--surface2);
-        transition: background 0.15s;
-        cursor: default;
-      }
-      .order-item:hover {
-        background: rgba(92, 107, 255, 0.07);
-      }
-
-      .order-thumb {
-        width: 36px;
-        height: 36px;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 17px;
-        flex-shrink: 0;
-      }
-
-      .order-info {
-        flex: 1;
-        min-width: 0;
-      }
-      .order-name {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text);
-      }
-      .order-meta {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 2px;
-      }
-
-      .order-badge {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 3px 9px;
-        border-radius: 20px;
-        flex-shrink: 0;
-      }
-      .badge-done {
-        background: rgba(67, 232, 160, 0.12);
-        color: var(--accent3);
-      }
-      .badge-prog {
-        background: rgba(92, 107, 255, 0.12);
-        color: #8b9aff;
-      }
-      .badge-pend {
-        background: rgba(255, 107, 107, 0.12);
-        color: var(--accent2);
-      }
-
-      /* Activity feed */
-      .activity-list {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .activity-item {
-        display: flex;
-        gap: 12px;
-        padding: 12px 0;
-        border-bottom: 1px solid var(--border);
-        align-items: flex-start;
-      }
-      .activity-item:last-child {
-        border-bottom: none;
-      }
-
-      .activity-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        margin-top: 5px;
-        flex-shrink: 0;
-      }
-
-      .activity-content {
-        flex: 1;
-      }
-      .activity-msg {
-        font-size: 13px;
-        color: var(--text);
-        line-height: 1.5;
-      }
-      .activity-msg strong {
-        color: var(--accent);
-        font-weight: 500;
-      }
-      .activity-time {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 2px;
-      }
-
-      /* Loading indicator for iframe */
       .frame-loader {
         position: absolute;
         inset: 0;
@@ -687,14 +231,12 @@
         align-items: center;
         justify-content: center;
         background: var(--bg);
-        z-index: 5;
+        z-index: 10;
         display: none;
       }
-
       .frame-loader.active {
         display: flex;
       }
-
       .loader-spinner {
         width: 36px;
         height: 36px;
@@ -703,77 +245,63 @@
         border-radius: 50%;
         animation: spin 0.7s linear infinite;
       }
-
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
-
-      /* SVG icons inline */
-      .ico {
-        display: block;
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 24px;
       }
-
-      /* Scrollbar */
-      ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
       }
-      ::-webkit-scrollbar-track {
-        background: transparent;
+      .stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
       }
-      ::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 99px;
+      .stat-value {
+        font-family: "Syne", sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        margin-top: 8px;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: var(--muted);
+      .home-panel {
+        position: absolute;
+        inset: 0;
+        padding: 28px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
       }
-
-      /* Responsive hint */
-      @media (max-width: 900px) {
-        .stats-grid {
-          grid-template-columns: 1fr 1fr;
-        }
-        .two-col {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .logout-btn:hover {
-        background: #ee4444 !important;
+      .home-panel.hidden {
+        display: none;
       }
     </style>
   </head>
   <body>
     <div class="shell">
-      <!-- ═══════════════ SIDEBAR ═══════════════ -->
       <aside class="sidebar">
         <div class="brand">
           <div class="brand-logo">
             <div class="brand-icon">⚡</div>
-            <div>
-              <div class="brand-name">Serv<span>Ease</span></div>
-            </div>
+            <div class="brand-name">Serv<span>Ease</span></div>
           </div>
-          <div class="brand-tag">Service Marketplace</div>
+          <div class="brand-tag">Service Provider</div>
         </div>
-
         <nav class="nav">
           <div class="nav-section-label">Main</div>
-
-          <!-- Dashboard (home) -->
-          <a
-            class="nav-item active"
-            href="#"
-            onclick="
-              showHome(this);
-              return false;
-            "
-          >
+          <div class="nav-item active" data-page="home">
             <svg
-              class="nav-icon ico"
+              class="nav-icon"
               viewBox="0 0 20 20"
               fill="none"
               stroke="currentColor"
@@ -782,26 +310,13 @@
               <rect x="2" y="2" width="7" height="7" rx="2" />
               <rect x="11" y="2" width="7" height="7" rx="2" />
               <rect x="2" y="11" width="7" height="7" rx="2" />
-              <rect x="11" y="11" width="7" height="7" rx="2" />
-            </svg>
-            Home
-          </a>
-
-          <div class="nav-section-label" style="margin-top: 4px">
-            My Activity
+              <rect x="11" y="11" width="7" height="7" rx="2" /></svg
+            >Dashboard
           </div>
-
-          <!-- Account -->
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              loadPage('account.html', 'My Account', this);
-              return false;
-            "
-          >
+          <div class="nav-section-label">My Activity</div>
+          <div class="nav-item" data-page="account">
             <svg
-              class="nav-icon ico"
+              class="nav-icon"
               viewBox="0 0 20 20"
               fill="none"
               stroke="currentColor"
@@ -811,44 +326,24 @@
               <path
                 d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6"
                 stroke-linecap="round"
-              />
-            </svg>
-            Account
-          </a>
-
-          <!-- Orders -->
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              loadPage('orders.html', 'My Orders', this);
-              return false;
-            "
-          >
+              /></svg
+            >Account
+          </div>
+          <div class="nav-item" data-page="orders">
             <svg
-              class="nav-icon ico"
+              class="nav-icon"
               viewBox="0 0 20 20"
               fill="none"
               stroke="currentColor"
               stroke-width="1.6"
             >
               <rect x="3" y="2" width="14" height="16" rx="2" />
-              <path d="M7 7h6M7 11h6M7 15h3" stroke-linecap="round" />
-            </svg>
-            Orders
-          </a>
-
-          <!-- Wallet -->
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              loadPage('wallet.html', 'My Wallet', this);
-              return false;
-            "
-          >
+              <path d="M7 7h6M7 11h6M7 15h3" stroke-linecap="round" /></svg
+            >Orders
+          </div>
+          <div class="nav-item" data-page="wallet">
             <svg
-              class="nav-icon ico"
+              class="nav-icon"
               viewBox="0 0 20 20"
               fill="none"
               stroke="currentColor"
@@ -862,24 +357,13 @@
                 r="1.5"
                 fill="currentColor"
                 stroke="none"
-              />
-            </svg>
-            Wallet
-          </a>
-
-          <div class="nav-section-label" style="margin-top: 4px">Manage</div>
-
-          <!-- Settings -->
-          <a
-            class="nav-item"
-            href="#"
-            onclick="
-              loadPage('settings.html', 'Settings', this);
-              return false;
-            "
-          >
+              /></svg
+            >Wallet
+          </div>
+          <div class="nav-section-label">Manage</div>
+          <div class="nav-item" data-page="settings">
             <svg
-              class="nav-icon ico"
+              class="nav-icon"
               viewBox="0 0 20 20"
               fill="none"
               stroke="currentColor"
@@ -888,370 +372,166 @@
               <circle cx="10" cy="10" r="2.5" />
               <path
                 d="M10 2v2M10 16v2M2 10h2M16 10h2M4.1 4.1l1.4 1.4M14.5 14.5l1.4 1.4M4.1 15.9l1.4-1.4M14.5 5.5l1.4-1.4"
-              />
-            </svg>
-            Settings
-          </a>
-        </nav>
-
-        <!-- User card -->
-        <!-- User card -->
-        <div class="user-card">
-          <div class="user-avatar"></div>
-          <div class="user-info">
-            <div class="user-name">...</div>
-            <div class="user-role">...</div>
+              /></svg
+            >Settings
           </div>
-          <button class="user-menu-btn" title="Options">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-            >
-              <circle cx="8" cy="3" r="1" />
-              <circle cx="8" cy="8" r="1" />
-              <circle cx="8" cy="13" r="1" />
-            </svg>
-          </button>
+        </nav>
+        <div class="user-card">
+          <div class="user-avatar" id="userAvatar">PR</div>
+          <div class="user-info">
+            <div class="user-name" id="userName">Provider</div>
+            <div class="user-role">Pro Member</div>
+          </div>
         </div>
       </aside>
 
-      <!-- ═══════════════ MAIN ═══════════════ -->
       <div class="main">
-        <!-- Top bar -->
         <header class="topbar">
-          <div class="page-title" id="page-title">Dashboard</div>
-
-          <div class="topbar-actions">
-            <div class="status-pill">
-              <div class="status-dot"></div>
-              Online
-            </div>
-
-            <!-- Notifications -->
-            <button
-              class="icon-btn"
-              title="Notifications"
-              onclick="loadPage('notifications.html', 'Notifications', null)"
-            >
-              <div class="notif-dot"></div>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-              >
-                <path
-                  d="M9 2a5.5 5.5 0 015.5 5.5c0 3.5 1.5 5 1.5 5H2s1.5-1.5 1.5-5A5.5 5.5 0 019 2z"
-                />
-                <path d="M7 14.5a2 2 0 004 0" stroke-linecap="round" />
-              </svg>
-            </button>
-
-            <!-- Help -->
-            <button
-              class="icon-btn"
-              title="Help"
-              onclick="loadPage('help.html', 'Help &amp; Support', null)"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-              >
-                <circle cx="9" cy="9" r="7" />
-                <path
-                  d="M6.8 7a2.2 2.2 0 014.2 1c0 1.5-2.2 2-2.2 3.5"
-                  stroke-linecap="round"
-                />
-                <circle
-                  cx="9"
-                  cy="14"
-                  r=".8"
-                  fill="currentColor"
-                  stroke="none"
-                />
-              </svg>
-            </button>
+          <div class="page-title" id="pageTitle">Dashboard</div>
+          <div class="status-pill">
+            <div class="status-dot"></div>
+            Online
           </div>
         </header>
-
-        <!-- Content area -->
         <div class="content-area">
-          <!-- Frame loader -->
-          <div class="frame-loader" id="frame-loader">
+          <div class="frame-loader" id="frameLoader">
             <div class="loader-spinner"></div>
           </div>
-
-          <!-- iFrame for sub-pages -->
-          <iframe id="page-frame" title="Page content"></iframe>
-
-          <!-- ═══ HOME DASHBOARD ═══ -->
-          <div class="home-panel" id="home-panel">
-            <!-- Stats -->
-            <div class="stats-grid">
+          <iframe id="pageFrame" title="Page content"></iframe>
+          <div class="home-panel" id="homePanel">
+            <div class="stats-grid" id="statsGrid">
               <div class="stat-card">
-                <div class="stat-header">
-                  <span class="stat-label">Total Orders</span>
-                  <div
-                    class="stat-icon"
-                    style="background: rgba(92, 107, 255, 0.12)"
-                  >
-                    🛒
-                  </div>
-                </div>
-                <div class="stat-value" id="total-orders">0</div>
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-value" id="totalOrders">0</div>
               </div>
               <div class="stat-card">
-                <div class="stat-header">
-                  <span class="stat-label">Wallet</span>
-                  <div
-                    class="stat-icon"
-                    style="background: rgba(67, 232, 160, 0.1)"
-                  >
-                    💳
-                  </div>
-                </div>
-                <div class="stat-value" id="wallet-balance">₹0</div>
+                <div class="stat-label">Earnings</div>
+                <div class="stat-value" id="earnings">₹0</div>
               </div>
               <div class="stat-card">
-                <div class="stat-header">
-                  <span class="stat-label">Active Orders</span>
-                  <div
-                    class="stat-icon"
-                    style="background: rgba(255, 200, 50, 0.1)"
-                  >
-                    ⚡
-                  </div>
-                </div>
-                <div class="stat-value" id="active-orders">0</div>
+                <div class="stat-label">Active Orders</div>
+                <div class="stat-value" id="activeOrders">0</div>
               </div>
               <div class="stat-card">
-                <div class="stat-header">
-                  <span class="stat-label">Rating</span>
-                  <div
-                    class="stat-icon"
-                    style="background: rgba(255, 107, 107, 0.1)"
-                  >
-                    ⭐
-                  </div>
-                </div>
-                <div class="stat-value" id="provider-rating">0</div>
+                <div class="stat-label">Rating</div>
+                <div class="stat-value" id="rating">0</div>
               </div>
             </div>
           </div>
-          <!-- /home-panel -->
         </div>
-        <!-- /content-area -->
       </div>
-      <!-- /main -->
     </div>
-    <!-- /shell -->
 
     <script>
-      const API_BASE_URL = "http://localhost:5000";
-      const frame = document.getElementById("page-frame");
-      const homePanel = document.getElementById("home-panel");
-      const pageTitle = document.getElementById("page-title");
-      const frameLoader = document.getElementById("frame-loader");
-
-      function clearActive() {
-        document
-          .querySelectorAll(".nav-item")
-          .forEach((el) => el.classList.remove("active"));
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You are not logged in. Redirecting to registration...");
+        window.location.href = "provider-register.html";
       }
 
-      function showHome(el) {
-        clearActive();
-        if (el) el.classList.add("active");
-        frame.classList.remove("visible");
-        frame.src = "";
-        homePanel.classList.remove("hidden");
-        pageTitle.textContent = "Dashboard";
-        frameLoader.classList.remove("active");
+      // Extract provider ID from JWT
+      function getProviderId() {
+        try {
+          const payload = JSON.parse(
+            atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
+          );
+          return payload.sub || payload.userId || payload.id || payload._id;
+        } catch (e) {
+          return null;
+        }
+      }
+      const providerId = getProviderId();
+      if (!providerId) {
+        alert("Invalid token. Please log in again.");
+        localStorage.removeItem("token");
+        window.location.href = "provider-register.html";
       }
 
-      function loadPage(url, title, navEl) {
-        clearActive();
-        if (navEl) navEl.classList.add("active");
-        pageTitle.textContent = title;
+      // Set user name from localStorage
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const name =
+        `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Provider";
+      document.getElementById("userName").innerText = name;
+      document.getElementById("userAvatar").innerText = name
+        .charAt(0)
+        .toUpperCase();
 
+      // Load dashboard stats
+      fetch("http://localhost:5000/api/dashboard/provider", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => (res.ok ? res.json() : Promise.reject()))
+        .then((data) => {
+          document.getElementById("totalOrders").innerText =
+            data.totalOrders || 0;
+          document.getElementById("earnings").innerText =
+            `₹${data.earnings || 0}`;
+          document.getElementById("activeOrders").innerText =
+            data.pendingOrders || 0;
+          document.getElementById("rating").innerText =
+            data.provider?.rating || 0;
+        })
+        .catch((err) => console.error("Stats error:", err));
+
+      const frame = document.getElementById("pageFrame");
+      const homePanel = document.getElementById("homePanel");
+      const frameLoader = document.getElementById("frameLoader");
+      const pageTitle = document.getElementById("pageTitle");
+
+      function loadPage(page) {
+        let url = "",
+          title = "";
+        switch (page) {
+          case "home":
+            showHome();
+            return;
+          case "account":
+            url = "provider-account.html";
+            title = "My Account";
+            break;
+          case "orders":
+            url = "provider-orders.html";
+            title = "My Orders";
+            break;
+          case "wallet":
+            url = "provider-wallet.html";
+            title = "My Wallet";
+            break;
+          case "settings":
+            url = "provider-settings.html";
+            title = "Settings";
+            break;
+          default:
+            return;
+        }
+        pageTitle.innerText = title;
         homePanel.classList.add("hidden");
-        frame.classList.remove("visible");
         frameLoader.classList.add("active");
-
+        frame.classList.remove("visible");
         frame.onload = () => {
           frameLoader.classList.remove("active");
           frame.classList.add("visible");
         };
+        frame.src = url;
+      }
 
-        // If the target page doesn't exist (demo), show a built-in placeholder
+      function showHome() {
+        pageTitle.innerText = "Dashboard";
+        homePanel.classList.remove("hidden");
+        frame.classList.remove("visible");
         frame.src = "";
-        setTimeout(() => {
-          frame.srcdoc = buildPlaceholder(title, url);
-          frameLoader.classList.remove("active");
-          frame.classList.add("visible");
-        }, 300);
+        frameLoader.classList.remove("active");
       }
 
-      function buildPlaceholder(title, url) {
-        const icons = {
-          "My Account": "👤",
-          "My Orders": "📋",
-          "My Wallet": "💳",
-          Messages: "💬",
-          "My Services": "⚙️",
-          Settings: "🔧",
-          "Browse Services": "🔍",
-          Notifications: "🔔",
-          "Help & Support": "💡",
-        };
-        const icon = icons[title] || "📄";
-        return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8"/>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:'DM Sans',sans-serif;
-    background:#0d0f14;color:#e8eaf0;
-    height:100vh;display:flex;align-items:center;justify-content:center;
-    flex-direction:column;gap:18px;
-  }
-  .icon{font-size:52px;filter:drop-shadow(0 0 24px rgba(92,107,255,.5))}
-  h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-.5px}
-  p{color:#6b7385;font-size:14px;text-align:center;max-width:320px;line-height:1.7}
-  .chip{
-    margin-top:6px;padding:6px 18px;
-    background:rgba(92,107,255,.12);border:1px solid rgba(92,107,255,.25);
-    border-radius:20px;font-size:12px;color:#8b9aff;
-  }
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400&display=swap" rel="stylesheet"/>
-</head>
-<body>
-  <div class="icon">${icon}</div>
-  <h1>${title}</h1>
-  <p>This panel is ready to display your <strong>${title}</strong> page.<br/>
-     Link your HTML file — e.g. <code style="color:#5c6bff">${url}</code> — and it will render here.</p>
-  <div class="chip">Waiting for ${url}</div>
-</body>
-</html>`;
-      }
-
-      // ========== PROVIDER ACCOUNT INFO + LOGOUT ==========
-
-      // Read from localStorage (set during login/register/Google)
-      function getCurrentUser() {
-        try {
-          return JSON.parse(localStorage.getItem("user")) || {};
-        } catch {
-          return {};
-        }
-      }
-
-      function getAuthHeaders() {
-        return {
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          "Content-Type": "application/json",
-        };
-      }
-
-      function renderUserCard() {
-        const user = getCurrentUser();
-        // Fallback initials if name missing
-        const userName = user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email || "Unknown User";
-        const initials = (userName[0] || "U") + (userName.split(" ")[1]?.[0] || "");
-        const role = (user.userType || user.role) === "provider" ? "Provider" : "Customer";
-
-        // Update user card HTML
-        document.querySelector(".user-avatar").textContent =
-          initials.toUpperCase();
-        document.querySelector(".user-name").textContent = userName;
-        document.querySelector(".user-role").textContent = role;
-      }
-
-      // Logout: clear storage, redirect to login
-      function logout() {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "ServEase1.html";
-      }
-
-      // Add logout button to user card
-      function addLogoutBtn() {
-        const userCard = document.querySelector(".user-card");
-        const btn = document.createElement("button");
-        btn.textContent = "Logout";
-        btn.className = "logout-btn";
-        btn.style.marginLeft = "8px";
-        btn.style.background = "#ff6b6b";
-        btn.style.color = "#fff";
-        btn.style.border = "none";
-        btn.style.borderRadius = "7px";
-        btn.style.padding = "6px 12px";
-        btn.style.fontWeight = "600";
-        btn.onclick = logout;
-        userCard.appendChild(btn);
-      }
-
-      // Show a provider-only welcome message in dashboard
-      function providerWelcome() {
-        const user = getCurrentUser();
-        if ((user.userType || user.role) === "provider") {
-          const banner = document.createElement("div");
-          banner.className = "welcome-banner";
-          banner.style.marginBottom = "16px";
-          banner.innerHTML = `
-      <div class="welcome-text">
-        <h2>Welcome, ${user.firstName || user.email || "Provider"}! 🎉</h2>
-        <p>Manage your services, track orders, and get the most out of ServEase.</p>
-      </div>
-    `;
-          // Insert at top of home-panel
-          const homePanel = document.getElementById("home-panel");
-          homePanel.prepend(banner);
-        }
-      }
-
-      // Run on page load:
-      window.addEventListener("DOMContentLoaded", () => {
-        if (!localStorage.getItem("token")) {
-          window.location.href = "ServEase1.html";
-          return;
-        }
-
-        renderUserCard();
-        addLogoutBtn();
-        providerWelcome();
-        const user = getCurrentUser();
-        if ((user.userType || user.role) !== "provider") {
-          window.location.href = "servease-userdashboard1.html";
-          return;
-        }
-
-        Promise.all([
-          fetch(`${API_BASE_URL}/api/providers/tasks/list`, { headers: getAuthHeaders() }),
-          fetch(`${API_BASE_URL}/api/dashboard`, { headers: getAuthHeaders() }),
-        ])
-          .then(async ([tasksResponse, dashboardResponse]) => {
-            const tasksData = tasksResponse.ok ? await tasksResponse.json() : { tasks: [] };
-            const dashboardData = dashboardResponse.ok ? await dashboardResponse.json() : {};
-            document.getElementById("active-orders").textContent = (tasksData.tasks || []).filter((task) => ["pending", "accepted", "in-progress"].includes(task.status)).length;
-            document.getElementById("total-orders").textContent = dashboardData.stats?.totalBookings || 0;
-            document.getElementById("wallet-balance").textContent = `₹${dashboardData.stats?.totalSpent || 0}`;
-            document.getElementById("provider-rating").textContent = user.rating || 0;
-          })
-          .catch(() => {});
+      document.querySelectorAll(".nav-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          document
+            .querySelectorAll(".nav-item")
+            .forEach((nav) => nav.classList.remove("active"));
+          item.classList.add("active");
+          const page = item.getAttribute("data-page");
+          loadPage(page);
+        });
       });
     </script>
   </body>

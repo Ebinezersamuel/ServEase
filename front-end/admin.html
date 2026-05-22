@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ServEase — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#090b10;--s1:#0f1219;--s2:#161b25;--s3:#1d2233;
+  --br:#232840;--br2:#2d3350;
+  --acc:#5c6bff;--acc2:#ff6b6b;--acc3:#43e8a0;--acc4:#f5c542;--acc5:#b06bff;
+  --txt:#dde1f0;--mut:#5a6180;--mut2:#3d4460;
+  --r:10px;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font-size:13px}
+
+/* ── SHELL ── */
+.shell{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.aside{width:220px;background:var(--s1);border-right:1px solid var(--br);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:10}
+.aside::-webkit-scrollbar{width:3px}.aside::-webkit-scrollbar-thumb{background:var(--br)}
+
+.a-brand{padding:22px 18px 16px;border-bottom:1px solid var(--br)}
+.a-brand-row{display:flex;align-items:center;gap:9px}
+.a-logo{width:30px;height:30px;background:var(--acc);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 14px rgba(92,107,255,.4);flex-shrink:0}
+.a-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.3px}
+.a-title span{color:var(--acc)}
+.a-sub{font-size:10px;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+
+.nav{flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.nav-sect{font-size:9.5px;color:var(--mut);letter-spacing:1.8px;text-transform:uppercase;padding:10px 8px 5px;font-weight:500}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--mut);font-size:12.5px;border:1px solid transparent;transition:all .15s;user-select:none}
+.nav-item:hover{background:var(--s2);color:var(--txt);border-color:var(--br)}
+.nav-item.act{background:rgba(92,107,255,.1);color:#fff;border-color:rgba(92,107,255,.22);font-weight:500}
+.nav-item.act .ni{color:var(--acc)}
+.ni{width:16px;height:16px;flex-shrink:0;transition:color .15s}
+.nbadge{margin-left:auto;background:var(--acc2);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px}
+.nbadge.g{background:var(--acc3);color:#090b10}
+.nbadge.y{background:var(--acc4);color:#090b10}
+
+.a-user{margin:10px;padding:12px;background:var(--s2);border:1px solid var(--br);border-radius:10px;display:flex;align-items:center;gap:9px}
+.a-avi{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.a-uname{font-size:12px;font-weight:500;color:var(--txt)}
+.a-urole{font-size:10px;color:var(--mut)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+.topbar{height:54px;background:rgba(9,11,16,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--br);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.tb-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;flex:1}
+.tb-pill{display:flex;align-items:center;gap:5px;padding:5px 12px;background:rgba(67,232,160,.08);border:1px solid rgba(67,232,160,.2);border-radius:20px;font-size:11px;color:var(--acc3)}
+.tb-dot{width:5px;height:5px;background:var(--acc3);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.tb-btn{width:32px;height:32px;border-radius:8px;background:var(--s1);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mut);transition:all .15s}
+.tb-btn:hover{color:var(--txt);border-color:var(--acc)}
+
+.content{flex:1;overflow-y:auto;padding:24px}
+.content::-webkit-scrollbar{width:4px}.content::-webkit-scrollbar-thumb{background:var(--br);border-radius:99px}
+
+/* ── VIEWS ── */
+.view{display:none}.view.act{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:16px 18px;transition:border-color .2s,transform .2s;cursor:default}
+.kpi:hover{border-color:rgba(92,107,255,.3);transform:translateY(-1px)}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.kpi-lbl{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.8px;font-weight:500}
+.kpi-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.kpi-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.kpi-chg{font-size:11px}.kpi-chg.up{color:var(--acc3)}.kpi-chg.dn{color:var(--acc2)}
+
+/* ── TWO COL ── */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+
+/* ── CARD ── */
+.card{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.card-h{padding:14px 18px 12px;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between}
+.card-h h3{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.card-h a{font-size:11px;color:var(--acc);cursor:pointer;text-decoration:none}
+.card-h a:hover{text-decoration:underline}
+.card-b{padding:14px 18px}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.8px;font-weight:500;padding:8px 10px;text-align:left;border-bottom:1px solid var(--br)}
+td{padding:10px 10px;border-bottom:1px solid var(--br2);font-size:12.5px;color:var(--txt);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.avatar-sm{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.cell-user{display:flex;align-items:center;gap:8px}
+.cell-sub{font-size:11px;color:var(--mut);margin-top:1px}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:600}
+.badge-green{background:rgba(67,232,160,.1);color:var(--acc3)}
+.badge-red{background:rgba(255,107,107,.1);color:var(--acc2)}
+.badge-blue{background:rgba(92,107,255,.1);color:#8b9aff}
+.badge-amber{background:rgba(245,197,66,.1);color:var(--acc4)}
+.badge-purple{background:rgba(176,107,255,.1);color:var(--acc5)}
+
+/* ── ACTION BTNS ── */
+.action-btn{padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid var(--br);background:var(--s2);color:var(--txt);transition:all .15s}
+.action-btn:hover{border-color:var(--acc);color:var(--acc)}
+.action-btn.danger:hover{border-color:var(--acc2);color:var(--acc2)}
+.action-btn.success:hover{border-color:var(--acc3);color:var(--acc3)}
+
+/* ── SEARCH/FILTER BAR ── */
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--br);border-radius:8px;padding:7px 12px;flex:1;min-width:180px}
+.search-box input{background:none;border:none;outline:none;color:var(--txt);font-size:12.5px;font-family:inherit;flex:1}
+.search-box input::placeholder{color:var(--mut)}
+.filter-sel{background:var(--s1);border:1px solid var(--br);border-radius:8px;padding:7px 12px;color:var(--txt);font-size:12.5px;font-family:inherit;outline:none;cursor:pointer}
+.filter-sel option{background:var(--s2)}
+
+/* ── CANVAS CHART ── */
+.chart-wrap{position:relative;width:100%}
+canvas{display:block;width:100%!important}
+
+/* ── STATS ROW ── */
+.stat-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--br2)}
+.stat-row:last-child{border-bottom:none}
+.stat-row-lbl{font-size:12.5px;color:var(--txt)}
+.stat-row-val{font-size:13px;font-weight:600;color:var(--txt)}
+.stat-bar-wrap{flex:1;margin:0 14px;height:4px;background:var(--br);border-radius:99px;overflow:hidden}
+.stat-bar{height:100%;border-radius:99px;transition:width .6s ease}
+
+/* ── COMMISSION FORM ── */
+.comm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.comm-card{background:var(--s2);border:1px solid var(--br);border-radius:9px;padding:14px}
+.comm-card h4{font-size:12px;font-weight:600;margin-bottom:10px;color:var(--txt)}
+.comm-card label{font-size:10px;color:var(--mut);display:block;margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase}
+.comm-card input{width:100%;background:var(--s1);border:1px solid var(--br);border-radius:7px;padding:8px 10px;color:var(--txt);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
+.comm-card input:focus{border-color:var(--acc)}
+.save-btn{margin-top:10px;width:100%;padding:8px;background:var(--acc);color:#fff;border:none;border-radius:7px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;cursor:pointer;transition:all .15s}
+.save-btn:hover{background:#4a58e8}
+
+/* ── REGION TABLE ── */
+.region-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+
+/* ── DISPUTE CARD ── */
+.dispute-item{background:var(--s2);border:1px solid var(--br);border-radius:9px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.dispute-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dispute-body{flex:1}
+.dispute-title{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:3px}
+.dispute-meta{font-size:11px;color:var(--mut)}
+.dispute-acts{display:flex;gap:7px;margin-top:10px}
+
+/* ── SOS ── */
+.sos-alert{background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.25);border-radius:9px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;animation:sosPulse 2s infinite}
+@keyframes sosPulse{0%,100%{border-color:rgba(255,107,107,.25)}50%{border-color:rgba(255,107,107,.55)}}
+.sos-badge{background:var(--acc2);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:5px;letter-spacing:.5px}
+
+/* ── TAX ── */
+.tax-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--br2)}
+.tax-row:first-child{padding-top:0}
+.tax-row:last-child{border-bottom:none}
+
+/* ── TOGGLE ── */
+.toggle{width:36px;height:20px;background:var(--br);border-radius:20px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--acc)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .2s}
+.toggle.on::after{left:19px}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--br);border-radius:99px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="aside">
+  <div class="a-brand">
+    <div class="a-brand-row">
+      <div class="a-logo">⚡</div>
+      <div>
+        <div class="a-title">Serv<span>Ease</span></div>
+      </div>
+    </div>
+    <div class="a-sub">Admin Console</div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-sect">Overview</div>
+    <div class="nav-item act" data-view="dashboard">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+      Dashboard
+    </div>
+
+    <div class="nav-sect">Operations</div>
+    <div class="nav-item" data-view="bookings">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 8h6M5 11h3" stroke-linecap="round"/></svg>
+      Booking Management
+      <span class="nbadge">12</span>
+    </div>
+    <div class="nav-item" data-view="users">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-2.76 2.24-5 5-5s5 2.24 5 5"/><circle cx="13" cy="6" r="2"/><path d="M13 10c1.66 0 3 1.34 3 3" stroke-linecap="round"/></svg>
+      Users &amp; Providers
+    </div>
+    <div class="nav-item" data-view="disputes">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2l1.5 4h4l-3.2 2.4 1.2 4L8 10l-3.5 2.4 1.2-4L2.5 6h4z"/></svg>
+      Disputes &amp; Support
+      <span class="nbadge">5</span>
+    </div>
+    <div class="nav-item" data-view="geography">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="7" r="3"/><path d="M8 1a6 6 0 016 6c0 4-6 9-6 9S2 11 2 7a6 6 0 016-6z"/></svg>
+      Geographic Mgmt
+    </div>
+
+    <div class="nav-sect">Finance</div>
+    <div class="nav-item" data-view="commission">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="5" r="2"/><circle cx="11" cy="11" r="2"/><path d="M13 3L3 13" stroke-linecap="round"/></svg>
+      Commission
+    </div>
+    <div class="nav-item" data-view="payments">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="4" width="14" height="10" rx="1.5"/><path d="M1 7h14"/><circle cx="4.5" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg>
+      Payments &amp; Wallet
+    </div>
+    <div class="nav-item" data-view="analytics">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12l3-4 3 2 3-5 3 3"/><path d="M2 14h12"/></svg>
+      Sales &amp; Analytics
+    </div>
+    <div class="nav-item" data-view="tax">
+      <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 8h4M5 11h5" stroke-linecap="round"/></svg>
+      Tax &amp; Invoices
+    </div>
+  </nav>
+
+  <div class="a-user">
+    <div class="a-avi">SA</div>
+    <div>
+      <div class="a-uname">Super Admin</div>
+      <div class="a-urole">admin@servease.in</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title" id="tb-title">Dashboard</div>
+    <div class="tb-pill"><div class="tb-dot"></div>System Online</div>
+    <div class="tb-btn" title="Refresh" onclick="location.reload()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 8A6 6 0 112.5 4.5" stroke-linecap="round"/><path d="M2 2v3h3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="tb-btn" title="Notifications">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 1.5A4.5 4.5 0 0112.5 6c0 3 1.5 4 1.5 4H2s1.5-1 1.5-4A4.5 4.5 0 018 1.5z"/><path d="M6.5 13a1.5 1.5 0 003 0" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ═══ DASHBOARD ═══ -->
+  <div class="view act" id="v-dashboard">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Total Bookings</span><div class="kpi-ico" style="background:rgba(92,107,255,.12)">📋</div></div><div class="kpi-val">4,821</div><div class="kpi-chg up">↑ 18% this month</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Active Providers</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">🛠️</div></div><div class="kpi-val">362</div><div class="kpi-chg up">↑ 24 new this week</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Revenue (May)</span><div class="kpi-ico" style="background:rgba(245,197,66,.1)">💰</div></div><div class="kpi-val">₹2.4L</div><div class="kpi-chg up">↑ 11% vs Apr</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Open Disputes</span><div class="kpi-ico" style="background:rgba(255,107,107,.1)">⚠️</div></div><div class="kpi-val">5</div><div class="kpi-chg dn">2 SOS active</div></div>
+    </div>
+
+    <div class="two">
+      <div class="card" style="margin:0">
+        <div class="card-h"><h3>Revenue Trend (6 months)</h3></div>
+        <div class="card-b"><div class="chart-wrap" style="height:170px"><canvas id="c-revenue"></canvas></div></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="card-h"><h3>Bookings by Category</h3></div>
+        <div class="card-b"><div class="chart-wrap" style="height:170px"><canvas id="c-cat"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>Recent Bookings</h3><a onclick="nav('bookings')">View all →</a></div>
+      <div class="card-b tbl-wrap" style="padding:0">
+        <table>
+          <thead><tr><th>Booking ID</th><th>Customer</th><th>Service</th><th>Provider</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="dash-bookings"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BOOKINGS ═══ -->
+  <div class="view" id="v-bookings">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Total</span><div class="kpi-ico" style="background:rgba(92,107,255,.12)">📦</div></div><div class="kpi-val">4,821</div><div class="kpi-chg up">↑ 18%</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">In Progress</span><div class="kpi-ico" style="background:rgba(245,197,66,.1)">⏳</div></div><div class="kpi-val">143</div><div class="kpi-chg up">Live now</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Completed</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">✅</div></div><div class="kpi-val">4,536</div><div class="kpi-chg up">94.1% rate</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Cancelled</span><div class="kpi-ico" style="background:rgba(255,107,107,.1)">❌</div></div><div class="kpi-val">142</div><div class="kpi-chg dn">2.9% rate</div></div>
+    </div>
+    <div class="filter-bar">
+      <div class="search-box"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3" stroke-linecap="round"/></svg><input placeholder="Search booking ID, customer…"/></div>
+      <select class="filter-sel"><option>All Status</option><option>Pending</option><option>In Progress</option><option>Completed</option><option>Cancelled</option></select>
+      <select class="filter-sel"><option>All Categories</option><option>Cleaning</option><option>Plumbing</option><option>Electrical</option><option>Beauty</option><option>AC Technician</option></select>
+      <select class="filter-sel"><option>All Cities</option><option>Mumbai</option><option>Bangalore</option><option>Delhi</option><option>Gadag</option></select>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>All Bookings</h3><a>Export CSV</a></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Booking ID</th><th>Customer</th><th>Service</th><th>Provider</th><th>Scheduled</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbl-bookings"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ USERS ═══ -->
+  <div class="view" id="v-users">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Total Users</span><div class="kpi-ico" style="background:rgba(92,107,255,.12)">👤</div></div><div class="kpi-val">18,420</div><div class="kpi-chg up">↑ 340 this week</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Total Providers</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">🛠️</div></div><div class="kpi-val">512</div><div class="kpi-chg up">↑ 28 new</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Pending Verification</span><div class="kpi-ico" style="background:rgba(245,197,66,.1)">🕐</div></div><div class="kpi-val">34</div><div class="kpi-chg dn">Needs action</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Suspended</span><div class="kpi-ico" style="background:rgba(255,107,107,.1)">🚫</div></div><div class="kpi-val">7</div><div class="kpi-chg dn">Policy violations</div></div>
+    </div>
+    <div class="two" style="margin-bottom:14px">
+      <div style="margin:0">
+        <div class="filter-bar" style="margin-bottom:10px">
+          <div class="search-box"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3" stroke-linecap="round"/></svg><input placeholder="Search customers…"/></div>
+          <select class="filter-sel"><option>All</option><option>Active</option><option>Suspended</option></select>
+        </div>
+        <div class="card" style="margin:0">
+          <div class="card-h"><h3>Customers</h3></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Mobile</th><th>City</th><th>Orders</th><th>Status</th><th>Action</th></tr></thead><tbody id="tbl-customers"></tbody></table></div>
+        </div>
+      </div>
+      <div style="margin:0">
+        <div class="filter-bar" style="margin-bottom:10px">
+          <div class="search-box"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3" stroke-linecap="round"/></svg><input placeholder="Search providers…"/></div>
+          <select class="filter-sel"><option>All</option><option>Verified</option><option>Pending</option><option>Suspended</option></select>
+        </div>
+        <div class="card" style="margin:0">
+          <div class="card-h"><h3>Service Providers</h3></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Trade</th><th>Rating</th><th>Status</th><th>Action</th></tr></thead><tbody id="tbl-providers"></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ DISPUTES ═══ -->
+  <div class="view" id="v-disputes">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Open</span><div class="kpi-ico" style="background:rgba(255,107,107,.1)">🔴</div></div><div class="kpi-val">5</div><div class="kpi-chg dn">Needs attention</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">SOS Active</span><div class="kpi-ico" style="background:rgba(255,107,107,.12)">🆘</div></div><div class="kpi-val">2</div><div class="kpi-chg dn">Safety concern</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Resolved (May)</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">✅</div></div><div class="kpi-val">41</div><div class="kpi-chg up">Avg 3.2 hrs</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">CSAT Score</span><div class="kpi-ico" style="background:rgba(92,107,255,.1)">⭐</div></div><div class="kpi-val">4.6</div><div class="kpi-chg up">↑ 0.2 pts</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>🆘 Active SOS Alerts</h3><span class="badge badge-red">2 Live</span></div>
+      <div class="card-b" id="sos-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>Open Disputes</h3><a>Export</a></div>
+      <div class="card-b" id="dispute-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══ GEOGRAPHY ═══ -->
+  <div class="view" id="v-geography">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Active Cities</span><div class="kpi-ico" style="background:rgba(92,107,255,.12)">🏙️</div></div><div class="kpi-val">14</div><div class="kpi-chg up">↑ 2 new</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Active Regions</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">🗺️</div></div><div class="kpi-val">48</div><div class="kpi-chg up">Pincode coverage</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Top City</span><div class="kpi-ico" style="background:rgba(245,197,66,.1)">🏆</div></div><div class="kpi-val">Mumbai</div><div class="kpi-chg up">₹82K revenue</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Expansion Queued</span><div class="kpi-ico" style="background:rgba(176,107,255,.1)">📍</div></div><div class="kpi-val">3</div><div class="kpi-chg up">Next: Hubli</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>City Performance</h3><a>+ Add City</a></div>
+      <div class="card-b tbl-wrap" style="padding:0">
+        <table>
+          <thead><tr><th>City</th><th>State</th><th>Providers</th><th>Bookings</th><th>Revenue</th><th>Top Service</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="tbl-geo"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ COMMISSION ═══ -->
+  <div class="view" id="v-commission">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Avg Commission</span><div class="kpi-ico" style="background:rgba(92,107,255,.12)">%</div></div><div class="kpi-val">18%</div><div class="kpi-chg up">Across categories</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Collected (May)</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">💸</div></div><div class="kpi-val">₹43,200</div><div class="kpi-chg up">↑ 9%</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Platform Fee</span><div class="kpi-ico" style="background:rgba(245,197,66,.1)">🏷️</div></div><div class="kpi-val">₹5/booking</div><div class="kpi-chg up">Fixed</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Pending Payouts</span><div class="kpi-ico" style="background:rgba(255,107,107,.1)">⏳</div></div><div class="kpi-val">₹12,800</div><div class="kpi-chg dn">18 providers</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>Commission Structure by Category</h3></div>
+      <div class="card-b">
+        <div class="comm-grid" id="comm-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAYMENTS ═══ -->
+  <div class="view" id="v-payments">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Total Collected</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">💳</div></div><div class="kpi-val">₹2.4L</div><div class="kpi-chg up">↑ 11%</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Payouts Processed</span><div class="kpi-ico" style="background:rgba(92,107,255,.12)">📤</div></div><div class="kpi-val">₹1.96L</div><div class="kpi-chg up">On time</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Refunds</span><div class="kpi-ico" style="background:rgba(255,107,107,.1)">↩️</div></div><div class="kpi-val">₹8,400</div><div class="kpi-chg dn">14 requests</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Wallet Balance (all)</span><div class="kpi-ico" style="background:rgba(245,197,66,.1)">👛</div></div><div class="kpi-val">₹31,200</div><div class="kpi-chg up">Across users</div></div>
+    </div>
+
+    <div class="two">
+      <div class="card" style="margin:0">
+        <div class="card-h"><h3>Recent Transactions</h3><a>Export</a></div>
+        <div class="tbl-wrap"><table><thead><tr><th>TXN ID</th><th>Party</th><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="tbl-txn"></tbody></table></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="card-h"><h3>Pending Payouts</h3><a onclick="alert('Batch payout initiated')">Pay All</a></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Provider</th><th>Bookings</th><th>Due</th><th>Action</th></tr></thead><tbody id="tbl-payouts"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ANALYTICS ═══ -->
+  <div class="view" id="v-analytics">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">GMV (May)</span><div class="kpi-ico" style="background:rgba(92,107,255,.12)">📈</div></div><div class="kpi-val">₹2.4L</div><div class="kpi-chg up">↑ 11% MoM</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Avg Order Value</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">🧾</div></div><div class="kpi-val">₹498</div><div class="kpi-chg up">↑ ₹22</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">New Users</span><div class="kpi-ico" style="background:rgba(245,197,66,.1)">🆕</div></div><div class="kpi-val">1,340</div><div class="kpi-chg up">↑ 18%</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Repeat Rate</span><div class="kpi-ico" style="background:rgba(176,107,255,.1)">🔁</div></div><div class="kpi-val">62%</div><div class="kpi-chg up">↑ 4 pts</div></div>
+    </div>
+
+    <div class="two">
+      <div class="card" style="margin:0">
+        <div class="card-h"><h3>Monthly Revenue</h3></div>
+        <div class="card-b"><div class="chart-wrap" style="height:180px"><canvas id="c-rev2"></canvas></div></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="card-h"><h3>Top Services by Revenue</h3></div>
+        <div class="card-b" id="top-services"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>Platform Growth (Users &amp; Providers)</h3></div>
+      <div class="card-b"><div class="chart-wrap" style="height:160px"><canvas id="c-growth"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAX ═══ -->
+  <div class="view" id="v-tax">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">GST Collected</span><div class="kpi-ico" style="background:rgba(92,107,255,.12)">🧾</div></div><div class="kpi-val">₹12,480</div><div class="kpi-chg up">May 2026</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">TDS Deducted</span><div class="kpi-ico" style="background:rgba(67,232,160,.1)">📊</div></div><div class="kpi-val">₹4,320</div><div class="kpi-chg up">@2% TDS</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Invoices Generated</span><div class="kpi-ico" style="background:rgba(245,197,66,.1)">📄</div></div><div class="kpi-val">4,821</div><div class="kpi-chg up">Auto-generated</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Pending Filing</span><div class="kpi-ico" style="background:rgba(255,107,107,.1)">⚠️</div></div><div class="kpi-val">0</div><div class="kpi-chg up">All clear ✓</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>Invoice &amp; Tax Records</h3><a>Download GSTR</a></div>
+      <div class="card-b tbl-wrap" style="padding:0">
+        <table>
+          <thead><tr><th>Invoice No.</th><th>Customer / Provider</th><th>Service</th><th>Amount</th><th>GST (18%)</th><th>TDS</th><th>Net</th><th>Date</th><th>Download</th></tr></thead>
+          <tbody id="tbl-tax"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+/* ═══════════════ DATA ═══════════════ */
+const BOOKINGS = [
+  {id:'SE-1042',cust:'Priya Nair',svc:'Deep Cleaning',prov:'CleanNest Pro',date:'May 9',amt:'₹649',status:'Completed'},
+  {id:'SE-1041',cust:'Ramesh K.',svc:'AC Service',prov:'CoolTech',date:'May 9',amt:'₹499',status:'In Progress'},
+  {id:'SE-1040',cust:'Anita Shah',svc:'Plumbing',prov:'FixFlow',date:'May 8',amt:'₹349',status:'Completed'},
+  {id:'SE-1039',cust:'Karan M.',svc:'Electrical',prov:'SparkSafe',date:'May 8',amt:'₹599',status:'Cancelled'},
+  {id:'SE-1038',cust:'Divya R.',svc:'Beauty',prov:'GlowPro',date:'May 7',amt:'₹299',status:'Completed'},
+  {id:'SE-1037',cust:'Suresh B.',svc:'Carpentry',prov:'WoodCraft',date:'May 7',amt:'₹899',status:'In Progress'},
+  {id:'SE-1036',cust:'Meera P.',svc:'Deep Cleaning',prov:'CleanNest',date:'May 6',amt:'₹649',status:'Pending'},
+];
+
+const CUSTOMERS = [
+  {name:'Priya Nair',mobile:'+91 9876543210',city:'Mumbai',orders:12,status:'Active'},
+  {name:'Ramesh Kumar',mobile:'+91 9845612300',city:'Bangalore',orders:7,status:'Active'},
+  {name:'Karan Malhotra',mobile:'+91 9712345678',city:'Delhi',orders:3,status:'Suspended'},
+  {name:'Divya Reddy',mobile:'+91 9988776655',city:'Hyderabad',orders:19,status:'Active'},
+  {name:'Suresh Bhat',mobile:'+91 9123456789',city:'Gadag',orders:5,status:'Active'},
+];
+
+const PROVIDERS = [
+  {name:'CleanNest Pro',trade:'Cleaning',rating:'4.9 ⭐',status:'Verified'},
+  {name:'CoolTech Repairs',trade:'AC Technician',rating:'4.7 ⭐',status:'Verified'},
+  {name:'FixFlow Services',trade:'Plumber',rating:'4.6 ⭐',status:'Pending'},
+  {name:'SparkSafe Electricals',trade:'Electrician',rating:'4.8 ⭐',status:'Verified'},
+  {name:'GlowPro Beauty',trade:'Beautician',rating:'4.9 ⭐',status:'Suspended'},
+];
+
+const GEOS = [
+  {city:'Mumbai',state:'Maharashtra',prov:142,book:1820,rev:'₹82,400',top:'Cleaning',active:true},
+  {city:'Bangalore',state:'Karnataka',prov:98,book:1240,rev:'₹61,200',top:'AC Service',active:true},
+  {city:'Delhi',state:'Delhi NCR',prov:74,book:980,rev:'₹48,000',top:'Electrical',active:true},
+  {city:'Gadag',state:'Karnataka',prov:12,book:143,rev:'₹7,100',top:'Plumbing',active:true},
+  {city:'Hubli',state:'Karnataka',prov:0,book:0,rev:'—',top:'—',active:false},
+];
+
+const TXNS = [
+  {id:'TXN-8821',party:'Priya Nair',type:'Payment',amt:'₹649',date:'May 9',status:'Success'},
+  {id:'TXN-8820',party:'CoolTech Repairs',type:'Payout',amt:'₹399',date:'May 9',status:'Success'},
+  {id:'TXN-8819',party:'Karan Malhotra',type:'Refund',amt:'₹349',date:'May 8',status:'Processed'},
+  {id:'TXN-8818',party:'SparkSafe',type:'Payout',amt:'₹479',date:'May 8',status:'Pending'},
+  {id:'TXN-8817',party:'Divya Reddy',type:'Payment',amt:'₹299',date:'May 7',status:'Success'},
+];
+
+const PAYOUTS = [
+  {prov:'FixFlow Services',books:4,due:'₹1,240'},
+  {prov:'WoodCraft Studio',books:2,due:'₹680'},
+  {prov:'GlowPro Beauty',books:6,due:'₹1,440'},
+];
+
+const TAX_ROWS = [
+  {inv:'INV-2026-4821',party:'Priya Nair',svc:'Deep Cleaning',amt:'₹649',gst:'₹116.82',tds:'₹12.98',net:'₹519.20',date:'May 9'},
+  {inv:'INV-2026-4820',party:'Ramesh Kumar',svc:'AC Service',amt:'₹499',gst:'₹89.82',tds:'₹9.98',net:'₹399.20',date:'May 9'},
+  {inv:'INV-2026-4819',party:'Divya Reddy',svc:'Beauty',amt:'₹299',gst:'₹53.82',tds:'₹5.98',net:'₹239.20',date:'May 7'},
+];
+
+const COMMISSIONS = [
+  {cat:'Cleaning',pct:20,fixed:10,note:'Per job'},
+  {cat:'Plumbing',pct:18,fixed:8,note:'Per job'},
+  {cat:'Electrical',pct:18,fixed:8,note:'Per job'},
+  {cat:'AC Technician',pct:22,fixed:12,note:'Per job'},
+  {cat:'Beauty',pct:15,fixed:5,note:'Per job'},
+  {cat:'Carpenter',pct:17,fixed:7,note:'Per job'},
+];
+
+const TOP_SVCS = [
+  {name:'Deep Cleaning',rev:'₹42,800',pct:36,color:'#5c6bff'},
+  {name:'AC Service',rev:'₹31,200',pct:26,color:'#43e8a0'},
+  {name:'Plumbing',rev:'₹18,600',pct:16,color:'#f5c542'},
+  {name:'Electrical',rev:'₹14,400',pct:12,color:'#ff6b6b'},
+  {name:'Beauty',rev:'₹11,800',pct:10,color:'#b06bff'},
+];
+
+const STATUS_COLOR = {
+  'Completed':'badge-green','In Progress':'badge-amber','Cancelled':'badge-red','Pending':'badge-blue',
+  'Verified':'badge-green','Suspended':'badge-red','Active':'badge-green',
+  'Success':'badge-green','Processed':'badge-blue',
+};
+
+/* ═══════════════ BADGE ═══════════════ */
+function badge(txt){return`<span class="badge ${STATUS_COLOR[txt]||'badge-blue'}">${txt}</span>`}
+
+/* ═══════════════ FILL TABLES ═══════════════ */
+function avatarColor(n){const c=['#5c6bff','#ff6b6b','#43e8a0','#f5c542','#b06bff'];return c[n.charCodeAt(0)%c.length]}
+
+function fillDashBookings(){
+  document.getElementById('dash-bookings').innerHTML=BOOKINGS.slice(0,5).map(b=>`<tr>
+    <td style="font-family:monospace;color:var(--acc)">${b.id}</td>
+    <td>${b.cust}</td><td>${b.svc}</td><td>${b.prov}</td>
+    <td style="color:var(--mut)">${b.date}</td>
+    <td style="font-weight:600">${b.amt}</td>
+    <td>${badge(b.status)}</td></tr>`).join('')
+}
+
+function fillBookings(){
+  document.getElementById('tbl-bookings').innerHTML=BOOKINGS.map(b=>`<tr>
+    <td style="font-family:monospace;color:var(--acc)">${b.id}</td>
+    <td>${b.cust}</td><td>${b.svc}</td><td>${b.prov}</td>
+    <td style="color:var(--mut)">${b.date}</td>
+    <td style="font-weight:600">${b.amt}</td>
+    <td>${badge(b.status)}</td>
+    <td><div style="display:flex;gap:5px">
+      <button class="action-btn">View</button>
+      <button class="action-btn danger">Cancel</button>
+    </div></td></tr>`).join('')
+}
+
+function fillCustomers(){
+  document.getElementById('tbl-customers').innerHTML=CUSTOMERS.map(c=>`<tr>
+    <td><div class="cell-user"><div class="avatar-sm" style="background:${avatarColor(c.name)}">${c.name[0]}</div>${c.name}</div></td>
+    <td style="color:var(--mut)">${c.mobile}</td><td>${c.city}</td>
+    <td>${c.orders}</td><td>${badge(c.status)}</td>
+    <td><button class="action-btn ${c.status==='Suspended'?'success':'danger'}">${c.status==='Suspended'?'Restore':'Suspend'}</button></td></tr>`).join('')
+}
+
+function fillProviders(){
+  document.getElementById('tbl-providers').innerHTML=PROVIDERS.map(p=>`<tr>
+    <td><div class="cell-user"><div class="avatar-sm" style="background:${avatarColor(p.name)}">${p.name[0]}</div>${p.name}</div></td>
+    <td>${p.trade}</td><td>${p.rating}</td><td>${badge(p.status)}</td>
+    <td><div style="display:flex;gap:5px">
+      ${p.status==='Pending'?'<button class="action-btn success">Verify</button>':''}
+      <button class="action-btn danger">Action</button>
+    </div></td></tr>`).join('')
+}
+
+function fillGeo(){
+  document.getElementById('tbl-geo').innerHTML=GEOS.map(g=>`<tr>
+    <td><span class="region-dot" style="background:${g.active?'var(--acc3)':'var(--mut)'}"></span>${g.city}</td>
+    <td style="color:var(--mut)">${g.state}</td>
+    <td>${g.prov}</td><td>${g.book}</td>
+    <td style="font-weight:600;color:var(--acc3)">${g.rev}</td>
+    <td>${g.top}</td>
+    <td>${badge(g.active?'Active':'Pending')}</td>
+    <td><button class="action-btn">${g.active?'Manage':'Launch'}</button></td></tr>`).join('')
+}
+
+function fillCommission(){
+  document.getElementById('comm-grid').innerHTML=COMMISSIONS.map(c=>`
+    <div class="comm-card">
+      <h4>${c.cat}</h4>
+      <label>Commission %</label><input type="number" value="${c.pct}" min="0" max="50"/>
+      <label style="margin-top:8px">Fixed Fee (₹)</label><input type="number" value="${c.fixed}" min="0"/>
+      <button class="save-btn" onclick="alert('Saved commission for ${c.cat}')">Save</button>
+    </div>`).join('')
+}
+
+function fillTxn(){
+  document.getElementById('tbl-txn').innerHTML=TXNS.map(t=>`<tr>
+    <td style="font-family:monospace;color:var(--acc)">${t.id}</td>
+    <td>${t.party}</td><td>${badge(t.type)}</td>
+    <td style="font-weight:600">${t.amt}</td>
+    <td style="color:var(--mut)">${t.date}</td>
+    <td>${badge(t.status)}</td></tr>`).join('')
+}
+
+function fillPayouts(){
+  document.getElementById('tbl-payouts').innerHTML=PAYOUTS.map(p=>`<tr>
+    <td>${p.prov}</td><td>${p.books}</td>
+    <td style="font-weight:600;color:var(--acc3)">${p.due}</td>
+    <td><button class="action-btn success" onclick="alert('Payout initiated to '+p.prov)">Pay Now</button></td></tr>`).join('')
+}
+
+function fillTax(){
+  document.getElementById('tbl-tax').innerHTML=TAX_ROWS.map(t=>`<tr>
+    <td style="font-family:monospace;color:var(--acc)">${t.inv}</td>
+    <td>${t.party}</td><td>${t.svc}</td>
+    <td>${t.amt}</td><td style="color:var(--acc4)">${t.gst}</td>
+    <td style="color:var(--mut2)">${t.tds}</td>
+    <td style="font-weight:600;color:var(--acc3)">${t.net}</td>
+    <td style="color:var(--mut)">${t.date}</td>
+    <td><button class="action-btn" onclick="alert('Downloading '+t.inv)">↓ PDF</button></td></tr>`).join('')
+}
+
+function fillDisputes(){
+  const disputes=[
+    {ico:'🔧',color:'rgba(255,107,107,.1)',title:'Provider did not complete the job',meta:'SE-1036 · Meera P. vs CleanNest · May 6 · Cleaning',pri:'High'},
+    {ico:'💳',color:'rgba(245,197,66,.1)',title:'Payment deducted but booking not confirmed',meta:'SE-1030 · Suresh B. · May 5 · ₹649',pri:'Medium'},
+    {ico:'⭐',color:'rgba(92,107,255,.1)',title:'Fake review dispute',meta:'SE-1025 · GlowPro Beauty · May 3',pri:'Low'},
+  ];
+  document.getElementById('dispute-list').innerHTML=disputes.map(d=>`
+    <div class="dispute-item">
+      <div class="dispute-ico" style="background:${d.color}">${d.ico}</div>
+      <div class="dispute-body">
+        <div class="dispute-title">${d.title}</div>
+        <div class="dispute-meta">${d.meta}</div>
+        <div class="dispute-acts">
+          <button class="action-btn success">Resolve</button>
+          <button class="action-btn">Escalate</button>
+          <button class="action-btn danger">Refund</button>
+        </div>
+      </div>
+      <span class="badge ${d.pri==='High'?'badge-red':d.pri==='Medium'?'badge-amber':'badge-blue'}">${d.pri}</span>
+    </div>`).join('')
+
+  const sos=[
+    {loc:'Koramangala, Bangalore',prov:'Raj Kumar (Electrician)',time:'14 min ago'},
+    {loc:'Andheri West, Mumbai',prov:'Sneha D. (Beautician)',time:'31 min ago'},
+  ];
+  document.getElementById('sos-list').innerHTML=sos.map(s=>`
+    <div class="sos-alert">
+      <div>🆘</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;color:var(--acc2)">SOS triggered by customer</div>
+        <div style="font-size:12px;color:var(--mut);margin-top:3px">📍 ${s.loc} · Provider: ${s.prov} · ${s.time}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="action-btn danger">Call Customer</button>
+        <button class="action-btn">Dispatch Support</button>
+      </div>
+    </div>`).join('')
+}
+
+function fillTopServices(){
+  document.getElementById('top-services').innerHTML=TOP_SVCS.map(s=>`
+    <div class="stat-row">
+      <span class="stat-row-lbl">${s.name}</span>
+      <div class="stat-bar-wrap"><div class="stat-bar" style="width:${s.pct}%;background:${s.color}"></div></div>
+      <span class="stat-row-val">${s.rev}</span>
+    </div>`).join('')
+}
+
+/* ═══════════════ CHARTS ═══════════════ */
+function drawBar(id,labels,vals,color){
+  const c=document.getElementById(id);if(!c)return;
+  const W=c.parentElement.clientWidth||360,H=c.parentElement.clientHeight||170;
+  c.width=W*2;c.height=H*2;c.style.width=W+'px';c.style.height=H+'px';
+  const ctx=c.getContext('2d');ctx.scale(2,2);
+  const pad={t:10,r:10,b:30,l:40},bw=(W-pad.l-pad.r)/labels.length*0.6;
+  const mx=Math.max(...vals)*1.15;
+  ctx.clearRect(0,0,W,H);
+  // grid
+  [0,.25,.5,.75,1].forEach(f=>{
+    const y=pad.t+(H-pad.t-pad.b)*(1-f);
+    ctx.beginPath();ctx.strokeStyle='#232840';ctx.lineWidth=1;
+    ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#5a6180';ctx.font='9px DM Sans';ctx.textAlign='right';
+    ctx.fillText(Math.round(mx*f),pad.l-4,y+3);
+  });
+  labels.forEach((l,i)=>{
+    const barW=(W-pad.l-pad.r)/labels.length,x=pad.l+i*barW+(barW-bw)/2;
+    const h=(vals[i]/mx)*(H-pad.t-pad.b);
+    const y=pad.t+(H-pad.t-pad.b)-h;
+    const g=ctx.createLinearGradient(0,y,0,y+h);
+    g.addColorStop(0,color);g.addColorStop(1,color+'44');
+    ctx.fillStyle=g;ctx.beginPath();
+    ctx.roundRect(x,y,bw,h,3);ctx.fill();
+    ctx.fillStyle='#5a6180';ctx.font='9px DM Sans';ctx.textAlign='center';
+    ctx.fillText(l,x+bw/2,H-pad.b+12);
+  });
+}
+
+function drawLine(id,labels,datasets){
+  const c=document.getElementById(id);if(!c)return;
+  const W=c.parentElement.clientWidth||360,H=c.parentElement.clientHeight||160;
+  c.width=W*2;c.height=H*2;c.style.width=W+'px';c.style.height=H+'px';
+  const ctx=c.getContext('2d');ctx.scale(2,2);
+  const pad={t:10,r:10,b:28,l:38};
+  const allVals=datasets.flatMap(d=>d.data);
+  const mx=Math.max(...allVals)*1.15;
+  ctx.clearRect(0,0,W,H);
+  [0,.5,1].forEach(f=>{
+    const y=pad.t+(H-pad.t-pad.b)*(1-f);
+    ctx.beginPath();ctx.strokeStyle='#232840';ctx.lineWidth=1;
+    ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#5a6180';ctx.font='9px DM Sans';ctx.textAlign='right';
+    ctx.fillText(Math.round(mx*f),pad.l-4,y+3);
+  });
+  datasets.forEach(ds=>{
+    const pts=ds.data.map((v,i)=>({
+      x:pad.l+(W-pad.l-pad.r)*(i/(labels.length-1)),
+      y:pad.t+(H-pad.t-pad.b)*(1-v/mx)
+    }));
+    // fill
+    ctx.beginPath();ctx.moveTo(pts[0].x,H-pad.b);
+    pts.forEach(p=>ctx.lineTo(p.x,p.y));
+    ctx.lineTo(pts[pts.length-1].x,H-pad.b);ctx.closePath();
+    const g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+    g.addColorStop(0,ds.color+'33');g.addColorStop(1,ds.color+'00');
+    ctx.fillStyle=g;ctx.fill();
+    // line
+    ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<pts.length;i++){
+      const cp={x:(pts[i-1].x+pts[i].x)/2,y:(pts[i-1].y+pts[i].y)/2};
+      ctx.quadraticCurveTo(pts[i-1].x,pts[i-1].y,cp.x,cp.y);
+    }
+    ctx.lineTo(pts[pts.length-1].x,pts[pts.length-1].y);
+    ctx.strokeStyle=ds.color;ctx.lineWidth=2;ctx.stroke();
+    // dots
+    pts.forEach(p=>{
+      ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);
+      ctx.fillStyle=ds.color;ctx.fill();
+    });
+  });
+  // labels
+  labels.forEach((l,i)=>{
+    const x=pad.l+(W-pad.l-pad.r)*(i/(labels.length-1));
+    ctx.fillStyle='#5a6180';ctx.font='9px DM Sans';ctx.textAlign='center';
+    ctx.fillText(l,x,H-pad.b+12);
+  });
+}
+
+function drawDonut(id,labels,vals,colors){
+  const c=document.getElementById(id);if(!c)return;
+  const W=c.parentElement.clientWidth||300,H=170;
+  c.width=W*2;c.height=H*2;c.style.width=W+'px';c.style.height=H+'px';
+  const ctx=c.getContext('2d');ctx.scale(2,2);
+  const cx=W*0.4,cy=H/2,R=Math.min(cx,cy)-10,r=R*0.55;
+  const total=vals.reduce((a,b)=>a+b,0);
+  let start=-Math.PI/2;
+  vals.forEach((v,i)=>{
+    const angle=(v/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,R,start,start+angle);ctx.closePath();
+    ctx.fillStyle=colors[i];ctx.fill();
+    start+=angle;
+  });
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.fillStyle='#0f1219';ctx.fill();
+  ctx.fillStyle='#dde1f0';ctx.font='bold 15px Syne';ctx.textAlign='center';
+  ctx.fillText('4821',cx,cy+2);ctx.font='9px DM Sans';ctx.fillStyle='#5a6180';
+  ctx.fillText('Total',cx,cy+14);
+  const lx=W*0.72;let ly=H*0.2;
+  labels.forEach((l,i)=>{
+    ctx.fillStyle=colors[i];ctx.fillRect(lx,ly,10,10);
+    ctx.fillStyle='#dde1f0';ctx.font='10px DM Sans';ctx.textAlign='left';
+    ctx.fillText(l+' '+Math.round(vals[i]/total*100)+'%',lx+14,ly+9);
+    ly+=18;
+  });
+}
+
+/* ═══════════════ NAVIGATION ═══════════════ */
+const TITLES={
+  dashboard:'Dashboard',bookings:'Booking Management',users:'Users & Providers',
+  disputes:'Disputes & Support',geography:'Geographic Management',
+  commission:'Commission Structure',payments:'Payments & Wallet',
+  analytics:'Sales & Analytics',tax:'Tax & Invoices'
+};
+
+function nav(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('act'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('act'));
+  document.getElementById('v-'+id).classList.add('act');
+  document.querySelector(`[data-view="${id}"]`).classList.add('act');
+  document.getElementById('tb-title').textContent=TITLES[id]||id;
+  setTimeout(()=>drawCharts(id),50);
+}
+
+function drawCharts(id){
+  const months=['Nov','Dec','Jan','Feb','Mar','Apr','May'];
+  const rev=[80000,95000,110000,98000,130000,155000,240000];
+  if(id==='dashboard'){
+    drawBar('c-revenue',months,rev,'#5c6bff');
+    drawDonut('c-cat',['Cleaning','AC','Plumb','Elec','Beauty'],[1820,1240,980,430,351],['#5c6bff','#43e8a0','#f5c542','#ff6b6b','#b06bff']);
+  }
+  if(id==='analytics'){
+    drawLine('c-rev2',months,[{data:rev,color:'#5c6bff'}]);
+    drawLine('c-growth',months,[
+      {data:[9200,10400,12000,13500,15200,16800,18420],color:'#43e8a0'},
+      {data:[310,330,360,400,440,480,512],color:'#f5c542'}
+    ]);
+    fillTopServices();
+  }
+}
+
+/* ═══════════════ INIT ═══════════════ */
+document.querySelectorAll('.nav-item').forEach(el=>{
+  el.addEventListener('click',()=>nav(el.dataset.view));
+});
+
+fillDashBookings();fillBookings();fillCustomers();fillProviders();
+fillGeo();fillCommission();fillTxn();fillPayouts();fillTax();fillDisputes();
+
+setTimeout(()=>{
+  drawBar('c-revenue',['Nov','Dec','Jan','Feb','Mar','Apr','May'],[80000,95000,110000,98000,130000,155000,240000],'#5c6bff');
+  drawDonut('c-cat',['Cleaning','AC','Plumb','Elec','Beauty'],[1820,1240,980,430,351],['#5c6bff','#43e8a0','#f5c542','#ff6b6b','#b06bff']);
+},100);
+</script>
+</body>
+</html>

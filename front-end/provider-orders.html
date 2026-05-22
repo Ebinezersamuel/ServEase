@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Orders — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 20px;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 24px;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+      }
+      .stat-icon {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .stat-value {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+
+      .filter-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .filter-btn {
+        padding: 8px 14px;
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        color: var(--muted);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .filter-btn.active {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+
+      .order-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      .order-info {
+        flex: 1;
+      }
+      .order-name {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .order-customer {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .order-date {
+        font-size: 11px;
+        color: #6b7385;
+      }
+
+      .order-status {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-bottom: 6px;
+      }
+      .status-pending {
+        background: rgba(255, 200, 50, 0.15);
+        color: #ffc27a;
+      }
+      .status-completed {
+        background: rgba(67, 232, 160, 0.15);
+        color: var(--accent3);
+      }
+      .status-cancelled {
+        background: rgba(255, 107, 107, 0.15);
+        color: var(--accent2);
+      }
+
+      .order-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .btn {
+        padding: 6px 12px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #4a58e8;
+      }
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        color: var(--text);
+        border-color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>My Orders</h1>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📋</div>
+          <div class="stat-label">Total Orders</div>
+          <div class="stat-value">156</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-label">Pending</div>
+          <div class="stat-value">3</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-label">Completed</div>
+          <div class="stat-value">148</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">This Month Earnings</div>
+          <div class="stat-value">₹32,500</div>
+        </div>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-btn active" onclick="filterOrders('all')">
+          All
+        </button>
+        <button class="filter-btn" onclick="filterOrders('pending')">
+          Pending
+        </button>
+        <button class="filter-btn" onclick="filterOrders('completed')">
+          Completed
+        </button>
+        <button class="filter-btn" onclick="filterOrders('cancelled')">
+          Cancelled
+        </button>
+      </div>
+
+      <div id="orders-list">
+        <!-- Loaded from API -->
+      </div>
+    </div>
+    <script>
+      async function loadProviderOrders() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "ServEase1.html";
+          return;
+        }
+        try {
+          // ✅ Fixed endpoint: /api/bookings/provider-bookings (NOT /api/b_provider-bookings)
+          const res = await fetch(
+            "http://localhost:5000/api/bookings/provider-bookings",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+          const orders = await res.json();
+          const listDiv = document.getElementById("orders-list");
+          if (!orders.length) {
+            listDiv.innerHTML = '<div class="empty-state">No orders yet</div>';
+            return;
+          }
+          listDiv.innerHTML = orders
+            .map(
+              (order) => `
+        <div class="order-card">
+          <div class="order-info">
+            <div class="order-name">${order.serviceId?.name || "Service"}</div>
+            <div class="order-customer">Customer: ${order.userId?.firstName} ${order.userId?.lastName}</div>
+            <div class="order-date">${new Date(order.scheduledTime).toLocaleString()}</div>
+            <span class="order-status status-${order.status}">${order.status.toUpperCase()}</span>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:18px;font-weight:700">₹${order.totalAmount}</div>
+            <div class="order-actions">
+              ${order.status === "pending" ? `<button class="btn" onclick="updateStatus('${order._id}', 'confirmed')">Accept</button>` : ""}
+              ${order.status === "confirmed" ? `<button class="btn" onclick="updateStatus('${order._id}', 'in_progress')">Start</button>` : ""}
+              ${order.status === "in_progress" ? `<button class="btn" onclick="updateStatus('${order._id}', 'completed')">Complete</button>` : ""}
+            </div>
+          </div>
+        </div>
+      `,
+            )
+            .join("");
+        } catch (err) {
+          console.error(err);
+          document.getElementById("orders-list").innerHTML =
+            '<div class="empty-state">Error loading orders</div>';
+        }
+      }
+
+      async function updateStatus(bookingId, status) {
+        const token = localStorage.getItem("token");
+        try {
+          await fetch(
+            `http://localhost:5000/api/bookings/${bookingId}/status`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ status }),
+            },
+          );
+          loadProviderOrders(); // refresh
+        } catch (err) {
+          alert("Failed to update status");
+        }
+      }
+
+      loadProviderOrders();
+    </script>
+  </body>
+</html>

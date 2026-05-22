@@ -485,41 +485,38 @@
       function forgotPassword() {
         document.getElementById("reset-msg").style.display = "block";
       }
-
       document
         .getElementById("loginForm")
         .addEventListener("submit", async function (e) {
           e.preventDefault();
-
           const email = document.getElementById("loginEmail").value.trim();
           const password = document
             .getElementById("loginPassword")
             .value.trim();
 
           try {
-            const response = await fetch(
-              "http://localhost:5000/api/auth/login",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-              },
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-              alert(data.message || "Login failed");
-              return;
-            }
-
-            // Save JWT and user info
+            const res = await fetch("http://localhost:5000/api/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
-
-            // Redirect based on role
-            if ((data.user.userType || data.user.role) === "provider") {
-              window.location.href = "servease-dashboard.html";
+            if (data.user.role === "provider") {
+              // Check if provider profile exists
+              const profileRes = await fetch(
+                "http://localhost:5000/api/providers/me/profile",
+                {
+                  headers: { Authorization: `Bearer ${data.token}` },
+                },
+              );
+              if (profileRes.status === 404) {
+                window.location.href = "provider-register.html";
+              } else {
+                window.location.href = "servease-dashboard.html";
+              }
             } else {
               window.location.href = "servease-userdashboard1.html";
             }

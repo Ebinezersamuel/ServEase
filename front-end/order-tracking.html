@@ -617,70 +617,22 @@
     </div>
 
     <script>
-      // Sample order data
-      const orderData = {
-        bookingId: "SRV-2024-001234",
-        status: "in-progress",
-        service: "AC Maintenance",
-        provider: {
-          name: "John Doe",
-          avatar: "👨‍🔧",
-          rating: 4.8,
-          reviews: 245,
-        },
-        scheduledTime: "May 15, 2024 • 10:00 AM",
-        amount: 619.5,
-        distance: 2.0,
-        eta: "10 minutes",
-      };
-
-      function initPage() {
-        document.getElementById("bookingSubtitle").textContent =
-          `Booking ID: #${orderData.bookingId}`;
-        // Update status based on orderData.status
-        if (orderData.status === "in-progress") {
-          document.getElementById("statusTitle").textContent =
-            "Provider Assigned";
-          document.getElementById("statusDesc").textContent =
-            "Your service provider is on the way";
-        }
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookingId = urlParams.get("id");
+      if (bookingId) {
+        fetch(`http://localhost:5000/api/bookings/${bookingId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
+          .then((res) => res.json())
+          .then((booking) => {
+            document.getElementById("bookingSubtitle").innerText =
+              `Booking ID: #${booking._id.slice(-8)}`;
+            document.getElementById("statusTitle").innerText =
+              booking.status === "confirmed"
+                ? "Provider Assigned"
+                : booking.status;
+          });
       }
-
-      function contactProvider() {
-        alert(`Calling ${orderData.provider.name}...\n+91 98765 43210`);
-      }
-
-      function messageProvider() {
-        alert(`Opening chat with ${orderData.provider.name}...`);
-      }
-
-      function cancelOrder() {
-        if (
-          confirm(
-            "Are you sure you want to cancel this booking? Cancellation charges may apply.",
-          )
-        ) {
-          alert(
-            "Booking cancelled. Refund will be processed in 3-5 business days.",
-          );
-        }
-      }
-
-      function viewDetails() {
-        alert(
-          `Service Details:\n\nService: ${orderData.service}\nProvider: ${orderData.provider.name}\nTime: ${orderData.scheduledTime}\nAmount: ₹${orderData.amount}`,
-        );
-      }
-
-      function trackLive() {
-        alert("Opening live tracking...");
-      }
-
-      function openSupport() {
-        alert("Opening support chat...");
-      }
-
-      window.addEventListener("load", initPage);
     </script>
   </body>
 </html>

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Wallet — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --bg: #0d0f14;
+        --surface: #13161e;
+        --surface2: #1b1f2b;
+        --border: #252934;
+        --accent: #5c6bff;
+        --accent2: #ff6b6b;
+        --accent3: #43e8a0;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 20px;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 24px;
+      }
+      .wallet-card {
+        background: linear-gradient(135deg, var(--accent), #7785ff);
+        border-radius: 16px;
+        padding: 32px;
+        color: #fff;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 24px rgba(92, 107, 255, 0.35);
+      }
+      .wallet-label {
+        font-size: 13px;
+        opacity: 0.9;
+        margin-bottom: 8px;
+      }
+      .wallet-amount {
+        font-family: "Syne", sans-serif;
+        font-size: 48px;
+        font-weight: 800;
+        margin-bottom: 24px;
+      }
+      .wallet-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .wallet-btn {
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: #fff;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+      }
+      .stat-icon {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .stat-value {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .card-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .transaction-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .transaction-table th {
+        padding: 12px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+      }
+      .transaction-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+      }
+      .transaction-credit {
+        color: var(--accent3);
+      }
+      .transaction-debit {
+        color: var(--accent2);
+      }
+      .btn {
+        padding: 10px 16px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .error-msg {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid var(--accent2);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--accent2);
+        margin-bottom: 16px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header"><h1>My Wallet</h1></div>
+      <div id="errorMsg" class="error-msg" style="display: none"></div>
+      <div class="wallet-card">
+        <div class="wallet-label">Total Balance</div>
+        <div class="wallet-amount" id="balance">₹0</div>
+        <div class="wallet-actions">
+          <button
+            class="wallet-btn"
+            onclick="alert('Withdraw feature coming soon')"
+          >
+            Withdraw
+          </button>
+          <button
+            class="wallet-btn"
+            onclick="alert('Transaction history shown below')"
+          >
+            Transactions
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <div class="stat-label">This Month</div>
+          <div class="stat-value" id="monthEarnings">₹0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-label">Total Earnings</div>
+          <div class="stat-value" id="totalEarnings">₹0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💳</div>
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" id="pending">₹0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-label">Withdrawn</div>
+          <div class="stat-value" id="withdrawn">₹0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recent Transactions</div>
+        <table class="transaction-table" id="txnTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="txnBody">
+            <tr>
+              <td colspan="4">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const token = localStorage.getItem("token");
+      if (!token) window.location.href = "provider-register.html";
+
+      function getProviderId() {
+        try {
+          const payload = JSON.parse(
+            atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
+          );
+          return payload.sub || payload.userId || payload.id || payload._id;
+        } catch (e) {
+          return null;
+        }
+      }
+      const providerId = getProviderId();
+      if (!providerId) {
+        document.getElementById("errorMsg").innerText =
+          "Invalid token. Please log in again.";
+        document.getElementById("errorMsg").style.display = "block";
+      }
+
+      const API_BASE = "http://localhost:5000/api";
+
+      async function loadWallet() {
+        try {
+          const res = await fetch(
+            `${API_BASE}/providers/${providerId}/wallet`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+          if (!res.ok) throw new Error("Wallet endpoint not available");
+          const data = await res.json();
+          document.getElementById("balance").innerText =
+            `₹${data.balance || 0}`;
+          document.getElementById("monthEarnings").innerText =
+            `₹${data.monthEarnings || 0}`;
+          document.getElementById("totalEarnings").innerText =
+            `₹${data.totalEarnings || 0}`;
+          document.getElementById("pending").innerText =
+            `₹${data.pendingPayout || 0}`;
+          document.getElementById("withdrawn").innerText =
+            `₹${data.withdrawn || 0}`;
+          const txs = data.transactions || [];
+          if (txs.length === 0) {
+            document.getElementById("txnBody").innerHTML =
+              '<tr><td colspan="4">No transactions yet</td></tr>';
+          } else {
+            document.getElementById("txnBody").innerHTML = txs
+              .map(
+                (t) => `
+          <tr>
+            <td>${t.date || ""}</td>
+            <td>${t.description || ""}</td>
+            <td class="${t.amount > 0 ? "transaction-credit" : "transaction-debit"}">${t.amount > 0 ? "+" : ""}₹${Math.abs(t.amount)}</td>
+            <td><span class="badge">${t.status || "Completed"}</span></td>
+          </tr>
+        `,
+              )
+              .join("");
+          }
+        } catch (err) {
+          console.error(err);
+          document.getElementById("errorMsg").innerText =
+            "Could not load wallet. Using demo data.";
+          document.getElementById("errorMsg").style.display = "block";
+          // Fallback demo data
+          document.getElementById("balance").innerText = "₹4,582";
+          document.getElementById("monthEarnings").innerText = "₹1,250";
+          document.getElementById("totalEarnings").innerText = "₹12,580";
+          document.getElementById("pending").innerText = "₹240";
+          document.getElementById("withdrawn").innerText = "₹7,758";
+          document.getElementById("txnBody").innerHTML = `
+        <tr><td>2024-05-20</td><td>AC Service - Booking #1024</td><td class="transaction-credit">+ ₹500</td><td>Completed</td></tr>
+        <tr><td>2024-05-19</td><td>Platform Fee Deduction</td><td class="transaction-debit">- ₹12.50</td><td>Processed</td></tr>
+        <tr><td>2024-05-18</td><td>Withdrawal to Bank</td><td class="transaction-debit">- ₹1,000</td><td>Success</td></tr>
+      `;
+        }
+      }
+
+      loadWallet();
+    </script>
+  </body>
+</html>

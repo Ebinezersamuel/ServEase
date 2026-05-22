@@ -1,1090 +1,1601 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Provider Registration — ServEase</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Provider Registration — ServEase</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    :root {
-      --bg:       #0b0d12;
-      --surface:  #12151c;
-      --surface2: #191d28;
-      --border:   #222636;
-      --accent:   #5c6bff;
-      --accent-h: #4a58e8;
-      --green:    #43e8a0;
-      --red:      #ff6b6b;
-      --amber:    #f5c542;
-      --text:     #e8eaf0;
-      --muted:    #6b7385;
-      --radius:   12px;
-    }
+      :root {
+        --bg: #0b0d12;
+        --surface: #12151c;
+        --surface2: #191d28;
+        --border: #222636;
+        --accent: #5c6bff;
+        --accent-h: #4a58e8;
+        --green: #43e8a0;
+        --red: #ff6b6b;
+        --amber: #f5c542;
+        --text: #e8eaf0;
+        --muted: #6b7385;
+        --radius: 12px;
+      }
 
-    html { scroll-behavior: smooth; }
+      html {
+        scroll-behavior: smooth;
+      }
 
-    body {
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      overflow-x: hidden;
-    }
+      body {
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        overflow-x: hidden;
+      }
 
-    /* ── BG GLOW ── */
-    body::before {
-      content: '';
-      position: fixed;
-      top: -200px; left: 50%;
-      transform: translateX(-50%);
-      width: 700px; height: 500px;
-      background: radial-gradient(ellipse, rgba(92,107,255,.08) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
+      /* ── BG GLOW ── */
+      body::before {
+        content: "";
+        position: fixed;
+        top: -200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 700px;
+        height: 500px;
+        background: radial-gradient(
+          ellipse,
+          rgba(92, 107, 255, 0.08) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
 
-    /* ── LAYOUT ── */
-    .shell {
-      position: relative;
-      z-index: 1;
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 36px 20px 80px;
-    }
+      /* ── LAYOUT ── */
+      .shell {
+        position: relative;
+        z-index: 1;
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 36px 20px 80px;
+      }
 
-    /* ── TOP BRAND ── */
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 32px;
-    }
+      /* ── TOP BRAND ── */
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 32px;
+      }
 
-    .brand-icon {
-      width: 32px; height: 32px;
-      background: var(--accent);
-      border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px;
-      box-shadow: 0 0 18px rgba(92,107,255,.45);
-    }
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        box-shadow: 0 0 18px rgba(92, 107, 255, 0.45);
+      }
 
-    .brand-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -.4px;
-    }
-    .brand-name span { color: var(--accent); }
+      .brand-name {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.4px;
+      }
+      .brand-name span {
+        color: var(--accent);
+      }
 
-    /* ── HERO ── */
-    .hero {
-      margin-bottom: 32px;
-    }
+      /* ── HERO ── */
+      .hero {
+        margin-bottom: 32px;
+      }
 
-    .hero h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -.6px;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-    .hero h1 em { color: var(--accent); font-style: normal; }
+      .hero h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+        line-height: 1.2;
+        margin-bottom: 8px;
+      }
+      .hero h1 em {
+        color: var(--accent);
+        font-style: normal;
+      }
 
-    .hero p { color: var(--muted); font-size: 13.5px; line-height: 1.7; }
+      .hero p {
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.7;
+      }
 
-    /* ── STEP PROGRESS ── */
-    .steps {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      margin-bottom: 32px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
+      /* ── STEP PROGRESS ── */
+      .steps {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-bottom: 32px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
 
-    .step-item {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      flex: 1;
-      min-width: 0;
-    }
+      .step-item {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex: 1;
+        min-width: 0;
+      }
 
-    .step-item:last-child .step-line { display: none; }
+      .step-item:last-child .step-line {
+        display: none;
+      }
 
-    .step-dot-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      flex-shrink: 0;
-    }
+      .step-dot-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
+      }
 
-    .step-dot {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      background: var(--surface2);
-      border: 2px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-    }
+      .step-dot {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--surface2);
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
 
-    .step-dot.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-      box-shadow: 0 0 14px rgba(92,107,255,.5);
-    }
+      .step-dot.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        box-shadow: 0 0 14px rgba(92, 107, 255, 0.5);
+      }
 
-    .step-dot.done {
-      background: var(--green);
-      border-color: var(--green);
-      color: #0b0d12;
-    }
+      .step-dot.done {
+        background: var(--green);
+        border-color: var(--green);
+        color: #0b0d12;
+      }
 
-    .step-label {
-      font-size: 10px;
-      color: var(--muted);
-      white-space: nowrap;
-      text-align: center;
-      letter-spacing: .3px;
-    }
-    .step-item.active .step-label { color: var(--accent); }
-    .step-item.done .step-label { color: var(--green); }
+      .step-label {
+        font-size: 10px;
+        color: var(--muted);
+        white-space: nowrap;
+        text-align: center;
+        letter-spacing: 0.3px;
+      }
+      .step-item.active .step-label {
+        color: var(--accent);
+      }
+      .step-item.done .step-label {
+        color: var(--green);
+      }
 
-    .step-line {
-      flex: 1;
-      height: 2px;
-      background: var(--border);
-      margin: 0 6px;
-      margin-bottom: 18px;
-      transition: background 0.3s;
-    }
-    .step-line.done { background: var(--green); }
+      .step-line {
+        flex: 1;
+        height: 2px;
+        background: var(--border);
+        margin: 0 6px;
+        margin-bottom: 18px;
+        transition: background 0.3s;
+      }
+      .step-line.done {
+        background: var(--green);
+      }
 
-    /* ── FORM CARD ── */
-    .form-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      overflow: hidden;
-      animation: fadeUp .35s ease both;
-    }
+      /* ── FORM CARD ── */
+      .form-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        overflow: hidden;
+        animation: fadeUp 0.35s ease both;
+      }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    .form-card-header {
-      padding: 22px 28px 18px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+      .form-card-header {
+        padding: 22px 28px 18px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
 
-    .section-icon {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
+      .section-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
 
-    .form-card-header h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
+      .form-card-header h2 {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
 
-    .form-card-header p {
-      font-size: 12px;
-      color: var(--muted);
-    }
+      .form-card-header p {
+        font-size: 12px;
+        color: var(--muted);
+      }
 
-    .form-body {
-      padding: 24px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
+      .form-body {
+        padding: 24px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
 
-    /* ── GRID ── */
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-    @media(max-width:520px) { .row-2,.row-3 { grid-template-columns: 1fr; } }
+      /* ── GRID ── */
+      .row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+      }
+      @media (max-width: 520px) {
+        .row-2,
+        .row-3 {
+          grid-template-columns: 1fr;
+        }
+      }
 
-    /* ── FIELD ── */
-    .field { display: flex; flex-direction: column; gap: 6px; }
+      /* ── FIELD ── */
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
 
-    .field label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: .3px;
-      text-transform: uppercase;
-    }
+      .field label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+      }
 
-    .field label .req { color: var(--red); margin-left: 2px; }
+      .field label .req {
+        color: var(--red);
+        margin-left: 2px;
+      }
 
-    .field input,
-    .field select,
-    .field textarea {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13.5px;
-      padding: 11px 14px;
-      outline: none;
-      transition: border-color .18s, box-shadow .18s;
-      width: 100%;
-      -webkit-appearance: none;
-    }
+      .field input,
+      .field select,
+      .field textarea {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        font-size: 13.5px;
+        padding: 11px 14px;
+        outline: none;
+        transition:
+          border-color 0.18s,
+          box-shadow 0.18s;
+        width: 100%;
+        -webkit-appearance: none;
+      }
 
-    .field input::placeholder,
-    .field textarea::placeholder { color: var(--muted); }
+      .field input::placeholder,
+      .field textarea::placeholder {
+        color: var(--muted);
+      }
 
-    .field select option { background: var(--surface2); }
+      .field select option {
+        background: var(--surface2);
+      }
 
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(92,107,255,.12);
-    }
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(92, 107, 255, 0.12);
+      }
 
-    .field input.error,
-    .field select.error { border-color: var(--red); }
+      .field input.error,
+      .field select.error {
+        border-color: var(--red);
+      }
 
-    .field .err-msg {
-      font-size: 11px;
-      color: var(--red);
-      display: none;
-    }
-    .field .err-msg.show { display: block; }
+      .field .err-msg {
+        font-size: 11px;
+        color: var(--red);
+        display: none;
+      }
+      .field .err-msg.show {
+        display: block;
+      }
 
-    .field textarea { resize: vertical; min-height: 80px; }
+      .field textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
 
-    /* Phone with flag */
-    .phone-wrap {
-      display: flex;
-      gap: 8px;
-    }
-    .phone-prefix {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 11px 12px;
-      font-size: 13.5px;
-      color: var(--muted);
-      white-space: nowrap;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .phone-wrap input { flex: 1; }
+      /* Phone with flag */
+      .phone-wrap {
+        display: flex;
+        gap: 8px;
+      }
+      .phone-prefix {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 11px 12px;
+        font-size: 13.5px;
+        color: var(--muted);
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .phone-wrap input {
+        flex: 1;
+      }
 
-    /* ── SKILLS / CHIPS ── */
-    .chips-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 10px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      min-height: 46px;
-      cursor: text;
-    }
-    .chips-wrap input {
-      border: none !important;
-      background: transparent !important;
-      padding: 2px 4px !important;
-      flex: 1;
-      min-width: 120px;
-      box-shadow: none !important;
-    }
-    .chip {
-      display: flex; align-items: center; gap: 5px;
-      background: rgba(92,107,255,.12);
-      border: 1px solid rgba(92,107,255,.25);
-      color: #a0aaff;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: default;
-    }
-    .chip button {
-      background: none; border: none; cursor: pointer;
-      color: inherit; line-height: 1; padding: 0; font-size: 13px;
-      opacity: .7;
-    }
-    .chip button:hover { opacity: 1; }
+      /* ── SKILLS / CHIPS ── */
+      .chips-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        min-height: 46px;
+        cursor: text;
+      }
+      .chips-wrap input {
+        border: none !important;
+        background: transparent !important;
+        padding: 2px 4px !important;
+        flex: 1;
+        min-width: 120px;
+        box-shadow: none !important;
+      }
+      .chip {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(92, 107, 255, 0.12);
+        border: 1px solid rgba(92, 107, 255, 0.25);
+        color: #a0aaff;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: default;
+      }
+      .chip button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: inherit;
+        line-height: 1;
+        padding: 0;
+        font-size: 13px;
+        opacity: 0.7;
+      }
+      .chip button:hover {
+        opacity: 1;
+      }
 
-    /* ── UPLOAD BOX ── */
-    .upload-box {
-      border: 1.5px dashed var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .18s, background .18s;
-      position: relative;
-    }
-    .upload-box:hover { border-color: var(--accent); background: rgba(92,107,255,.04); }
-    .upload-box input[type=file] {
-      position: absolute; inset: 0;
-      opacity: 0; cursor: pointer; width: 100%; height: 100%;
-    }
-    .upload-box .up-icon { font-size: 26px; margin-bottom: 6px; }
-    .upload-box .up-label { font-size: 13px; font-weight: 500; color: var(--text); }
-    .upload-box .up-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
-    .upload-box.uploaded { border-color: var(--green); background: rgba(67,232,160,.04); }
-    .upload-box.uploaded .up-label { color: var(--green); }
+      /* ── UPLOAD BOX ── */
+      .upload-box {
+        border: 1.5px dashed var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition:
+          border-color 0.18s,
+          background 0.18s;
+        position: relative;
+      }
+      .upload-box:hover {
+        border-color: var(--accent);
+        background: rgba(92, 107, 255, 0.04);
+      }
+      .upload-box input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .upload-box .up-icon {
+        font-size: 26px;
+        margin-bottom: 6px;
+      }
+      .upload-box .up-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .upload-box .up-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      .upload-box.uploaded {
+        border-color: var(--green);
+        background: rgba(67, 232, 160, 0.04);
+      }
+      .upload-box.uploaded .up-label {
+        color: var(--green);
+      }
 
-    /* ── AVATAR UPLOAD ── */
-    .avatar-upload {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .avatar-preview {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      background: var(--surface2);
-      border: 2px dashed var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px;
-      overflow: hidden;
-      flex-shrink: 0;
-      cursor: pointer;
-      transition: border-color .18s;
-      position: relative;
-    }
-    .avatar-preview input[type=file] {
-      position: absolute; inset: 0;
-      opacity: 0; cursor: pointer; width: 100%; height: 100%;
-    }
-    .avatar-preview:hover { border-color: var(--accent); }
-    .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-text p { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-    .avatar-text span { font-size: 12px; color: var(--muted); }
+      /* ── AVATAR UPLOAD ── */
+      .avatar-upload {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .avatar-preview {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--surface2);
+        border: 2px dashed var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        overflow: hidden;
+        flex-shrink: 0;
+        cursor: pointer;
+        transition: border-color 0.18s;
+        position: relative;
+      }
+      .avatar-preview input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .avatar-preview:hover {
+        border-color: var(--accent);
+      }
+      .avatar-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .avatar-text p {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .avatar-text span {
+        font-size: 12px;
+        color: var(--muted);
+      }
 
-    /* ── CHECKBOX / CONSENT ── */
-    .consent-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 14px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: border-color .18s;
-    }
-    .consent-row:hover { border-color: rgba(92,107,255,.3); }
-    .consent-row input[type=checkbox] { display: none; }
-    .check-box {
-      width: 20px; height: 20px;
-      border-radius: 5px;
-      border: 2px solid var(--border);
-      background: var(--bg);
-      flex-shrink: 0;
-      margin-top: 1px;
-      display: flex; align-items: center; justify-content: center;
-      transition: all .18s;
-    }
-    .consent-row input:checked ~ .check-box-wrap .check-box {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-    .check-box-wrap { display: contents; }
-    .checked .check-box {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-    .checked .check-box::after {
-      content: '✓';
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .consent-text { flex: 1; }
-    .consent-text strong { font-size: 13px; font-weight: 500; color: var(--text); display: block; margin-bottom: 2px; }
-    .consent-text span { font-size: 12px; color: var(--muted); line-height: 1.5; }
+      /* ── CHECKBOX / CONSENT ── */
+      .consent-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: border-color 0.18s;
+      }
+      .consent-row:hover {
+        border-color: rgba(92, 107, 255, 0.3);
+      }
+      .consent-row input[type="checkbox"] {
+        display: none;
+      }
+      .check-box {
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        border: 2px solid var(--border);
+        background: var(--bg);
+        flex-shrink: 0;
+        margin-top: 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.18s;
+      }
+      .consent-row.checked .check-box {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .consent-row.checked .check-box::after {
+        content: "✓";
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .consent-text {
+        flex: 1;
+      }
+      .consent-text strong {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+        display: block;
+        margin-bottom: 2px;
+      }
+      .consent-text span {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
 
-    /* ── NAV BUTTONS ── */
-    .form-nav {
-      display: flex;
-      gap: 10px;
-      padding: 18px 28px;
-      border-top: 1px solid var(--border);
-    }
+      /* ── NAV BUTTONS ── */
+      .form-nav {
+        display: flex;
+        gap: 10px;
+        padding: 18px 28px;
+        border-top: 1px solid var(--border);
+      }
 
-    .btn {
-      padding: 11px 24px;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      transition: all .18s;
-      display: flex; align-items: center; gap: 7px;
-    }
+      .btn {
+        padding: 11px 24px;
+        border-radius: 10px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: all 0.18s;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(92,107,255,.3);
-      margin-left: auto;
-    }
-    .btn-primary:hover { background: var(--accent-h); transform: translateY(-1px); }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 18px rgba(92, 107, 255, 0.3);
+        margin-left: auto;
+      }
+      .btn-primary:hover {
+        background: var(--accent-h);
+        transform: translateY(-1px);
+      }
 
-    .btn-secondary {
-      background: var(--surface2);
-      color: var(--muted);
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover { color: var(--text); border-color: rgba(92,107,255,.3); }
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        color: var(--text);
+        border-color: rgba(92, 107, 255, 0.3);
+      }
 
-    .btn-success {
-      background: var(--green);
-      color: #0b0d12;
-      font-weight: 700;
-      margin-left: auto;
-      box-shadow: 0 4px 18px rgba(67,232,160,.25);
-    }
-    .btn-success:hover { transform: translateY(-1px); filter: brightness(1.05); }
+      .btn-success {
+        background: var(--green);
+        color: #0b0d12;
+        font-weight: 700;
+        margin-left: auto;
+        box-shadow: 0 4px 18px rgba(67, 232, 160, 0.25);
+      }
+      .btn-success:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
 
-    /* ── SUCCESS SCREEN ── */
-    .success-screen {
-      text-align: center;
-      padding: 56px 28px;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      animation: fadeUp .4s ease both;
-    }
-    .success-screen.visible { display: flex; }
+      /* ── SUCCESS SCREEN ── */
+      .success-screen {
+        text-align: center;
+        padding: 56px 28px;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        animation: fadeUp 0.4s ease both;
+      }
+      .success-screen.visible {
+        display: flex;
+      }
 
-    .success-ring {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      background: rgba(67,232,160,.1);
-      border: 2px solid var(--green);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 36px;
-      box-shadow: 0 0 30px rgba(67,232,160,.2);
-    }
+      .success-ring {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(67, 232, 160, 0.1);
+        border: 2px solid var(--green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        box-shadow: 0 0 30px rgba(67, 232, 160, 0.2);
+      }
 
-    .success-screen h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text);
-    }
-    .success-screen p { color: var(--muted); font-size: 13.5px; line-height: 1.7; max-width: 380px; }
+      .success-screen h2 {
+        font-family: "Syne", sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+      }
+      .success-screen p {
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.7;
+        max-width: 380px;
+      }
 
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+      /* ── SCROLLBAR ── */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 99px;
+      }
 
-    /* ── OTP INPUT ── */
-    .otp-wrap {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .otp-wrap input { flex: 1; }
-    .otp-btn {
-      white-space: nowrap;
-      padding: 11px 14px;
-      background: rgba(92,107,255,.12);
-      border: 1px solid rgba(92,107,255,.25);
-      color: #a0aaff;
-      border-radius: var(--radius);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .18s;
-    }
-    .otp-btn:hover { background: rgba(92,107,255,.2); }
+      /* ── OTP INPUT ── */
+      .otp-wrap {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .otp-wrap input {
+        flex: 1;
+      }
+      .otp-btn {
+        white-space: nowrap;
+        padding: 11px 14px;
+        background: rgba(92, 107, 255, 0.12);
+        border: 1px solid rgba(92, 107, 255, 0.25);
+        color: #a0aaff;
+        border-radius: var(--radius);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .otp-btn:hover {
+        background: rgba(92, 107, 255, 0.2);
+      }
 
-    /* section hidden/shown */
-    .form-step { display: none; }
-    .form-step.active { display: block; animation: fadeUp .3s ease both; }
-  </style>
-</head>
-<body>
-<div class="shell">
-
-  <!-- Brand -->
-  <div class="brand">
-    <div class="brand-icon">⚡</div>
-    <div class="brand-name">Serv<span>Ease</span></div>
-  </div>
-
-  <!-- Hero -->
-  <div class="hero">
-    <h1>Become a <em>Service Provider</em></h1>
-    <p>Join thousands of professionals earning on their own terms. Complete your profile to get started — it takes about 5 minutes.</p>
-  </div>
-
-  <!-- Step progress -->
-  <div class="steps" id="steps">
-    <!-- rendered by JS -->
-  </div>
-
-  <!-- Form card -->
-  <div class="form-card" id="form-card">
-
-    <!-- ── STEP 1: Basic Personal Information ── -->
-    <div class="form-step active" id="step-1">
-      <div class="form-card-header">
-        <div class="section-icon" style="background:rgba(92,107,255,.1)">👤</div>
-        <div>
-          <h2>Basic Personal Information</h2>
-          <p>Enter your details exactly as per government records.</p>
-        </div>
+      /* section hidden/shown */
+      .form-step {
+        display: none;
+      }
+      .form-step.active {
+        display: block;
+        animation: fadeUp 0.3s ease both;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-name">Serv<span>Ease</span></div>
       </div>
-      <div class="form-body">
 
-        <div class="field">
-          <label>Full Name <span class="req">*</span></label>
-          <input type="text" id="fullname" placeholder="As per government records" autocomplete="name"/>
-          <span class="err-msg" id="err-fullname">Please enter your full name.</span>
-        </div>
+      <div class="hero">
+        <h1>Become a <em>Service Provider</em></h1>
+        <p>
+          Join thousands of professionals earning on their own terms. Complete
+          your profile to get started — it takes about 5 minutes.
+        </p>
+      </div>
 
-        <div class="row-2">
-          <div class="field">
-            <label>Mobile Number <span class="req">*</span></label>
-            <div class="otp-wrap">
-              <div class="phone-prefix">🇮🇳 +91</div>
-              <input type="tel" id="mobile" placeholder="10-digit number" maxlength="10"/>
+      <div class="steps" id="steps"></div>
+
+      <div class="form-card" id="form-card">
+        <!-- STEP 1: Basic Personal Information -->
+        <div class="form-step active" id="step-1">
+          <div class="form-card-header">
+            <div
+              class="section-icon"
+              style="background: rgba(92, 107, 255, 0.1)"
+            >
+              👤
             </div>
-            <span class="err-msg" id="err-mobile">Enter a valid 10-digit mobile number.</span>
-          </div>
-          <div class="field">
-            <label>OTP Verification <span class="req">*</span></label>
-            <div class="otp-wrap">
-              <input type="text" id="otp" placeholder="Enter OTP" maxlength="6"/>
-              <button class="otp-btn" onclick="sendOTP()">Send OTP</button>
-            </div>
-            <span class="err-msg" id="err-otp">Enter the OTP sent to your mobile.</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Email Address <span class="req">*</span></label>
-          <input type="email" id="email" placeholder="you@example.com" autocomplete="email"/>
-          <span class="err-msg" id="err-email">Enter a valid email address.</span>
-        </div>
-
-        <div class="row-2">
-          <div class="field">
-            <label>Date of Birth <span class="req">*</span></label>
-            <input type="date" id="dob"/>
-            <span class="err-msg" id="err-dob">You must be at least 18 years old.</span>
-          </div>
-          <div class="field">
-            <label>Gender <span class="req">*</span></label>
-            <select id="gender">
-              <option value="">Select gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Non-binary</option>
-              <option>Prefer not to say</option>
-            </select>
-            <span class="err-msg" id="err-gender">Please select your gender.</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Current Address / Location <span class="req">*</span></label>
-          <textarea id="address" placeholder="House no., Street, Area, City, PIN code…"></textarea>
-          <span class="err-msg" id="err-address">Please enter your current address.</span>
-        </div>
-
-      </div>
-      <div class="form-nav">
-        <button class="btn btn-primary" onclick="goTo(2)">
-          Next <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- ── STEP 2: Professional & Skill Details ── -->
-    <div class="form-step" id="step-2">
-      <div class="form-card-header">
-        <div class="section-icon" style="background:rgba(67,232,160,.1)">🛠️</div>
-        <div>
-          <h2>Professional &amp; Skill Details</h2>
-          <p>Tell us about your trade and experience.</p>
-        </div>
-      </div>
-      <div class="form-body">
-
-        <div class="row-2">
-          <div class="field">
-            <label>Service Category <span class="req">*</span></label>
-            <select id="category" onchange="updateSkills()">
-              <option value="">Select your trade</option>
-              <option>Beautician</option>
-              <option>AC Technician</option>
-              <option>Plumber</option>
-              <option>Carpenter</option>
-              <option>Cleaner</option>
-              <option>Electrician</option>
-              <option>Painter</option>
-              <option>Appliance Repair</option>
-              <option>Driver / Delivery</option>
-              <option>Other</option>
-            </select>
-            <span class="err-msg" id="err-category">Please select a service category.</span>
-          </div>
-          <div class="field">
-            <label>Years of Experience <span class="req">*</span></label>
-            <select id="experience">
-              <option value="">Select range</option>
-              <option>Less than 1 year</option>
-              <option>1 – 2 years</option>
-              <option>3 – 5 years</option>
-              <option>5 – 10 years</option>
-              <option>10+ years</option>
-            </select>
-            <span class="err-msg" id="err-experience">Please select your experience range.</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Specific Skills <span class="req">*</span></label>
-          <div class="chips-wrap" id="skills-wrap" onclick="document.getElementById('skill-input').focus()">
-            <input id="skill-input" placeholder="Type a skill and press Enter…" onkeydown="addSkill(event)"/>
-          </div>
-          <span class="err-msg" id="err-skills">Add at least one specific skill.</span>
-        </div>
-
-        <div class="field">
-          <label>Languages Known <span class="req">*</span></label>
-          <div class="chips-wrap" id="lang-wrap" onclick="document.getElementById('lang-input').focus()">
-            <input id="lang-input" placeholder="Type a language and press Enter…" onkeydown="addLang(event)"/>
-          </div>
-          <span class="err-msg" id="err-langs">Add at least one language.</span>
-        </div>
-
-        <div class="field">
-          <label>Brief Bio / Work Description</label>
-          <textarea id="bio" placeholder="Describe your professional background, specialisations, and what makes you stand out…" style="min-height:100px"></textarea>
-        </div>
-
-      </div>
-      <div class="form-nav">
-        <button class="btn btn-secondary" onclick="goTo(1)">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M13 8H3M7 4L3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn btn-primary" onclick="goTo(3)">
-          Next <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- ── STEP 3: Document Uploads ── -->
-    <div class="form-step" id="step-3">
-      <div class="form-card-header">
-        <div class="section-icon" style="background:rgba(245,197,66,.1)">📄</div>
-        <div>
-          <h2>Document Uploads</h2>
-          <p>For verification — all documents are stored securely.</p>
-        </div>
-      </div>
-      <div class="form-body">
-
-        <div class="row-2">
-          <div class="field">
-            <label>Aadhaar Card <span class="req">*</span></label>
-            <div class="upload-box" id="box-aadhar">
-              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="markUpload('box-aadhar',this)"/>
-              <div class="up-icon">🪪</div>
-              <div class="up-label">Upload Aadhaar</div>
-              <div class="up-hint">PDF / JPG / PNG · max 5 MB</div>
-            </div>
-            <span class="err-msg" id="err-aadhar">Please upload your Aadhaar card.</span>
-          </div>
-          <div class="field">
-            <label>PAN Card <span class="req">*</span></label>
-            <div class="upload-box" id="box-pan">
-              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="markUpload('box-pan',this)"/>
-              <div class="up-icon">🗂️</div>
-              <div class="up-label">Upload PAN Card</div>
-              <div class="up-hint">PDF / JPG / PNG · max 5 MB</div>
-            </div>
-            <span class="err-msg" id="err-pan">Please upload your PAN card.</span>
-          </div>
-        </div>
-
-        <div class="row-2">
-          <div class="field">
-            <label>Driving Licence (Two-Wheeler)</label>
-            <div class="upload-box" id="box-dl">
-              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="markUpload('box-dl',this)"/>
-              <div class="up-icon">🛵</div>
-              <div class="up-label">Upload Driving Licence</div>
-              <div class="up-hint">PDF / JPG / PNG · max 5 MB</div>
-            </div>
-          </div>
-          <div class="field">
-            <label>Police Verification Document</label>
-            <div class="upload-box" id="box-police">
-              <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="markUpload('box-police',this)"/>
-              <div class="up-icon">🏛️</div>
-              <div class="up-label">Upload Police Certificate</div>
-              <div class="up-hint">PDF / JPG / PNG · max 5 MB</div>
+            <div>
+              <h2>Basic Personal Information</h2>
+              <p>Enter your details exactly as per government records.</p>
             </div>
           </div>
-        </div>
-
-        <div class="field">
-          <label>Bank Account Details <span class="req">*</span></label>
-          <div class="row-3">
-            <input type="text" id="bank-name" placeholder="Bank name" style="border-radius:var(--radius);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:11px 14px;font-size:13.5px;outline:none;font-family:inherit;"/>
-            <input type="text" id="acc-no" placeholder="Account number" style="border-radius:var(--radius);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:11px 14px;font-size:13.5px;outline:none;font-family:inherit;"/>
-            <input type="text" id="ifsc" placeholder="IFSC code" style="border-radius:var(--radius);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:11px 14px;font-size:13.5px;outline:none;font-family:inherit;"/>
+          <div class="form-body">
+            <div class="field">
+              <label>Full Name <span class="req">*</span></label
+              ><input
+                type="text"
+                id="fullname"
+                placeholder="As per government records"
+                autocomplete="name"
+              /><span class="err-msg" id="err-fullname"
+                >Please enter your full name.</span
+              >
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label>Mobile Number <span class="req">*</span></label>
+                <div class="otp-wrap">
+                  <div class="phone-prefix">🇮🇳 +91</div>
+                  <input
+                    type="tel"
+                    id="mobile"
+                    placeholder="10-digit number"
+                    maxlength="10"
+                  />
+                </div>
+                <span class="err-msg" id="err-mobile"
+                  >Enter a valid 10-digit mobile number.</span
+                >
+              </div>
+              <div class="field">
+                <label>OTP Verification <span class="req">*</span></label>
+                <div class="otp-wrap">
+                  <input
+                    type="text"
+                    id="otp"
+                    placeholder="Enter OTP"
+                    maxlength="6"
+                  /><button class="otp-btn" type="button" onclick="sendOTP()">
+                    Send OTP
+                  </button>
+                </div>
+                <span class="err-msg" id="err-otp"
+                  >Enter the 6-digit OTP sent to your mobile.</span
+                >
+              </div>
+            </div>
+            <div class="field">
+              <label>Email Address <span class="req">*</span></label
+              ><input
+                type="email"
+                id="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+              /><span class="err-msg" id="err-email"
+                >Enter a valid email address.</span
+              >
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label>Date of Birth <span class="req">*</span></label
+                ><input type="date" id="dob" /><span
+                  class="err-msg"
+                  id="err-dob"
+                  >You must be at least 18 years old.</span
+                >
+              </div>
+              <div class="field">
+                <label>Gender <span class="req">*</span></label
+                ><select id="gender">
+                  <option value="">Select gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Non-binary</option>
+                  <option>Prefer not to say</option></select
+                ><span class="err-msg" id="err-gender"
+                  >Please select your gender.</span
+                >
+              </div>
+            </div>
+            <div class="field">
+              <label
+                >Current Address / Location <span class="req">*</span></label
+              ><textarea
+                id="address"
+                placeholder="House no., Street, Area, City, PIN code…"
+              ></textarea
+              ><span class="err-msg" id="err-address"
+                >Please enter your current address.</span
+              >
+            </div>
           </div>
-          <span class="err-msg" id="err-bank">Please fill in your bank account details.</span>
-        </div>
-
-      </div>
-      <div class="form-nav">
-        <button class="btn btn-secondary" onclick="goTo(2)">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M13 8H3M7 4L3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn btn-primary" onclick="goTo(4)">
-          Next <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- ── STEP 4: Profile Photo ── -->
-    <div class="form-step" id="step-4">
-      <div class="form-card-header">
-        <div class="section-icon" style="background:rgba(255,107,107,.1)">📸</div>
-        <div>
-          <h2>Profile Photograph</h2>
-          <p>A clear face photo helps customers recognise you at the door.</p>
-        </div>
-      </div>
-      <div class="form-body">
-
-        <div class="avatar-upload">
-          <div class="avatar-preview" id="avatar-preview">
-            <input type="file" accept="image/*" onchange="previewAvatar(this)"/>
-            📷
-          </div>
-          <div class="avatar-text">
-            <p>Upload your profile photo</p>
-            <span>Click the circle · JPG / PNG · Minimum 400×400 px · Max 5 MB</span>
+          <div class="form-nav">
+            <button class="btn btn-primary" onclick="goTo(2)">
+              Next
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M3 8h10M9 4l4 4-4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
           </div>
         </div>
-        <span class="err-msg" id="err-avatar">Please upload a profile photograph.</span>
 
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-top:4px;">
-          <p style="font-size:12.5px;color:var(--muted);line-height:1.7;">
-            📌 <strong style="color:var(--text)">Photo guidelines:</strong> Face clearly visible · Plain background preferred · No sunglasses · Natural lighting
+        <!-- STEP 2: Professional & Skill Details -->
+        <div class="form-step" id="step-2">
+          <div class="form-card-header">
+            <div
+              class="section-icon"
+              style="background: rgba(67, 232, 160, 0.1)"
+            >
+              🛠️
+            </div>
+            <div>
+              <h2>Professional &amp; Skill Details</h2>
+              <p>Tell us about your trade and experience.</p>
+            </div>
+          </div>
+          <div class="form-body">
+            <div class="row-2">
+              <div class="field">
+                <label>Hourly Rate (₹) <span class="req">*</span></label
+                ><input
+                  type="number"
+                  id="service-price"
+                  placeholder="e.g., 500"
+                  value="500"
+                /><span class="err-msg" id="err-price"
+                  >Enter a valid hourly rate.</span
+                ><label>Service Category <span class="req">*</span></label
+                ><select id="category" onchange="updateSkills()">
+                  <option value="">Select your trade</option>
+                  <option>Beautician</option>
+                  <option>AC Technician</option>
+                  <option>Plumber</option>
+                  <option>Carpenter</option>
+                  <option>Cleaner</option>
+                  <option>Electrician</option>
+                  <option>Painter</option>
+                  <option>Appliance Repair</option>
+                  <option>Driver / Delivery</option>
+                  <option>Other</option></select
+                ><span class="err-msg" id="err-category"
+                  >Please select a service category.</span
+                >
+              </div>
+              <div class="field">
+                <label>Years of Experience <span class="req">*</span></label
+                ><select id="experience">
+                  <option value="">Select range</option>
+                  <option>Less than 1 year</option>
+                  <option>1 – 2 years</option>
+                  <option>3 – 5 years</option>
+                  <option>5 – 10 years</option>
+                  <option>10+ years</option></select
+                ><span class="err-msg" id="err-experience"
+                  >Please select your experience range.</span
+                >
+              </div>
+            </div>
+            <div class="field">
+              <label>Specific Skills <span class="req">*</span></label>
+              <div
+                class="chips-wrap"
+                id="skills-wrap"
+                onclick="document.getElementById('skill-input').focus()"
+              >
+                <input
+                  id="skill-input"
+                  placeholder="Type a skill and press Enter…"
+                  onkeydown="addSkill(event)"
+                />
+              </div>
+              <span class="err-msg" id="err-skills"
+                >Add at least one specific skill.</span
+              >
+            </div>
+            <div class="field">
+              <label>Languages Known <span class="req">*</span></label>
+              <div
+                class="chips-wrap"
+                id="lang-wrap"
+                onclick="document.getElementById('lang-input').focus()"
+              >
+                <input
+                  id="lang-input"
+                  placeholder="Type a language and press Enter…"
+                  onkeydown="addLang(event)"
+                />
+              </div>
+              <span class="err-msg" id="err-langs"
+                >Add at least one language.</span
+              >
+            </div>
+            <div class="field">
+              <label>Brief Bio / Work Description</label
+              ><textarea
+                id="bio"
+                placeholder="Describe your professional background, specialisations…"
+                style="min-height: 100px"
+              ></textarea>
+            </div>
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-secondary" onclick="goTo(1)">
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M13 8H3M7 4L3 8l4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Back</button
+            ><button class="btn btn-primary" onclick="goTo(3)">
+              Next
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M3 8h10M9 4l4 4-4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Document Uploads -->
+        <div class="form-step" id="step-3">
+          <div class="form-card-header">
+            <div
+              class="section-icon"
+              style="background: rgba(245, 197, 66, 0.1)"
+            >
+              📄
+            </div>
+            <div>
+              <h2>Document Uploads</h2>
+              <p>For verification — all documents are stored securely.</p>
+            </div>
+          </div>
+          <div class="form-body">
+            <div class="row-2">
+              <div class="field">
+                <label>Aadhaar Card <span class="req">*</span></label>
+                <div class="upload-box" id="box-aadhar">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onchange="markUpload('box-aadhar', this)"
+                  />
+                  <div class="up-icon">🪪</div>
+                  <div class="up-label">Upload Aadhaar</div>
+                  <div class="up-hint">PDF / JPG / PNG · max 5 MB</div>
+                </div>
+                <span class="err-msg" id="err-aadhar"
+                  >Please upload your Aadhaar card.</span
+                >
+              </div>
+              <div class="field">
+                <label>PAN Card <span class="req">*</span></label>
+                <div class="upload-box" id="box-pan">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onchange="markUpload('box-pan', this)"
+                  />
+                  <div class="up-icon">🗂️</div>
+                  <div class="up-label">Upload PAN Card</div>
+                  <div class="up-hint">PDF / JPG / PNG · max 5 MB</div>
+                </div>
+                <span class="err-msg" id="err-pan"
+                  >Please upload your PAN card.</span
+                >
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="field">
+                <label>Driving Licence (Two-Wheeler)</label>
+                <div class="upload-box" id="box-dl">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onchange="markUpload('box-dl', this)"
+                  />
+                  <div class="up-icon">🛵</div>
+                  <div class="up-label">Upload Driving Licence</div>
+                  <div class="up-hint">PDF / JPG / PNG · max 5 MB</div>
+                </div>
+              </div>
+              <div class="field">
+                <label>Police Verification Document</label>
+                <div class="upload-box" id="box-police">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onchange="markUpload('box-police', this)"
+                  />
+                  <div class="up-icon">🏛️</div>
+                  <div class="up-label">Upload Police Certificate</div>
+                  <div class="up-hint">PDF / JPG / PNG · max 5 MB</div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Bank Account Details <span class="req">*</span></label>
+              <div class="row-3">
+                <input
+                  type="text"
+                  id="bank-name"
+                  placeholder="Bank name"
+                /><input
+                  type="text"
+                  id="acc-no"
+                  placeholder="Account number"
+                /><input type="text" id="ifsc" placeholder="IFSC code" />
+              </div>
+              <span class="err-msg" id="err-bank"
+                >Please fill in your bank account details.</span
+              >
+            </div>
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-secondary" onclick="goTo(2)">
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M13 8H3M7 4L3 8l4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Back</button
+            ><button class="btn btn-primary" onclick="goTo(4)">
+              Next
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M3 8h10M9 4l4 4-4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Profile Photograph -->
+        <div class="form-step" id="step-4">
+          <div class="form-card-header">
+            <div
+              class="section-icon"
+              style="background: rgba(255, 107, 107, 0.1)"
+            >
+              📸
+            </div>
+            <div>
+              <h2>Profile Photograph</h2>
+              <p>
+                A clear face photo helps customers recognise you at the door.
+              </p>
+            </div>
+          </div>
+          <div class="form-body">
+            <div class="avatar-upload">
+              <div class="avatar-preview" id="avatar-preview">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onchange="previewAvatar(this)"
+                />📷
+              </div>
+              <div class="avatar-text">
+                <p>Upload your profile photo</p>
+                <span
+                  >Click the circle · JPG / PNG · Minimum 400×400 px · Max 5
+                  MB</span
+                >
+              </div>
+            </div>
+            <span class="err-msg" id="err-avatar"
+              >Please upload a profile photograph.</span
+            >
+            <div
+              style="
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 14px 16px;
+              "
+            >
+              <p style="font-size: 12.5px; color: var(--muted)">
+                📌
+                <strong style="color: var(--text)">Photo guidelines:</strong>
+                Face clearly visible · Plain background preferred · No
+                sunglasses · Natural lighting
+              </p>
+            </div>
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-secondary" onclick="goTo(3)">
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M13 8H3M7 4L3 8l4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Back</button
+            ><button class="btn btn-primary" onclick="goTo(5)">
+              Next
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M3 8h10M9 4l4 4-4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 5: Onboarding & Safety -->
+        <div class="form-step" id="step-5">
+          <div class="form-card-header">
+            <div
+              class="section-icon"
+              style="background: rgba(67, 232, 160, 0.08)"
+            >
+              🛡️
+            </div>
+            <div>
+              <h2>Onboarding &amp; Safety</h2>
+              <p>Please read and agree to the following before submitting.</p>
+            </div>
+          </div>
+          <div class="form-body">
+            <div
+              class="consent-row"
+              id="cr-bg"
+              onclick="toggleConsent('cr-bg', 'cb-bg')"
+            >
+              <input type="checkbox" id="cb-bg" />
+              <div class="check-box"></div>
+              <div class="consent-text">
+                <strong>Background Screening Consent</strong
+                ><span
+                  >I authorise ServEase to conduct a background verification
+                  check including criminal history, identity, and employment
+                  records. I understand this is mandatory to onboard as a
+                  service provider.</span
+                >
+              </div>
+            </div>
+            <div
+              class="consent-row"
+              id="cr-tos"
+              onclick="toggleConsent('cr-tos', 'cb-tos')"
+            >
+              <input type="checkbox" id="cb-tos" />
+              <div class="check-box"></div>
+              <div class="consent-text">
+                <strong>Terms &amp; Service Standards</strong
+                ><span
+                  >I agree to ServEase's Terms of Service, Service Quality
+                  Standards, and Anti-Discrimination Policy. I will maintain
+                  professional conduct at all times.</span
+                >
+              </div>
+            </div>
+            <div
+              class="consent-row"
+              id="cr-priv"
+              onclick="toggleConsent('cr-priv', 'cb-priv')"
+            >
+              <input type="checkbox" id="cb-priv" />
+              <div class="check-box"></div>
+              <div class="consent-text">
+                <strong>Information Security &amp; Privacy Policy</strong
+                ><span
+                  >I consent to ServEase collecting, storing, and processing my
+                  personal and professional data as outlined in the Privacy
+                  Policy and Information Security Policy.</span
+                >
+              </div>
+            </div>
+            <span class="err-msg" id="err-consent"
+              >Please agree to all required consents to continue.</span
+            >
+            <div
+              style="
+                background: rgba(92, 107, 255, 0.06);
+                border: 1px solid rgba(92, 107, 255, 0.18);
+                border-radius: var(--radius);
+                padding: 14px 16px;
+              "
+            >
+              <p style="font-size: 12.5px; color: var(--muted)">
+                🔒 Your information is encrypted and stored securely. ServEase
+                will never sell your personal data to third parties.
+              </p>
+            </div>
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-secondary" onclick="goTo(4)">
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M13 8H3M7 4L3 8l4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Back</button
+            ><button class="btn btn-success" onclick="submitForm()">
+              Submit Profile
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M3 8h10M9 4l4 4-4 4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="success-screen" id="success-screen">
+          <div class="success-ring">✅</div>
+          <h2>Profile Submitted!</h2>
+          <p>
+            Thank you for registering as a ServEase provider. Redirecting to
+            your dashboard...
           </p>
         </div>
-
-      </div>
-      <div class="form-nav">
-        <button class="btn btn-secondary" onclick="goTo(3)">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M13 8H3M7 4L3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn btn-primary" onclick="goTo(5)">
-          Next <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
       </div>
     </div>
 
-    <!-- ── STEP 5: Onboarding & Safety ── -->
-    <div class="form-step" id="step-5">
-      <div class="form-card-header">
-        <div class="section-icon" style="background:rgba(67,232,160,.08)">🛡️</div>
-        <div>
-          <h2>Onboarding &amp; Safety</h2>
-          <p>Please read and agree to the following before submitting.</p>
-        </div>
-      </div>
-      <div class="form-body">
+    <script>
+      let currentStep = 1;
+      const TOTAL = 5;
+      const skills = [];
+      const langs = [];
+      const STEP_LABELS = [
+        "Personal Info",
+        "Skills",
+        "Documents",
+        "Photo",
+        "Safety",
+      ];
+      let avatarUploaded = false;
 
-        <label class="consent-row" id="cr-bg" onclick="toggleConsent('cr-bg','cb-bg')">
-          <input type="checkbox" id="cb-bg"/>
-          <div class="check-box" id="chk-bg"></div>
-          <div class="consent-text">
-            <strong>Background Screening Consent</strong>
-            <span>I authorise ServEase to conduct a background verification check including criminal history, identity, and employment records. I understand this is mandatory to onboard as a service provider.</span>
-          </div>
-        </label>
+      function renderSteps() {
+        const wrap = document.getElementById("steps");
+        if (!wrap) return;
+        wrap.innerHTML = "";
+        for (let i = 1; i <= TOTAL; i++) {
+          const item = document.createElement("div");
+          item.className =
+            "step-item" +
+            (i === currentStep ? " active" : "") +
+            (i < currentStep ? " done" : "");
+          item.innerHTML = `<div class="step-dot-wrap"><div class="step-dot ${i < currentStep ? "done" : i === currentStep ? "active" : ""}">${i < currentStep ? "✓" : i}</div><div class="step-label">${STEP_LABELS[i - 1]}</div></div>${i < TOTAL ? `<div class="step-line ${i < currentStep ? "done" : ""}"></div>` : ""}`;
+          wrap.appendChild(item);
+        }
+      }
 
-        <label class="consent-row" id="cr-tos" onclick="toggleConsent('cr-tos','cb-tos')">
-          <input type="checkbox" id="cb-tos"/>
-          <div class="check-box" id="chk-tos"></div>
-          <div class="consent-text">
-            <strong>Terms &amp; Service Standards</strong>
-            <span>I agree to ServEase's Terms of Service, Service Quality Standards, and Anti-Discrimination Policy. I will maintain professional conduct at all times.</span>
-          </div>
-        </label>
+      function goTo(n) {
+        if (n > currentStep && !validate(currentStep)) return;
+        document
+          .getElementById(`step-${currentStep}`)
+          .classList.remove("active");
+        currentStep = n;
+        document.getElementById(`step-${currentStep}`).classList.add("active");
+        renderSteps();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
 
-        <label class="consent-row" id="cr-priv" onclick="toggleConsent('cr-priv','cb-priv')">
-          <input type="checkbox" id="cb-priv"/>
-          <div class="check-box" id="chk-priv"></div>
-          <div class="consent-text">
-            <strong>Information Security &amp; Privacy Policy</strong>
-            <span>I consent to ServEase collecting, storing, and processing my personal and professional data as outlined in the Privacy Policy and Information Security Policy.</span>
-          </div>
-        </label>
+      function validate(step) {
+        let ok = true;
+        const show = (id) => {
+          let el = document.getElementById(id);
+          if (el) el.classList.add("show");
+          ok = false;
+        };
+        const hide = (id) => {
+          let el = document.getElementById(id);
+          if (el) el.classList.remove("show");
+        };
+        const val = (id) => document.getElementById(id)?.value?.trim() || "";
 
-        <span class="err-msg" id="err-consent">Please agree to all required consents to continue.</span>
+        if (step === 1) {
+          val("fullname") ? hide("err-fullname") : show("err-fullname");
+          /^\d{10}$/.test(val("mobile"))
+            ? hide("err-mobile")
+            : show("err-mobile");
+          /^\d{6}$/.test(val("otp")) ? hide("err-otp") : show("err-otp");
+          /\S+@\S+\.\S+/.test(val("email"))
+            ? hide("err-email")
+            : show("err-email");
+          val("dob") ? hide("err-dob") : show("err-dob");
+          val("gender") ? hide("err-gender") : show("err-gender");
+          val("address") ? hide("err-address") : show("err-address");
+        }
+        if (step === 2) {
+          val("category") ? hide("err-category") : show("err-category");
+          val("experience") ? hide("err-experience") : show("err-experience");
+          let rate = parseFloat(val("service-price"));
+          rate && rate > 0 ? hide("err-price") : show("err-price");
+          skills.length ? hide("err-skills") : show("err-skills");
+          langs.length ? hide("err-langs") : show("err-langs");
+        }
+        if (step === 3) {
+          document.getElementById("box-aadhar")?.classList.contains("uploaded")
+            ? hide("err-aadhar")
+            : show("err-aadhar");
+          document.getElementById("box-pan")?.classList.contains("uploaded")
+            ? hide("err-pan")
+            : show("err-pan");
+          val("bank-name") && val("acc-no") && val("ifsc")
+            ? hide("err-bank")
+            : show("err-bank");
+        }
+        if (step === 4) {
+          avatarUploaded ? hide("err-avatar") : show("err-avatar");
+        }
+        if (step === 5) {
+          let all =
+            document.getElementById("cb-bg")?.checked &&
+            document.getElementById("cb-tos")?.checked &&
+            document.getElementById("cb-priv")?.checked;
+          all ? hide("err-consent") : show("err-consent");
+          if (!all) ok = false;
+        }
+        return ok;
+      }
 
-        <div style="background:rgba(92,107,255,.06);border:1px solid rgba(92,107,255,.18);border-radius:var(--radius);padding:14px 16px;margin-top:4px;">
-          <p style="font-size:12.5px;color:var(--muted);line-height:1.7;">
-            🔒 Your information is encrypted and stored securely. ServEase will never sell your personal data to third parties.
-          </p>
-        </div>
+      function sendOTP() {
+        const mob = document.getElementById("mobile").value.trim();
+        if (!/^\d{10}$/.test(mob)) {
+          document.getElementById("err-mobile")?.classList.add("show");
+          return;
+        }
+        alert(
+          `✅ Demo OTP sent to +91 ${mob}\n(Use any 6-digit OTP to proceed)`,
+        );
+      }
 
-      </div>
-      <div class="form-nav">
-        <button class="btn btn-secondary" onclick="goTo(4)">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M13 8H3M7 4L3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn btn-success" onclick="submitForm()">
-          Submit Profile
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
+      const SKILL_SUGGESTIONS = {
+        Beautician: [
+          "Threading",
+          "Waxing",
+          "Facial",
+          "Bridal Makeup",
+          "Hair Coloring",
+          "Manicure",
+          "Pedicure",
+        ],
+        "AC Technician": [
+          "Installation",
+          "Gas Refill",
+          "Filter Cleaning",
+          "Servicing",
+          "PCB Repair",
+        ],
+        Plumber: [
+          "Pipe Fitting",
+          "Leak Repair",
+          "Drainage",
+          "Tap Installation",
+          "Water Heater",
+        ],
+      };
+      function updateSkills() {
+        const cat = document.getElementById("category").value;
+        const sugg = SKILL_SUGGESTIONS[cat] || [];
+        const wrap = document.getElementById("skills-wrap");
+        wrap.querySelectorAll(".suggestion").forEach((e) => e.remove());
+        sugg.forEach((s) => {
+          let btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "suggestion";
+          btn.textContent = "+ " + s;
+          btn.onclick = () => {
+            addChip(skills, s, "skills-wrap", "skill-input");
+            btn.remove();
+          };
+          wrap.insertBefore(btn, document.getElementById("skill-input"));
+        });
+      }
 
-    <!-- ── SUCCESS ── -->
-    <div class="success-screen" id="success-screen">
-      <div class="success-ring">✅</div>
-      <h2>Profile Submitted!</h2>
-      <p>Thank you for registering as a ServEase provider. Our team will review your documents and activate your account within <strong style="color:var(--green)">24–48 hours</strong>. You'll receive a confirmation on your registered email.</p>
-      <button class="btn btn-primary" style="margin-top:8px" onclick="window.location.reload()">Register Another</button>
-    </div>
+      function addSkill(e) {
+        if (e.key === "Enter" || e.key === ",") {
+          e.preventDefault();
+          let v = e.target.value.trim().replace(/,$/, "");
+          if (v) addChip(skills, v, "skills-wrap", "skill-input");
+        }
+      }
+      function addLang(e) {
+        if (e.key === "Enter" || e.key === ",") {
+          e.preventDefault();
+          let v = e.target.value.trim().replace(/,$/, "");
+          if (v) addChip(langs, v, "lang-wrap", "lang-input");
+        }
+      }
+      function addChip(arr, val, wrapId, inputId) {
+        if (!val || arr.includes(val)) return;
+        arr.push(val);
+        const wrap = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.innerHTML = `${val}<button type="button">×</button>`;
+        chip.querySelector("button").onclick = () => {
+          arr.splice(arr.indexOf(val), 1);
+          chip.remove();
+        };
+        wrap.insertBefore(chip, input);
+        input.value = "";
+      }
 
-  </div><!-- /form-card -->
-</div><!-- /shell -->
+      function markUpload(boxId, input) {
+        if (!input.files.length) return;
+        const box = document.getElementById(boxId);
+        box.classList.add("uploaded");
+        box.querySelector(".up-label").textContent = "✓ " + input.files[0].name;
+        box.querySelector(".up-hint").textContent =
+          (input.files[0].size / 1024 / 1024).toFixed(2) + " MB";
+      }
 
-<script>
-  /* ═══════════════ STATE ═══════════════ */
-  let currentStep = 1;
-  const TOTAL = 5;
-  const skills = [];
-  const langs  = [];
+      function previewAvatar(input) {
+        if (!input.files.length) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const prev = document.getElementById("avatar-preview");
+          prev.innerHTML = `<input type="file" accept="image/*" onchange="previewAvatar(this)"/><img src="${e.target.result}" />`;
+          avatarUploaded = true;
+          document.getElementById("err-avatar")?.classList.remove("show");
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
 
-  const STEP_LABELS = ['Personal Info', 'Skills', 'Documents', 'Photo', 'Safety'];
+      function toggleConsent(rowId, cbId) {
+        const cb = document.getElementById(cbId);
+        const row = document.getElementById(rowId);
+        cb.checked = !cb.checked;
+        if (cb.checked) row.classList.add("checked");
+        else row.classList.remove("checked");
+      }
 
-  /* ═══════════════ STEPS ═══════════════ */
-  function renderSteps() {
-    const wrap = document.getElementById('steps');
-    wrap.innerHTML = '';
-    for (let i = 1; i <= TOTAL; i++) {
-      const item = document.createElement('div');
-      item.className = 'step-item' + (i === currentStep ? ' active' : '') + (i < currentStep ? ' done' : '');
-      item.innerHTML = `
-        <div class="step-dot-wrap">
-          <div class="step-dot ${i < currentStep ? 'done' : i === currentStep ? 'active' : ''}">
-            ${i < currentStep ? '✓' : i}
-          </div>
-          <div class="step-label">${STEP_LABELS[i-1]}</div>
-        </div>
-        ${i < TOTAL ? `<div class="step-line${i < currentStep ? ' done' : ''}"></div>` : ''}`;
-      wrap.appendChild(item);
-    }
-  }
+      function validateAllSteps() {
+        for (let i = 1; i <= 5; i++) {
+          if (!validate(i)) return false;
+        }
+        return true;
+      }
 
-  function goTo(n) {
-    if (n > currentStep && !validate(currentStep)) return;
-    document.getElementById(`step-${currentStep}`).classList.remove('active');
-    currentStep = n;
-    document.getElementById(`step-${currentStep}`).classList.add('active');
-    renderSteps();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+      async function submitForm() {
+        if (!validateAllSteps()) {
+          alert(
+            "Please complete all required fields and consents before submitting.",
+          );
+          return;
+        }
+        // Show success screen then redirect to dashboard
+        const successDiv = document.getElementById("success-screen");
+        const formSteps = document.querySelectorAll(".form-step");
+        const stepsContainer = document.getElementById("steps");
+        formSteps.forEach((step) => step.classList.remove("active"));
+        if (stepsContainer) stepsContainer.style.display = "none";
+        successDiv.classList.add("visible");
+        setTimeout(() => {
+          window.location.href = "./servease-dashboard.html";
+        }, 1800);
+      }
 
-  /* ═══════════════ VALIDATE ═══════════════ */
-  function validate(step) {
-    let ok = true;
-    const show = (id) => { document.getElementById(id).classList.add('show'); ok = false; };
-    const hide = (id) => { document.getElementById(id).classList.remove('show'); };
-    const val  = (id) => document.getElementById(id)?.value?.trim() || '';
+      document.querySelectorAll(".consent-row").forEach((row) => {
+        const cb = row.querySelector('input[type="checkbox"]');
+        if (cb && cb.checked) row.classList.add("checked");
+      });
 
-    if (step === 1) {
-      val('fullname')  ? hide('err-fullname')  : show('err-fullname');
-      /^\d{10}$/.test(val('mobile')) ? hide('err-mobile') : show('err-mobile');
-      /\S+@\S+\.\S+/.test(val('email')) ? hide('err-email') : show('err-email');
-      val('dob')       ? hide('err-dob')       : show('err-dob');
-      val('gender')    ? hide('err-gender')    : show('err-gender');
-      val('address')   ? hide('err-address')   : show('err-address');
-    }
-
-    if (step === 2) {
-      val('category')   ? hide('err-category')  : show('err-category');
-      val('experience') ? hide('err-experience'): show('err-experience');
-      skills.length     ? hide('err-skills')    : show('err-skills');
-      langs.length      ? hide('err-langs')     : show('err-langs');
-    }
-
-    if (step === 3) {
-      document.getElementById('box-aadhar').classList.contains('uploaded') ? hide('err-aadhar') : show('err-aadhar');
-      document.getElementById('box-pan').classList.contains('uploaded')    ? hide('err-pan')    : show('err-pan');
-      (val('bank-name') && val('acc-no') && val('ifsc')) ? hide('err-bank') : show('err-bank');
-    }
-
-    if (step === 5) {
-      const all = document.getElementById('cb-bg').checked &&
-                  document.getElementById('cb-tos').checked &&
-                  document.getElementById('cb-priv').checked;
-      all ? hide('err-consent') : show('err-consent');
-      if (!all) ok = false;
-    }
-
-    return ok;
-  }
-
-  /* ═══════════════ OTP ═══════════════ */
-  function sendOTP() {
-    const mob = document.getElementById('mobile').value.trim();
-    if (!/^\d{10}$/.test(mob)) { document.getElementById('err-mobile').classList.add('show'); return; }
-    alert(`OTP sent to +91 ${mob}\n(Demo — no real SMS sent)`);
-  }
-
-  /* ═══════════════ CHIPS ═══════════════ */
-  const SKILL_SUGGESTIONS = {
-    'Beautician':      ['Threading','Waxing','Facial','Bridal Makeup','Hair Coloring','Manicure','Pedicure'],
-    'AC Technician':   ['Installation','Gas Refill','Filter Cleaning','Servicing','PCB Repair'],
-    'Plumber':         ['Pipe Fitting','Leak Repair','Drainage','Tap Installation','Water Heater'],
-    'Carpenter':       ['Furniture Repair','Door Fitting','Modular Cabinets','Polishing','Wood Carving'],
-    'Cleaner':         ['Deep Cleaning','Kitchen Cleaning','Bathroom Sanitisation','Sofa Cleaning','Window Cleaning'],
-    'Electrician':     ['Wiring','Switch Repair','Panel Box','Ceiling Fan','CCTV Installation'],
-    'Painter':         ['Wall Painting','Waterproofing','Texture Paint','Wood Polish'],
-    'Appliance Repair':['Washing Machine','Refrigerator','Microwave','TV Repair','AC'],
-    'Driver / Delivery':['LMV','Two-Wheeler','Goods Vehicle','Night Driving'],
-  };
-
-  function updateSkills() {
-    const cat = document.getElementById('category').value;
-    const sugg = SKILL_SUGGESTIONS[cat] || [];
-    const wrap = document.getElementById('skills-wrap');
-    // remove old suggestions
-    wrap.querySelectorAll('.suggestion').forEach(e => e.remove());
-    sugg.forEach(s => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'suggestion';
-      btn.textContent = '+ ' + s;
-      btn.style.cssText = 'border:1px dashed #3a3f55;background:none;color:#6b7385;padding:3px 8px;border-radius:20px;font-size:11px;cursor:pointer;';
-      btn.onmouseenter = () => btn.style.color = '#a0aaff';
-      btn.onmouseleave = () => btn.style.color = '#6b7385';
-      btn.onclick = () => { addChip(skills, s, 'skills-wrap', 'skill-input'); btn.remove(); };
-      wrap.insertBefore(btn, document.getElementById('skill-input'));
-    });
-  }
-
-  function addSkill(e) {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      const v = e.target.value.trim().replace(/,$/, '');
-      if (v) addChip(skills, v, 'skills-wrap', 'skill-input');
-    }
-  }
-
-  function addLang(e) {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      const v = e.target.value.trim().replace(/,$/, '');
-      if (v) addChip(langs, v, 'lang-wrap', 'lang-input');
-    }
-  }
-
-  function addChip(arr, val, wrapId, inputId) {
-    if (!val || arr.includes(val)) return;
-    arr.push(val);
-    const wrap  = document.getElementById(wrapId);
-    const input = document.getElementById(inputId);
-    const chip  = document.createElement('div');
-    chip.className = 'chip';
-    chip.innerHTML = `${val}<button type="button" onclick="removeChip(this,'${val}',${arr === skills ? 'skills' : 'langs'})">×</button>`;
-    wrap.insertBefore(chip, input);
-    input.value = '';
-  }
-
-  function removeChip(btn, val, arrName) {
-    const arr = arrName === 'skills' ? skills : langs;
-    arr.splice(arr.indexOf(val), 1);
-    btn.parentElement.remove();
-  }
-
-  /* ═══════════════ UPLOADS ═══════════════ */
-  function markUpload(boxId, input) {
-    if (!input.files.length) return;
-    const box = document.getElementById(boxId);
-    box.classList.add('uploaded');
-    box.querySelector('.up-label').textContent = '✓ ' + input.files[0].name;
-    box.querySelector('.up-hint').textContent  = (input.files[0].size / 1024 / 1024).toFixed(2) + ' MB';
-  }
-
-  /* ═══════════════ AVATAR ═══════════════ */
-  function previewAvatar(input) {
-    if (!input.files.length) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const prev = document.getElementById('avatar-preview');
-      prev.innerHTML = `<input type="file" accept="image/*" onchange="previewAvatar(this)"/><img src="${e.target.result}" alt="Profile photo"/>`;
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-
-  /* ═══════════════ CONSENT ═══════════════ */
-  function toggleConsent(rowId, cbId) {
-    const cb  = document.getElementById(cbId);
-    cb.checked = !cb.checked;
-    const row = document.getElementById(rowId);
-    const chkId = 'chk-' + cbId.replace('cb-', '');
-    const chk = document.getElementById(chkId);
-    if (cb.checked) { row.style.borderColor = 'rgba(92,107,255,.35)'; chk.classList.add('checked'); }
-    else { row.style.borderColor = ''; chk.classList.remove('checked'); }
-  }
-
-  /* ═══════════════ SUBMIT ═══════════════ */
-  function submitForm() {
-    if (!validate(5)) return;
-    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
-    document.getElementById('success-screen').classList.add('visible');
-    document.getElementById('steps').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  /* ═══════════════ INIT ═══════════════ */
-  renderSteps();
-</script>
-</body>
+      renderSteps();
+    </script>
+  </body>
 </html>
